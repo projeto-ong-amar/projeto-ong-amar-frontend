@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --blue-primary: #1A56DB;
+  --blue-dark: #1A3A8F;
+  --blue-sidebar: #1C3FA8;
+  --blue-sidebar-dark: #142E8A;
+  --sidebar-width: 240px;
+  --accent-yellow: #FBBF24;
+  --bg: #F1F5FB;
+  --card-bg: #FFFFFF;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border: #E2E8F0;
+  --green-icon-bg: #DCFCE7;
+  --orange-icon-bg: #FEF3C7;
+  --blue-icon-bg: #DBEAFE;
+  --teal-icon-bg: #D1FAE5;
+  --danger: #EF4444;
+  --success: #22C55E;
+  --warning: #F59E0B;
+}
+
+body {
+  font-family: "DM Sans", sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Sora", sans-serif;
+}
+
+button { cursor: pointer; font-family: "DM Sans", sans-serif; }
+a { text-decoration: none; color: inherit; }
