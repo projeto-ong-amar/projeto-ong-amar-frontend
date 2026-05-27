@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Gerenciamento de Estoque - Relatórios</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1A56DB;
+    --blue-dark: #1347BF;
+    --sidebar-bg: #1A56DB;
+    --sidebar-active: #ffffff22;
+    --text-dark: #111827;
+    --text-mid: #374151;
+    --text-light: #6B7280;
+    --border: #E5E7EB;
+    --white: #ffffff;
+    --yellow: #F9C900;
+    --green-bg: #ECFDF5;
+    --green-icon: #059669;
+    --orange-bg: #FFF7ED;
+    --orange-icon: #D97706;
+    --blue-bg: #EFF6FF;
+    --blue-icon: #2563EB;
+    --teal-bg: #ECFDF5;
+    --teal-icon: #10B981;
+    --radius: 12px;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #F3F4F6;
+    display: flex;
+    min-height: 100vh;
+    color: var(--text-dark);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 22px;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .brand-logo {
+    width: 52px;
+    height: 52px;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .brand-logo svg { width: 36px; height: 36px; }
+
+  .brand-info { line-height: 1.3; }
+  .brand-name { font-size: 13px; font-weight: 800; color: #fff; }
+  .brand-sub  { font-size: 11px; color: rgba(255,255,255,0.75); }
+
+  .sidebar-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 22px 20px 8px;
+  }
+
+  .nav { display: flex; flex-direction: column; gap: 2px; padding: 0 10px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.12); }
+  .nav-item.active { background: rgba(255,255,255,0.18); color: #fff; }
+
+  .nav-item svg { width: 20px; height: 20px; flex-shrink: 0; opacity: .9; }
+
+  .sidebar-spacer { flex: 1; }
+
+  .sidebar-bottom { padding: 14px 10px 20px; }
+
+  .btn-sair {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s;
+    border: none;
+    background: transparent;
+    width: 100%;
+  }
+
+  .btn-sair:hover { background: rgba(255,255,255,0.12); }
+  .btn-sair svg { width: 20px; height: 20px; }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 60px;
+    flex-shrink: 0;
+  }
+
+  .topbar-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--blue);
+  }
+
+  .topbar-breadcrumb .sep { color: #9CA3AF; font-weight: 400; }
+  .topbar-breadcrumb .current { color: #9CA3AF; font-weight: 500; font-size: 15px; }
+
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+
+  .btn-ajuda {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+
+  .btn-ajuda:hover { border-color: #9CA3AF; }
+  .btn-ajuda svg { width: 18px; height: 18px; color: #6B7280; }
+
+  .btn-voltar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--yellow);
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+
+  .btn-voltar:hover { opacity: .88; }
+  .btn-voltar svg { width: 18px; height: 18px; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 32px 36px;
+    flex: 1;
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+
+  .page-header-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--blue-bg);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .page-header-icon svg { width: 32px; height: 32px; color: var(--blue); }
+
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text-dark);
+    line-height: 1.2;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  /* PERIOD FILTER */
+  .period-bar {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+
+  .period-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    white-space: nowrap;
+  }
+
+  .period-label svg { width: 20px; height: 20px; color: var(--text-mid); }
+
+  .period-options {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .period-btn {
+    padding: 7px 18px;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: all .15s;
+  }
+
+  .period-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .period-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+  .period-custom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    cursor: pointer;
+    margin-left: 4px;
+  }
+
+  .period-custom svg { width: 16px; height: 16px; }
+  .period-custom .chevron { width: 14px; height: 14px; }
+
+  /* REPORT CARDS */
+  .reports-list { display: flex; flex-direction: column; gap: 14px; }
+
+  .report-card {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow);
+    transition: box-shadow .2s;
+  }
+
+  .report-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+  .report-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .report-icon svg { width: 36px; height: 36px; }
+
+  .icon-green  { background: var(--green-bg);  }
+  .icon-green  svg { color: var(--green-icon);  }
+  .icon-orange { background: var(--orange-bg); }
+  .icon-orange svg { color: var(--orange-icon); }
+  .icon-blue   { background: var(--blue-bg);   }
+  .icon-blue   svg { color: var(--blue-icon);   }
+  .icon-teal   { background: var(--teal-bg);   }
+  .icon-teal   svg { color: var(--teal-icon);   }
+
+  .report-info { flex: 1; min-width: 0; }
+  .report-info h3 { font-size: 16px; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+  .report-info p  { font-size: 13px; color: var(--text-light); line-height: 1.5; max-width: 460px; }
+
+  .report-actions { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+  .btn-ver {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s;
+    white-space: nowrap;
+  }
+
+  .btn-ver:hover { background: var(--blue-dark); }
+  .btn-ver svg { width: 18px; height: 18px; }
+
+  .btn-baixar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    color: var(--text-mid);
+    border: 1.5px solid var(--border);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+    flex-direction: column;
+    gap: 2px;
+    align-items: center;
+    line-height: 1.2;
+  }
+
+  .btn-baixar:hover { border-color: #9CA3AF; background: #F9FAFB; }
+  .btn-baixar-inner { display: flex; align-items: center; gap: 6px; }
+  .btn-baixar svg { width: 16px; height: 16px; }
+  .btn-baixar .excel-label { font-size: 11px; color: var(--text-light); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <!-- Simple colorful logo placeholder -->
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="8" fill="#EFF6FF"/>
+        <rect x="6" y="18" width="8" height="12" rx="2" fill="#F97316"/>
+        <rect x="14" y="12" width="8" height="18" rx="2" fill="#FBBF24"/>
+        <rect x="22" y="8"  width="8" height="22" rx="2" fill="#EF4444"/>
+        <circle cx="10" cy="10" r="4" fill="#1A56DB"/>
+        <path d="M10 10 L18 6" stroke="#1A56DB" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="brand-info">
+      <div class="brand-name">Usuário X</div>
+      <div class="brand-sub">x@gmail.com</div>
+    </div>
+  </div>
+
+  <div class="sidebar-label">Sistema de Estoque</div>
+
+  <nav class="nav">
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Início
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      Gerenciar Entrada
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/><line x1="7" y1="9" x2="7" y2="9"/></svg>
+      Cadastro de Produtos
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+      Gerenciar Saída
+    </a>
+    <a class="nav-item active" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      Relatórios
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6"  y1="20" x2="6"  y2="14"/></svg>
+      Desempenho
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Cadastro de Usuário
+    </a>
+    <a class="nav-item" href="#">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/><path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07"/></svg>
+      Configurações
+    </a>
+  </nav>
+
+  <div class="sidebar-spacer"></div>
+
+  <div class="sidebar-bottom">
+    <button class="btn-sair">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sair
+    </button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-breadcrumb">
+      <span>Sistema de Gerenciamento de Estoque</span>
+      <span class="sep">/</span>
+      <span class="current">Relatórios</span>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn-ajuda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Ajuda
+      </button>
+      <button class="btn-voltar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Voltar
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div class="page-header-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><circle cx="12" cy="14" r="3"/><path d="M12 11v-1M12 17v-1M9.5 12.5l-.7-.7M15.2 15.2l-.7-.7M9 14H8M16 14h-1M9.5 15.5l-.7.7M15.2 12.8l-.7.7"/></svg>
+      </div>
+      <div>
+        <h1>Relatórios</h1>
+        <p>Escolha o relatório que deseja visualizar. Você pode ver na tela ou baixar em Excel.</p>
+      </div>
+    </div>
+
+    <!-- Period filter -->
+    <div class="period-bar">
+      <div class="period-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8"  y1="2" x2="8"  y2="6"/><line x1="3"  y1="10" x2="21" y2="10"/></svg>
+        Período do relatório:
+      </div>
+      <div class="period-options">
+        <button class="period-btn">Hoje</button>
+        <button class="period-btn">7 dias</button>
+        <button class="period-btn active">30 dias</button>
+        <button class="period-btn">Este mês</button>
+        <button class="period-custom">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Personalizado
+          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Report cards -->
+    <div class="reports-list">
+
+      <!-- Histórico de Entrada -->
+      <div class="report-card">
+        <div class="report-icon icon-green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        </div>
+        <div class="report-info">
+          <h3>Histórico de Entrada</h3>
+          <p>Controlar o fluxo de recebimento e monitorar prazos de validade para garantir que os produtos sejam distribuídos em tempo hábil.</p>
+        </div>
+        <div class="report-actions">
+          <button class="btn-ver">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver Relatório
+          </button>
+          <button class="btn-baixar">
+            <div class="btn-baixar-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar arquivo
+            </div>
+            <span class="excel-label">(Excel)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico de Saída -->
+      <div class="report-card">
+        <div class="report-icon icon-orange">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+        </div>
+        <div class="report-info">
+          <h3>Histórico de Saída</h3>
+          <p>Monitorar o destino das doações e garantir que a distribuição esteja ocorrendo conforme o planejado.</p>
+        </div>
+        <div class="report-actions">
+          <button class="btn-ver">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver Relatório
+          </button>
+          <button class="btn-baixar">
+            <div class="btn-baixar-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar arquivo
+            </div>
+            <span class="excel-label">(Excel)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Painel de Desempenho -->
+      <div class="report-card">
+        <div class="report-icon icon-blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6"  y1="20" x2="6"  y2="14"/></svg>
+        </div>
+        <div class="report-info">
+          <h3>Painel de Desempenho</h3>
+          <p>Facilitar a visualização de carências no estoque (itens que estão acabando) e auxiliar no planejamento de novas arrecadações.</p>
+        </div>
+        <div class="report-actions">
+          <button class="btn-ver">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver Relatório
+          </button>
+          <button class="btn-baixar">
+            <div class="btn-baixar-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar arquivo
+            </div>
+            <span class="excel-label">(Excel)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Histórico de Produtos Cadastrados -->
+      <div class="report-card">
+        <div class="report-icon icon-teal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/><line x1="7" y1="9"  x2="7.01" y2="9"/><line x1="7" y1="12" x2="7.01" y2="12"/><line x1="7" y1="15" x2="7.01" y2="15"/></svg>
+        </div>
+        <div class="report-info">
+          <h3>Histórico de Produtos Cadastrados</h3>
+          <p>Servir como base de dados para garantir que os itens sejam registrados de forma padronizada, evitando erros de contagem ou nomes duplicados.</p>
+        </div>
+        <div class="report-actions">
+          <button class="btn-ver">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Ver Relatório
+          </button>
+          <button class="btn-baixar">
+            <div class="btn-baixar-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Baixar arquivo
+            </div>
+            <span class="excel-label">(Excel)</span>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- /reports-list -->
+  </main>
+</div><!-- /main -->
+
+</body>
+</html>
