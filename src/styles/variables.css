@@ -1,0 +1,39 @@
+/* Design tokens – import this first in global.css and any component stylesheet */
+:root {
+  /* Colors */
+  --blue:        #1A56DB;
+  --blue-dark:   #1347BF;
+  --blue-bg:     #EFF6FF;
+  --blue-icon:   #2563EB;
+  --yellow:      #F9C900;
+  --green-bg:    #ECFDF5;
+  --green-icon:  #059669;
+  --orange-bg:   #FFF7ED;
+  --orange-icon: #D97706;
+  --teal-bg:     #ECFDF5;
+  --teal-icon:   #10B981;
+  --sidebar-bg:     var(--blue);
+  --sidebar-active: #ffffff22;
+  --text-dark:   #111827;
+  --text-mid:    #374151;
+  --text-light:  #6B7280;
+  --border:      #E5E7EB;
+  --white:       #ffffff;
+  --bg:          #F3F4F6;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius:    12px;
+  --radius-lg: 16px;
+
+  /* Shadows */
+  --shadow:    0 1px 4px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+}
