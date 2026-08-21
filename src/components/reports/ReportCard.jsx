@@ -46,7 +46,7 @@ export function ReportCard({ report, onVer, onBaixar }) {
             </svg>
             Baixar arquivo
           </div>
-          <span className="excel-label">(Excel)</span>
+          <span className="excel-label">(PDF)</span>
         </button>
       </div>
     </div>
