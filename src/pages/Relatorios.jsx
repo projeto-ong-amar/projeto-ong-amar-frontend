@@ -1,14 +1,41 @@
+import { useState } from 'react';
 import { PeriodFilter } from '../components/reports/PeriodFilter.jsx';
 import { ReportCard } from '../components/reports/ReportCard.jsx';
 import { useReports } from '../hooks/useReports.js';
+import { baixarRelatorioIA } from '../services/reportsService.js';
 
 /**
  * Relatórios page
  * Composes PeriodFilter + ReportCard list, using the useReports hook
  * for state (list, loading, period selection).
+ *
+ * "Baixar arquivo" calls the AI assistant backend (baixarRelatorioIA),
+ * showing a loading overlay while it generates the PDF — matching the
+ * original index.html's mostrarLoading()/esconderLoading() behaviour.
  */
 export function RelatoriosPage() {
   const { reports, loading, error, period, setPeriod } = useReports();
+  const [downloadingId, setDownloadingId] = useState(null);
+
+  async function handleBaixar(id) {
+    setDownloadingId(id);
+    try {
+      const { blob, filename } = await baixarRelatorioIA(id);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      alert('Não foi possível baixar o relatório. Verifique se o servidor está disponível.');
+      console.error(err);
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   return (
     <main className="content">
@@ -39,9 +66,20 @@ export function RelatoriosPage() {
               key={report.id}
               report={report}
               onVer={(id) => console.log('Ver:', id)}
-              onBaixar={(id) => console.log('Baixar:', id)}
+              onBaixar={handleBaixar}
+              downloading={downloadingId === report.id}
             />
           ))}
+        </div>
+      )}
+
+      {downloadingId && (
+        <div className="loading-overlay">
+          <div className="loading-card">
+            <div className="modal-spinner" />
+            <p className="loading-title">Gerando relatório...</p>
+            <p className="loading-sub">Aguarde enquanto a IA processa sua solicitação.</p>
+          </div>
         </div>
       )}
     </main>

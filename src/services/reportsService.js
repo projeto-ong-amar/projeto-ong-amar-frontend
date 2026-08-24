@@ -1,19 +1,13 @@
 /**
  * reportsService
  * All API calls related to reports.
- * Replace BASE_URL and endpoints to match your backend.
  */
-const BASE_URL = '/api';
 
 /**
  * Fetch available reports list.
  * @returns {Promise<Array>}
  */
 export async function fetchReports() {
-  // TODO: replace mock with real fetch
-  // const res = await fetch(`${BASE_URL}/reports`);
-  // return res.json();
-
   return [
     {
       id: 'entrada',
@@ -42,14 +36,56 @@ export async function fetchReports() {
   ];
 }
 
+const ASSISTANT_BASE_URL = 'http://localhost:8080';
+
 /**
- * Download a report as Excel.
- * @param {string} reportId
- * @param {string} period
- * @returns {Promise<Blob>}
+ * Maps each report id to the assistant endpoint, the prompt sent to it,
+ * and the filename used for the downloaded PDF — matching the original
+ * index.html's baixarRelatorioEntrada/Saida/Desempenho/Produtos functions.
  */
-export async function downloadReportExcel(reportId, period) {
-  const res = await fetch(`${BASE_URL}/reports/${reportId}/export?period=${period}`);
-  if (!res.ok) throw new Error('Download failed');
-  return res.blob();
+const REPORT_AI_CONFIG = {
+  entrada: {
+    endpoint: '/assistente/relatorio/entradas/pdf',
+    texto: 'Gere um relatório das entradas destacando picos e produtos mais recebidos.',
+    filename: 'relatorio-entradas.pdf',
+  },
+  saida: {
+    endpoint: '/assistente/relatorio/saidas/pdf',
+    texto: 'Quero um relatório das saídas com foco em itens que mais saíram e possíveis riscos de falta.',
+    filename: 'relatorio-saidas.pdf',
+  },
+  desempenho: {
+    endpoint: '/assistente/relatorio/desempenho-geral/pdf',
+    texto: 'Faça uma análise geral do desempenho do estoque e recomende ações prioritárias.',
+    filename: 'relatorio-desempenho.pdf',
+  },
+  produtos: {
+    endpoint: '/assistente/relatorio/produtos-cadastrados/pdf',
+    texto: 'Mostre o histórico de produtos cadastrados e destaque categorias com mais cadastros.',
+    filename: 'relatorio-produtos-cadastrados.pdf',
+  },
+};
+
+/**
+ * Asks the AI assistant backend to generate a report PDF and returns it
+ * along with the filename it should be saved as.
+ * @param {string} reportId - one of: entrada | saida | desempenho | produtos
+ * @returns {Promise<{ blob: Blob, filename: string }>}
+ */
+export async function baixarRelatorioIA(reportId) {
+  const config = REPORT_AI_CONFIG[reportId];
+  if (!config) throw new Error(`Relatório desconhecido: ${reportId}`);
+
+  const response = await fetch(`${ASSISTANT_BASE_URL}${config.endpoint}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ texto: config.texto }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Erro ao baixar relatório: ${response.status}`);
+  }
+
+  const blob = await response.blob();
+  return { blob, filename: config.filename };
 }

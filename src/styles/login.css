@@ -121,3 +121,70 @@
 .login-btn-entrar:hover { background: #1d4ed8; }
 .login-btn-entrar:active { transform: scale(0.985); }
 .login-btn-entrar:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* ── RECUPERAR SENHA (extends the login look) ── */
+.recuperar-voltar {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+}
+
+.recuperar-card { background: #fff; box-shadow: none; border: 1px solid #E2E4EA; }
+
+.recuperar-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  text-align: center;
+  margin-top: 18px;
+}
+
+.recuperar-desc {
+  font-size: 14px;
+  color: #4B5563;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+/* Accessibility box, floating bottom-right (standalone, off the sidebar) */
+.access-box {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  text-align: right;
+}
+
+.access-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.access-pill {
+  display: flex;
+  background: #2563eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.access-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.access-btn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.35); }
+.access-btn:hover { background: rgba(255, 255, 255, 0.15); }
+.access-btn-icon svg { width: 18px; height: 18px; }

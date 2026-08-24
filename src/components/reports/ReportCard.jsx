@@ -9,6 +9,7 @@
  * @param {string}   report.iconClass   - CSS colour variant class (icon-green | icon-orange | icon-blue | icon-teal)
  * @param {Function} onVer              - Callback invoked with the report id
  * @param {Function} onBaixar           - Callback invoked with the report id
+ * @param {boolean}  downloading        - Whether this report's download is in flight
  */
 const REPORT_ICONS = {
   entrada: 'https://img.icons8.com/ios/50/059669/open-box.png',
@@ -17,7 +18,7 @@ const REPORT_ICONS = {
   produtos: 'https://img.icons8.com/ios/50/10B981/task.png',
 };
 
-export function ReportCard({ report, onVer, onBaixar }) {
+export function ReportCard({ report, onVer, onBaixar, downloading = false }) {
   const iconSrc = REPORT_ICONS[report.id];
 
   return (
@@ -37,14 +38,19 @@ export function ReportCard({ report, onVer, onBaixar }) {
           </svg>
           Ver Relatório
         </button>
-        <button className="btn-baixar" data-id={report.id} onClick={() => onBaixar?.(report.id)}>
+        <button
+          className="btn-baixar"
+          data-id={report.id}
+          disabled={downloading}
+          onClick={() => onBaixar?.(report.id)}
+        >
           <div className="btn-baixar-inner">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
-            Baixar arquivo
+            {downloading ? 'Baixando…' : 'Baixar arquivo'}
           </div>
           <span className="excel-label">(PDF)</span>
         </button>

@@ -36,8 +36,8 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
           <img id="sidebar-logo" src={logo} alt="Logo ONG PCA" />
         </div>
         <div className="brand-info">
-          <div className="brand-name">Usuário X</div>
-          <div className="brand-sub">x@gmail.com</div>
+          <div className="brand-name">Helena</div>
+          <div className="brand-sub">helena@email.com</div>
         </div>
       </div>
 
