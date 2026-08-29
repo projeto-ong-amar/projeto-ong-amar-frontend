@@ -1,12 +1,4 @@
-/**
- * reportsService
- * All API calls related to reports.
- */
 
-/**
- * Fetch available reports list.
- * @returns {Promise<Array>}
- */
 export async function fetchReports() {
   return [
     {
@@ -38,11 +30,7 @@ export async function fetchReports() {
 
 const ASSISTANT_BASE_URL = 'http://localhost:8080';
 
-/**
- * Maps each report id to the assistant endpoint, the prompt sent to it,
- * and the filename used for the downloaded PDF — matching the original
- * index.html's baixarRelatorioEntrada/Saida/Desempenho/Produtos functions.
- */
+
 const REPORT_AI_CONFIG = {
   entrada: {
     endpoint: '/assistente/relatorio/entradas/pdf',
@@ -66,12 +54,7 @@ const REPORT_AI_CONFIG = {
   },
 };
 
-/**
- * Asks the AI assistant backend to generate a report PDF and returns it
- * along with the filename it should be saved as.
- * @param {string} reportId - one of: entrada | saida | desempenho | produtos
- * @returns {Promise<{ blob: Blob, filename: string }>}
- */
+
 export async function baixarRelatorioIA(reportId) {
   const config = REPORT_AI_CONFIG[reportId];
   if (!config) throw new Error(`Relatório desconhecido: ${reportId}`);
