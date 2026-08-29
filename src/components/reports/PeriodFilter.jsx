@@ -1,3 +1,7 @@
+// Este componente só é usado dentro da tela de Relatórios, então
+// reaproveita o CSS Module da própria tela em vez de ter um módulo à parte.
+import styles from '../../pages/Relatorios.module.css';
+
 /**
  * PeriodFilter component
  * Period selector bar used on the Reports page.
@@ -14,8 +18,8 @@ const PERIODS = [
 
 export function PeriodFilter({ active = '30dias', onChange }) {
   return (
-    <div className="period-bar">
-      <div className="period-label">
+    <div className={styles.periodBar}>
+      <div className={styles.periodLabel}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
@@ -24,11 +28,11 @@ export function PeriodFilter({ active = '30dias', onChange }) {
         </svg>
         Período do relatório:
       </div>
-      <div className="period-options">
+      <div className={styles.periodOptions}>
         {PERIODS.map((p) => (
           <button
             key={p.key}
-            className={`period-btn ${p.key === active ? 'active' : ''}`}
+            className={`${styles.periodBtn} ${p.key === active ? styles.active : ''}`}
             data-period={p.key}
             onClick={() => onChange?.(p.key)}
           >
@@ -36,7 +40,7 @@ export function PeriodFilter({ active = '30dias', onChange }) {
           </button>
         ))}
         <button
-          className="period-custom"
+          className={styles.periodCustom}
           data-period="personalizado"
           onClick={() => onChange?.('personalizado')}
         >
@@ -47,7 +51,7 @@ export function PeriodFilter({ active = '30dias', onChange }) {
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
           Personalizado
-          <svg className="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className={styles.chevron} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>

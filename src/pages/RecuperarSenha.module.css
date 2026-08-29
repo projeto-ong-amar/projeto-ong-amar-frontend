@@ -1,4 +1,8 @@
-.login-body {
+/* ── Tela: Recuperar Senha ──
+   Reaproveita visualmente o "look" da tela de Login, porém como um
+   módulo próprio (cada tela é dona do seu CSS). */
+
+.loginBody {
   font-family: 'Nunito', sans-serif;
   min-height: 100vh;
   display: flex;
@@ -7,33 +11,34 @@
   background: #d5d9e4;
 }
 
-.login-card {
+.loginCard {
   background: #fff;
   border-radius: 24px;
   padding: 48px 48px 52px;
   width: 100%;
   max-width: 580px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
+  border: 1px solid #E2E4EA;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.login-logo-wrap {
+.loginLogoWrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.login-logo-img {
+.loginLogoImg {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.login-brand-title {
+.loginBrandTitle {
   font-size: 22px;
   font-weight: 800;
   color: #2563eb;
@@ -42,7 +47,7 @@
   letter-spacing: -0.01em;
 }
 
-.login-brand-sub {
+.loginBrandSub {
   font-size: 14px;
   color: #6b7280;
   font-weight: 500;
@@ -50,24 +55,21 @@
   text-align: center;
 }
 
-.login-form {
+.loginForm {
   width: 100%;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-.login-field-label {
+.loginFieldLabel {
   font-size: 16px;
   font-weight: 800;
   color: #111827;
   margin-bottom: 10px;
 }
 
-.login-field-label.spaced { margin-top: 28px; }
-
-.login-form input[type='email'],
-.login-form input[type='password'] {
+.loginForm input[type='email'] {
   width: 100%;
   padding: 18px 20px;
   background: #dde0e8;
@@ -80,28 +82,28 @@
   transition: background 0.2s, box-shadow 0.2s;
 }
 
-.login-form input::placeholder { color: #9ca3af; }
+.loginForm input::placeholder { color: #9ca3af; }
 
-.login-form input:focus {
+.loginForm input:focus {
   background: #d0d4de;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.login-forgot {
+.loginForgot {
   margin-top: 22px;
   font-size: 14px;
   color: #6b7280;
 }
 
-.login-forgot a {
+.loginForgot a {
   color: #ef4444;
   font-weight: 700;
   text-decoration: none;
 }
 
-.login-forgot a:hover { text-decoration: underline; }
+.loginForgot a:hover { text-decoration: underline; }
 
-.login-btn-entrar {
+.loginBtnEntrar {
   margin-top: 26px;
   width: 100%;
   padding: 20px;
@@ -118,20 +120,44 @@
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
 }
 
-.login-btn-entrar:hover { background: #1d4ed8; }
-.login-btn-entrar:active { transform: scale(0.985); }
-.login-btn-entrar:disabled { opacity: 0.7; cursor: not-allowed; }
+.loginBtnEntrar:hover { background: #1d4ed8; }
+.loginBtnEntrar:active { transform: scale(0.985); }
+.loginBtnEntrar:disabled { opacity: 0.7; cursor: not-allowed; }
 
-/* ── RECUPERAR SENHA (extends the login look) ── */
-.recuperar-voltar {
+/* Botão "Voltar" desta tela (duplicado de propósito — cada tela é
+   dona do seu CSS; ver components/layout/Topbar.module.css para a
+   versão usada na barra superior do app). */
+.btnVoltar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--yellow);
+  border: none;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btnVoltar:hover {
+  opacity: 0.88;
+}
+
+.btnVoltar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.recuperarVoltar {
   position: fixed;
   top: 24px;
   right: 24px;
 }
 
-.recuperar-card { background: #fff; box-shadow: none; border: 1px solid #E2E4EA; }
-
-.recuperar-title {
+.recuperarTitle {
   font-size: 24px;
   font-weight: 800;
   color: #111827;
@@ -139,7 +165,7 @@
   margin-top: 18px;
 }
 
-.recuperar-desc {
+.recuperarDesc {
   font-size: 14px;
   color: #4B5563;
   text-align: center;
@@ -148,29 +174,29 @@
   max-width: 380px;
 }
 
-/* Accessibility box, floating bottom-right (standalone, off the sidebar) */
-.access-box {
+/* Accessibility box, floating bottom-right */
+.accessBox {
   position: fixed;
   bottom: 24px;
   right: 24px;
   text-align: right;
 }
 
-.access-title {
+.accessTitle {
   font-size: 14px;
   font-weight: 800;
   color: #111827;
   margin-bottom: 6px;
 }
 
-.access-pill {
+.accessPill {
   display: flex;
   background: #2563eb;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.access-btn {
+.accessBtn {
   background: transparent;
   border: none;
   color: #fff;
@@ -185,6 +211,6 @@
   transition: background 0.15s;
 }
 
-.access-btn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.35); }
-.access-btn:hover { background: rgba(255, 255, 255, 0.15); }
-.access-btn-icon svg { width: 18px; height: 18px; }
+.accessBtn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.35); }
+.accessBtn:hover { background: rgba(255, 255, 255, 0.15); }
+.accessBtnIcon svg { width: 18px; height: 18px; }

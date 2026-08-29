@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import logo from '../assets/img/pca-1.png';
-import '../styles/login.css';
+import styles from './Login.module.css';
 
 function increaseFontSize() {
   document.body.style.fontSize = 'larger';
@@ -11,15 +11,6 @@ function decreaseFontSize() {
   document.body.style.fontSize = 'smaller';
 }
 
-/**
- * Login page
- * Front-end only, no backend: the form is purely visual — clicking
- * "Entrar" always proceeds straight to the app, regardless of what
- * (if anything) was typed.
- *
- * @param {Function} onLoginSuccess   - Called when "Entrar" is clicked.
- * @param {Function} onForgotPassword - Called when "Esqueceu sua senha?" is clicked.
- */
 export function Login({ onLoginSuccess, onForgotPassword }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -35,26 +26,26 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
   }
 
   return (
-    <div className={`login-body ${highContrast ? 'high-contrast' : ''}`}>
-      <div className="login-card">
-        <div className="login-logo-wrap">
+    <div className={`${styles.loginBody} ${highContrast ? 'high-contrast' : ''}`}>
+      <div className={styles.loginCard}>
+        <div className={styles.loginLogoWrap}>
           <img
             src={logo}
             alt="Logo ONG PCA"
-            className="login-logo-img"
+            className={styles.loginLogoImg}
           />
 
-          <div className="login-brand-title">
+          <div className={styles.loginBrandTitle}>
             Sistema de Gerenciamento de Estoque
           </div>
 
-          <div className="login-brand-sub">
+          <div className={styles.loginBrandSub}>
             Alimentos e Produtos de Higiene
           </div>
         </div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label className="login-field-label" htmlFor="email">
+        <form className={styles.loginForm} onSubmit={handleSubmit}>
+          <label className={styles.loginFieldLabel} htmlFor="email">
             Digite seu E-mail
           </label>
 
@@ -67,7 +58,7 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <label className="login-field-label spaced" htmlFor="senha">
+          <label className={`${styles.loginFieldLabel} ${styles.spaced}`} htmlFor="senha">
             Digite sua Senha
           </label>
 
@@ -80,7 +71,7 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             onChange={(e) => setSenha(e.target.value)}
           />
 
-          <div className="login-forgot">
+          <div className={styles.loginForgot}>
             <a
               href="#"
               onClick={(e) => {
@@ -93,20 +84,20 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             ← Clique aqui
           </div>
 
-          <button className="login-btn-entrar" type="submit">
+          <button className={styles.loginBtnEntrar} type="submit">
             Entrar
           </button>
         </form>
       </div>
 
-      <div className="access-box">
-        <div className="access-title">
+      <div className={styles.accessBox}>
+        <div className={styles.accessTitle}>
           Acessibilidade
         </div>
 
-        <div className="access-pill">
+        <div className={styles.accessPill}>
           <button
-            className="access-btn"
+            className={styles.accessBtn}
             type="button"
             onClick={increaseFontSize}
             aria-label="Aumentar tamanho da fonte"
@@ -115,7 +106,7 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
           </button>
 
           <button
-            className="access-btn"
+            className={styles.accessBtn}
             type="button"
             onClick={decreaseFontSize}
             aria-label="Diminuir tamanho da fonte"
@@ -124,7 +115,7 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
           </button>
 
           <button
-            className={`access-btn access-btn-icon ${
+            className={`${styles.accessBtn} ${styles.accessBtnIcon} ${
               highContrast ? 'active' : ''
             }`}
             type="button"

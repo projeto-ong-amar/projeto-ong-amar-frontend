@@ -1,0 +1,60 @@
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.topbarBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+.topbarBreadcrumb .sep {
+  color: #9CA3AF;
+  font-weight: 400;
+}
+
+.topbarBreadcrumb .current {
+  color: #9CA3AF;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.topbarActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btnVoltar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--yellow);
+  border: none;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btnVoltar:hover {
+  opacity: 0.88;
+}
+
+.btnVoltar svg {
+  width: 18px;
+  height: 18px;
+}

@@ -1,0 +1,316 @@
+/* CadastroProdutos.module.css
+ * CSS Module: class names below are scoped locally to this component by
+ * Vite's build (compiled to unique hashes), so they never leak into or
+ * collide with global.css or other pages' styles.
+ */
+
+/* ── CONTEÚDO DA PÁGINA (faltava — sem isso o .content não tem padding/scroll) ── */
+.content {
+  padding: var(--space-xl) 36px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* ── PAGE HEADER (faltava — sem isso o ícone fica sem tamanho/cor) ── */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 30px;
+}
+
+.pageHeaderIcon {
+  width: 60px;
+  height: 60px;
+  background: var(--blue-bg);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pageHeaderIcon svg {
+  width: 32px;
+  height: 32px;
+  color: var(--blue);
+}
+
+.pageHeader h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.2;
+}
+
+.pageHeader p {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-top: 4px;
+}
+
+/* ── daqui pra baixo é o que você já tinha (form, histórico, dica) ── */
+.formCard {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 32px;
+  margin-bottom: 28px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.required {
+  color: #DC2626;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: var(--text-dark);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.field input::placeholder { color: #9CA3AF; }
+
+.field input:focus,
+.field select:focus {
+  border-color: var(--blue);
+  background: #fff;
+}
+
+.field select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+  padding-right: 42px;
+}
+
+.dateInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.dateInputWrap input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.calendarBtn {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46.5px;
+  background: #FEF3C7;
+  border: 1.5px solid var(--border);
+  border-left: none;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #B45309;
+  transition: background 0.15s;
+}
+
+.calendarBtn:hover { background: #FDE68A; }
+.calendarBtn svg { width: 20px; height: 20px; }
+
+.actionsRow {
+  display: flex;
+  gap: 16px;
+}
+
+.btnCancelar,
+.btnSalvar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  text-align: left;
+  transition: opacity 0.15s;
+}
+
+.btnCancelar:hover,
+.btnSalvar:hover { opacity: 0.9; }
+
+.btnCancelar {
+  background: #fff;
+  border: 1.5px solid #FCA5A5;
+  color: #DC2626;
+}
+
+.btnSalvar {
+  background: #16A34A;
+  border: 1.5px solid #16A34A;
+  color: #fff;
+}
+
+.actionIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btnCancelar .actionIcon { background: #DC2626; color: #fff; }
+.btnSalvar .actionIcon { background: rgba(255, 255, 255, 0.2); color: #fff; }
+.actionIcon svg { width: 18px; height: 18px; }
+
+.actionText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.actionText strong { font-size: 15px; font-weight: 800; }
+.actionText small { font-size: 12px; font-weight: 500; opacity: 0.85; }
+.btnCancelar .actionText small { color: #B91C1C; }
+.btnSalvar .actionText small { color: #DCFCE7; }
+
+/* ── HISTÓRICO ── */
+.historicoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 16px;
+}
+
+.historicoHeading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.historicoHeading svg { width: 20px; height: 20px; color: var(--text-mid); }
+
+.historicoHeading h2 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.historicoHeading p {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+.historicoBtn {
+  flex-shrink: 0;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  color: var(--text-mid);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 9px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.historicoBtn:hover { border-color: #9CA3AF; }
+
+.tableWrap {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-light);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody td {
+  font-size: 14px;
+  color: var(--text-mid);
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.table tbody tr:last-child td { border-bottom: none; }
+
+.actionsCell {
+  width: 40px;
+}
+
+.actionsMenuBtn {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+}
+
+.actionsMenuBtn svg { width: 18px; height: 18px; }
+
+/* ── DICA ── */
+.dica {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--blue-bg);
+  border: 1px solid #BFDBFE;
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  font-size: 13px;
+  color: var(--text-mid);
+}
+
+.dica svg { width: 18px; height: 18px; color: var(--blue); flex-shrink: 0; margin-top: 1px; }
+.dica strong { color: var(--text-dark); }

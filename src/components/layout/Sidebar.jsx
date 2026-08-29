@@ -1,4 +1,5 @@
 import logo from '../../assets/img/pca-1.png';
+import styles from './Sidebar.module.css';
 
 /**
  * Sidebar component
@@ -30,24 +31,24 @@ function decreaseFontSize() {
 
 export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-brand">
-        <div className="brand-logo">
-          <img id="sidebar-logo" src={logo} alt="Logo ONG PCA" />
+    <aside className={styles.sidebar}>
+      <div className={styles.sidebarBrand}>
+        <div className={styles.brandLogo}>
+          <img id="sidebar-logo" className={styles.sidebarLogo} src={logo} alt="Logo ONG PCA" />
         </div>
-        <div className="brand-info">
-          <div className="brand-name">Helena</div>
-          <div className="brand-sub">helena@email.com</div>
+        <div className={styles.brandInfo}>
+          <div className={styles.brandName}>Helena</div>
+          <div className={styles.brandSub}>helena@email.com</div>
         </div>
       </div>
 
-      <div className="sidebar-label">Sistema de Estoque</div>
+      <div className={styles.sidebarLabel}>Sistema de Estoque</div>
 
-      <nav className="nav">
+      <nav className={styles.nav}>
         {NAV_ITEMS.map((item) => (
           <a
             key={item.key}
-            className={`nav-item ${item.key === activePage ? 'active' : ''}`}
+            className={`${styles.navItem} ${item.key === activePage ? styles.active : ''}`}
             href={`#${item.key}`}
             data-page={item.key}
             onClick={(e) => {
@@ -61,19 +62,19 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
         ))}
       </nav>
 
-      <div className="sidebar-spacer" />
+      <div className={styles.sidebarSpacer} />
 
-      <div className="sidebar-bottom">
-        <div className="acessibilidade-box">
-          <div className="acessibilidade-title">Acessibilidade</div>
-          <div className="acessibilidade-group">
-            <button className="btn-acesso" type="button" onClick={increaseFontSize}>
+      <div className={styles.sidebarBottom}>
+        <div className={styles.acessibilidadeBox}>
+          <div className={styles.acessibilidadeTitle}>Acessibilidade</div>
+          <div className={styles.acessibilidadeGroup}>
+            <button className={styles.btnAcesso} type="button" onClick={increaseFontSize}>
               A+
             </button>
-            <button className="btn-acesso" type="button" onClick={decreaseFontSize}>
+            <button className={styles.btnAcesso} type="button" onClick={decreaseFontSize}>
               a-
             </button>
-            <button className="btn-acesso" type="button" aria-label="Alto contraste">
+            <button className={styles.btnAcesso} type="button" aria-label="Alto contraste">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" />
                 <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6" />
@@ -84,7 +85,7 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
           </div>
         </div>
 
-        <button className="btn-sair" id="btn-sair" onClick={onSair}>
+        <button className={styles.btnSair} id="btn-sair" onClick={onSair}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
             <polyline points="16 17 21 12 16 7" />

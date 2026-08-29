@@ -3,16 +3,8 @@ import { PeriodFilter } from '../components/reports/PeriodFilter.jsx';
 import { ReportCard } from '../components/reports/ReportCard.jsx';
 import { useReports } from '../hooks/useReports.js';
 import { baixarRelatorioIA } from '../services/reportsService.js';
+import styles from './Relatorios.module.css';
 
-/**
- * Relatórios page
- * Composes PeriodFilter + ReportCard list, using the useReports hook
- * for state (list, loading, period selection).
- *
- * "Baixar arquivo" calls the AI assistant backend (baixarRelatorioIA),
- * showing a loading overlay while it generates the PDF — matching the
- * original index.html's mostrarLoading()/esconderLoading() behaviour.
- */
 export function RelatoriosPage() {
   const { reports, loading, error, period, setPeriod } = useReports();
   const [downloadingId, setDownloadingId] = useState(null);
@@ -38,9 +30,9 @@ export function RelatoriosPage() {
   }
 
   return (
-    <main className="content">
-      <div className="page-header">
-        <div className="page-header-icon">
+    <main className={styles.content}>
+      <div className={styles.pageHeader}>
+        <div className={styles.pageHeaderIcon}>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
             <polyline points="14 2 14 8 20 8" />
@@ -57,10 +49,10 @@ export function RelatoriosPage() {
       <PeriodFilter active={period} onChange={setPeriod} />
 
       {loading && <p>Carregando relatórios…</p>}
-      {error && <p className="error">Erro ao carregar relatórios: {error}</p>}
+      {error && <p className={styles.error}>Erro ao carregar relatórios: {error}</p>}
 
       {!loading && !error && (
-        <div className="reports-list">
+        <div className={styles.reportsList}>
           {reports.map((report) => (
             <ReportCard
               key={report.id}
@@ -74,11 +66,11 @@ export function RelatoriosPage() {
       )}
 
       {downloadingId && (
-        <div className="loading-overlay">
-          <div className="loading-card">
-            <div className="modal-spinner" />
-            <p className="loading-title">Gerando relatório...</p>
-            <p className="loading-sub">Aguarde enquanto a IA processa sua solicitação.</p>
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingCard}>
+            <div className={styles.modalSpinner} />
+            <p className={styles.loadingTitle}>Gerando relatório...</p>
+            <p className={styles.loadingSub}>Aguarde enquanto a IA processa sua solicitação.</p>
           </div>
         </div>
       )}

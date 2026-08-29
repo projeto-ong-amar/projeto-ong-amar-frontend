@@ -1,52 +1,48 @@
 import { useState } from 'react';
+import styles from './Inicio.module.css';
 
-/**
- * Início page (Home / Services hub)
- * Reuses the same icons8.com icon set as the Sidebar (blue variant, same
- * approach ReportCard/Inicio KPI cards already use to recolor icons).
- */
 const SERVICES = [
   {
     key: 'gerenciar-entrada',
     badge: 'Entrada',
     title: 'Gerenciar Entrada no Estoque',
     description: 'Registre e acompanhe os produtos que entram no estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/open-box.png', // same icon as "Gerenciar Entrada" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/open-box.png',
   },
   {
     key: 'cadastro-produtos',
     badge: 'Produtos',
     title: 'Cadastro de Produtos',
     description: 'Cadastre, edite e organize produtos do seu estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/task.png', // same icon as "Cadastro de Produtos" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/task.png', 
   },
   {
     key: 'gerenciar-saida',
     badge: 'Saída',
     title: 'Gerenciar Saída no Estoque',
     description: 'Registre e acompanhe os produtos que saem dos estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/empty-box.png', // same icon as "Gerenciar Saída" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/empty-box.png',
   },
   {
     key: 'relatorios',
     badge: 'Relatórios',
     title: 'Gerar Relatórios',
     description: 'Gere relatórios de entradas, saídas, produtos e muito mais.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/business-report.png', // same icon as "Relatórios" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/business-report.png', 
   },
   {
     key: 'desempenho',
     badge: 'Dashboard',
     title: 'Visualizar Desempenho',
     description: 'Acompanhe indicadores e gráficos do desempenho do estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/laptop-metrics--v2.png', // same icon as "Desempenho" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/laptop-metrics--v2.png',
   },
   {
     key: 'cadastro-usuario',
     badge: 'Usuário',
     title: 'Cadastro de Usuário',
     description: 'Cadastre e gerencie os usuários do sistema.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/user-group-man-man.png', // same icon as "Cadastro de Usuário" in the sidebar
+    icon: 'https://img.icons8.com/ios/50/2563EB/user-group-man-man.png', 
   },
 ];
 
@@ -72,49 +68,49 @@ export function Inicio({ onNavigate }) {
     : SERVICES;
 
   return (
-    <main className="content">
-      <div className="service-search-bar">
-        <div className="search-label">
+    <main className={styles.content}>
+      <div className={styles.serviceSearchBar}>
+        <div className={styles.searchLabel}>
           <SearchIcon />
           Buscar por Serviço
         </div>
-        <div className="search-input-wrap">
+        <div className={styles.searchInputWrap}>
           <input
             type="text"
-            className="search-input"
+            className={styles.searchInput}
             placeholder="Exemplo: Cadastro de Usuário..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <SearchIcon className="search-input-icon" />
+          <SearchIcon className={styles.searchInputIcon} />
         </div>
       </div>
 
-      <div className="services-heading">
+      <div className={styles.servicesHeading}>
         <h2>Principais Serviços</h2>
         <p>Selecione um Serviço Desejado</p>
       </div>
 
       {filteredServices.length > 0 ? (
-        <div className="services-grid">
+        <div className={styles.servicesGrid}>
           {filteredServices.map((service) => (
             <button
               key={service.key}
               type="button"
-              className="service-card"
+              className={styles.serviceCard}
               onClick={() => onNavigate?.(service.key)}
             >
-              <div className="service-icon-circle">
+              <div className={styles.serviceIconCircle}>
                 <img src={service.icon} alt="" />
               </div>
-              <span className="service-badge">{service.badge}</span>
-              <h3 className="service-title">{service.title}</h3>
-              <p className="service-desc">{service.description}</p>
+              <span className={styles.serviceBadge}>{service.badge}</span>
+              <h3 className={styles.serviceTitle}>{service.title}</h3>
+              <p className={styles.serviceDesc}>{service.description}</p>
             </button>
           ))}
         </div>
       ) : (
-        <p className="services-empty">Nenhum serviço encontrado para "{search}".</p>
+        <p className={styles.servicesEmpty}>Nenhum serviço encontrado para "{search}".</p>
       )}
     </main>
   );

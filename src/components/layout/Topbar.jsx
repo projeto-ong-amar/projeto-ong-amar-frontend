@@ -1,3 +1,5 @@
+import styles from './Topbar.module.css';
+
 /**
  * Topbar component
  * Top navigation bar with breadcrumb and action buttons.
@@ -8,13 +10,13 @@
  */
 export function Topbar({ section = 'Relatórios', onVoltar, onAjuda }) {
   return (
-    <header className="topbar">
-      <div className="topbar-breadcrumb">
+    <header className={styles.topbar}>
+      <div className={styles.topbarBreadcrumb}>
         <span>Sistema de Gerenciamento de Estoque</span>
-        <span className="sep">/</span>
-        <span className="current">{section}</span>
+        <span className={styles.sep}>/</span>
+        <span className={styles.current}>{section}</span>
       </div>
-      <div className="topbar-actions">
+      <div className={styles.topbarActions}>
        
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="10" />
@@ -23,7 +25,7 @@ export function Topbar({ section = 'Relatórios', onVoltar, onAjuda }) {
           </svg>
     
         <button
-          className="btn-voltar"
+          className={styles.btnVoltar}
           id="btn-voltar"
           onClick={onVoltar ?? (() => history.back())}
         >
