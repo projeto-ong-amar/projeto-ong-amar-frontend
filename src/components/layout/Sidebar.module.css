@@ -1,0 +1,190 @@
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+}
+
+.sidebarBrand {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  margin: 16px 12px;
+  background: #fff;
+  border-radius: 0 10px 10px 0;
+}
+
+.sidebarLogo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.brandLogo {
+  width: 60px;
+  height: 55px;
+  background: #fff;
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brandInfo {
+  background: #fff;
+  border-radius: 0 10px 10px 0;
+  padding: 10px 22px;
+  line-height: 1.47;
+}
+
+.brandName {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1A56DB;
+}
+
+.brandSub {
+  font-size: 11px;
+  color: #6B7280;
+}
+
+.sidebarLabel {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 22px 20px 8px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 10px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none;
+}
+
+.navItem:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.navItem.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+.navItem img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+.navItem.active img {
+  opacity: 1;
+}
+
+.sidebarSpacer {
+  flex: 1;
+}
+
+/* ── ACESSIBILIDADE ── */
+.sidebarBottom {
+  padding: 20px 14px;
+}
+
+.acessibilidadeBox {
+  margin-bottom: 20px;
+}
+
+.acessibilidadeTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  text-align: left;
+  padding-left: 4px;
+}
+
+.acessibilidadeGroup {
+  display: flex;
+  border: 1.5px solid #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.btnAcesso {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnAcesso:not(:last-child) {
+  border-right: 1.5px solid #ffffff;
+}
+
+.btnAcesso:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btnAcesso svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.btnSair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  border: none;
+  background: transparent;
+  width: 100%;
+}
+
+.btnSair:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btnSair svg {
+  width: 20px;
+  height: 20px;
+}

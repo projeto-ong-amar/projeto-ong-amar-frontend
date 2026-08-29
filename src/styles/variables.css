@@ -4,12 +4,16 @@
   --blue:        #1A56DB;
   --blue-dark:   #1347BF;
   --blue-bg:     #EFF6FF;
+  --blue-icon:   #2563EB;
   --yellow:      #F9C900;
   --green-bg:    #ECFDF5;
   --green-icon:  #059669;
   --orange-bg:   #FFF7ED;
   --orange-icon: #D97706;
+  --teal-bg:     #ECFDF5;
   --teal-icon:   #10B981;
+  --sidebar-bg:     var(--blue);
+  --sidebar-active: #ffffff22;
   --text-dark:   #111827;
   --text-mid:    #374151;
   --text-light:  #6B7280;

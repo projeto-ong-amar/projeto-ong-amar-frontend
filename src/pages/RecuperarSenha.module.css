@@ -1,0 +1,216 @@
+/* ── Tela: Recuperar Senha ──
+   Reaproveita visualmente o "look" da tela de Login, porém como um
+   módulo próprio (cada tela é dona do seu CSS). */
+
+.loginBody {
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #d5d9e4;
+}
+
+.loginCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 48px 48px 52px;
+  width: 100%;
+  max-width: 580px;
+  box-shadow: none;
+  border: 1px solid #E2E4EA;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loginLogoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.loginLogoImg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.loginBrandTitle {
+  font-size: 22px;
+  font-weight: 800;
+  color: #2563eb;
+  text-align: center;
+  margin-top: 14px;
+  letter-spacing: -0.01em;
+}
+
+.loginBrandSub {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.loginForm {
+  width: 100%;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.loginFieldLabel {
+  font-size: 16px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.loginForm input[type='email'] {
+  width: 100%;
+  padding: 18px 20px;
+  background: #dde0e8;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+  color: #374151;
+  outline: none;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.loginForm input::placeholder { color: #9ca3af; }
+
+.loginForm input:focus {
+  background: #d0d4de;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.loginForgot {
+  margin-top: 22px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.loginForgot a {
+  color: #ef4444;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.loginForgot a:hover { text-decoration: underline; }
+
+.loginBtnEntrar {
+  margin-top: 26px;
+  width: 100%;
+  padding: 20px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  transition: background 0.18s, transform 0.1s;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
+}
+
+.loginBtnEntrar:hover { background: #1d4ed8; }
+.loginBtnEntrar:active { transform: scale(0.985); }
+.loginBtnEntrar:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* Botão "Voltar" desta tela (duplicado de propósito — cada tela é
+   dona do seu CSS; ver components/layout/Topbar.module.css para a
+   versão usada na barra superior do app). */
+.btnVoltar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--yellow);
+  border: none;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btnVoltar:hover {
+  opacity: 0.88;
+}
+
+.btnVoltar svg {
+  width: 18px;
+  height: 18px;
+}
+
+.recuperarVoltar {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+}
+
+.recuperarTitle {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  text-align: center;
+  margin-top: 18px;
+}
+
+.recuperarDesc {
+  font-size: 14px;
+  color: #4B5563;
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+/* Accessibility box, floating bottom-right */
+.accessBox {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  text-align: right;
+}
+
+.accessTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.accessPill {
+  display: flex;
+  background: #2563eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accessBtn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.accessBtn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.35); }
+.accessBtn:hover { background: rgba(255, 255, 255, 0.15); }
+.accessBtnIcon svg { width: 18px; height: 18px; }

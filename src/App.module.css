@@ -1,0 +1,23 @@
+/* ── Shell do App (layout raiz) ── */
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* Usado apenas no fallback "página ainda não implementada" */
+.content {
+  padding: var(--space-xl) 36px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
