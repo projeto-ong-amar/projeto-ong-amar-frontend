@@ -2,17 +2,20 @@ import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
 import styles from './RecuperarSenha.module.css';
 
-function aumentarTamanhoFonte() {
-  document.body.style.fontSize = 'larger';
-}
-
-function diminuirTamanhoFonte() {
-  document.body.style.fontSize = 'smaller';
-}
-
 export function RecuperarSenha({ aoVoltar }) {
   const [email, setEmail] = useState('');
   const [enviado, setEnviado] = useState(false);
+
+
+  const [escala, setEscala] = useState(1);
+
+  function aumentarTamanhoFonte() {
+    setEscala((atual) => Math.min(Number((atual + 0.1).toFixed(1)), 1.4)); 
+  }
+
+  function diminuirTamanhoFonte() {
+    setEscala((atual) => Math.max(Number((atual - 0.1).toFixed(1)), 0.8)); 
+  }
 
   function lidarComEnvio(evento) {
     evento.preventDefault();
@@ -24,7 +27,10 @@ export function RecuperarSenha({ aoVoltar }) {
   }
 
   return (
-    <div className={styles.corpoLogin}>
+    <div 
+      className={styles.corpoLogin} 
+      style={{ '--escala-fonte': escala }}
+    >
       <button className={`${styles.botaoVoltar} ${styles.botaoVoltarRecuperar}`} type="button" onClick={aoVoltar}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12" />
@@ -78,7 +84,6 @@ export function RecuperarSenha({ aoVoltar }) {
           <button className={styles.botaoAcessibilidade} type="button" onClick={diminuirTamanhoFonte}>
             a-
           </button>
-
         </div>
       </div>
     </div>
