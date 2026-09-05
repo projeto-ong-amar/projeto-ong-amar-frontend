@@ -599,3 +599,33 @@
     height: 26px;
     background: rgba(255, 255, 255, 0.25);
 }
+
+.mensagemErro,
+.mensagemSucesso {
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: 0.8125rem;
+    margin-bottom: 16px;
+}
+
+.mensagemErro {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+    color: #B91C1C;
+}
+
+.mensagemSucesso {
+    background: #F0FDF4;
+    border: 1px solid #BBF7D0;
+    color: #15803D;
+}
+
+.envoltorioData input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+
+.envoltorioData input[type="date"] {
+  appearance: none;
+}

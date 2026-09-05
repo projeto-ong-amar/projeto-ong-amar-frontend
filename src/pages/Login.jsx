@@ -1,20 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import logo from '../assets/img/pca-1.png';
 import styles from './Login.module.css';
-
-function aumentarTamanhoFonte() {
-  document.body.style.fontSize = 'larger';
-}
-
-function diminuirTamanhoFonte() {
-  document.body.style.fontSize = 'smaller';
-}
 
 export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [altoContraste, setAltoContraste] = useState(false);
+  
+  // Estado para controlar a porcentagem do tamanho da fonte
+  const [tamanhoFonte, setTamanhoFonte] = useState(100);
+
+  // Aplica o tamanho da fonte no elemento <html> sempre que o estado mudar
+  useEffect(() => {
+    document.documentElement.style.fontSize = `${tamanhoFonte}%`;
+  }, [tamanhoFonte]);
+
+  function aumentarTamanhoFonte() {
+    setTamanhoFonte((tamanhoAtual) => Math.min(tamanhoAtual + 5, 130)); // Limite máximo de 130%
+  }
+
+  function diminuirTamanhoFonte() {
+    setTamanhoFonte((tamanhoAtual) => Math.max(tamanhoAtual - 5, 85)); // Limite mínimo de 85%
+  }
 
   function lidarComEnvio(evento) {
     evento.preventDefault();

@@ -59,21 +59,19 @@
   flex-direction: column;
 }
 
+
+
 .rotuloCampo {
-  font-size: 1rem;
+  font-size: 1rem; 
   font-weight: 800;
   color: #111827;
-  margin-bottom: 10px;
-}
-
-.rotuloCampo.espacado {
-  margin-top: 28px;
+  margin-bottom: 0.625rem;
 }
 
 .formularioLogin input[type='email'],
 .formularioLogin input[type='password'] {
   width: 100%;
-  padding: 18px 20px;
+  padding: 1.125rem 1.25rem;
   background: #dde0e8;
   border: none;
   border-radius: 14px;
@@ -83,6 +81,12 @@
   outline: none;
   transition: background 0.2s, box-shadow 0.2s;
 }
+
+.rotuloCampo.espacado {
+  margin-top: 28px;
+}
+
+
 
 .formularioLogin input::placeholder {
   color: #9ca3af;
