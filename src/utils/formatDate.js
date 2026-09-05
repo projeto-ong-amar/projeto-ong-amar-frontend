@@ -1,11 +1,4 @@
-/**
- * formatDate
- * Formats a Date or ISO string to pt-BR locale.
- *
- * @param {Date|string} date
- * @param {Object}      options - Intl.DateTimeFormat options
- * @returns {string}
- */
+
 export function formatDate(date, options = {}) {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('pt-BR', {
@@ -14,13 +7,6 @@ export function formatDate(date, options = {}) {
   });
 }
 
-/**
- * getPeriodRange
- * Returns { start, end } Date objects for a given period key.
- *
- * @param {string} period - "hoje" | "7dias" | "30dias" | "este-mes"
- * @returns {{ start: Date, end: Date }}
- */
 export function getPeriodRange(period) {
   const end   = new Date();
   const start = new Date();

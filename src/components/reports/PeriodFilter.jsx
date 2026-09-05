@@ -1,14 +1,6 @@
-// Este componente só é usado dentro da tela de Relatórios, então
-// reaproveita o CSS Module da própria tela em vez de ter um módulo à parte.
+
 import styles from '../../pages/Relatorios.module.css';
 
-/**
- * PeriodFilter component
- * Period selector bar used on the Reports page.
- *
- * @param {string}   active   - Currently active period key
- * @param {Function} onChange - Callback invoked with the selected period key
- */
 const PERIODS = [
   { key: 'hoje', label: 'Hoje' },
   { key: '7dias', label: '7 dias' },

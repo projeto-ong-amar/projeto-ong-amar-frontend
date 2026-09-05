@@ -1,9 +1,4 @@
-/* ── Tela: Relatórios ──
-   Este módulo concentra TODO o CSS usado na tela de Relatórios,
-   inclusive dos componentes que só existem aqui dentro
-   (PeriodFilter e ReportCard). */
 
-/* CONTEÚDO DA PÁGINA */
 .content {
   padding: var(--space-xl) 36px;
   flex: 1;
@@ -11,7 +6,7 @@
   min-height: 0;
 }
 
-/* PAGE HEADER */
+
 .pageHeader {
   display: flex;
   align-items: flex-start;
@@ -49,7 +44,6 @@
   margin-top: 4px;
 }
 
-/* PERIOD FILTER (componente PeriodFilter.jsx, exclusivo desta tela) */
 .periodBar {
   background: #fff;
   border: 1.5px solid var(--border);
@@ -132,7 +126,6 @@
   height: 14px;
 }
 
-/* REPORT LIST + REPORT CARD (componente ReportCard.jsx, exclusivo desta tela) */
 .reportsList {
   display: flex;
   flex-direction: column;
@@ -277,13 +270,13 @@
   font-weight: 600;
 }
 
-/* Error / loading state helpers */
+
 .error {
   color: #DC2626;
   font-weight: 600;
 }
 
-/* ── LOADING OVERLAY (matches original #loading-modal in index.html) ── */
+
 .loadingOverlay {
   position: fixed;
   inset: 0;

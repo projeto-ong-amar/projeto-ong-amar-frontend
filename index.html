@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/src/assets/img/pca-1.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.botpress.cloud/webchat/v3.6/inject.js"></script>
   <script src="https://files.bpcontent.cloud/2026/05/07/21/20260507215411-CN2HP75M.js" defer></script>
   <title>Sistema de Gerenciamento de Estoque</title>
@@ -13,6 +13,36 @@
 
 <body>
   <div id="root"></div>
+
+  <!-- VLibras Widget (tradução para Libras) -->
+ <div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget({
+    rootPath: 'https://vlibras.gov.br/app',
+    position: 'L',
+    avatar: 'icaro',
+    opacity: 1
+  });
+
+  // Ajusta a posição vertical do botão assim que ele carrega na tela
+  window.addEventListener('DOMContentLoaded', () => {
+    const interval = setInterval(() => {
+      const btn = document.querySelector('[vw-access-button]');
+      if (btn) {
+        btn.style.top = 'auto';
+        btn.style.bottom = '-150px'; // Altere este valor em px para ajustar a altura desejada
+        clearInterval(interval);
+      }
+    }, 100);
+  });
+</script>
+
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

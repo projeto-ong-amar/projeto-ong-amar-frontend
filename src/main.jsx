@@ -6,12 +6,11 @@ import App from './App.jsx'
 import Login from './pages/Login.jsx'
 import RecuperarSenha from './pages/RecuperarSenha.jsx'
 
-
 function Root() {
   const [loggedIn, setLoggedIn] = useState(
     () => localStorage.getItem('loggedIn') === 'true'
   )
-  const [view, setView] = useState('login') // 'login' | 'recuperar-senha'
+  const [view, setView] = useState('login') 
 
   if (loggedIn) {
     return <App />
@@ -23,11 +22,11 @@ function Root() {
 
   return (
     <Login
-      onLoginSuccess={() => {
+      aoLoginComSucesso={() => {
         localStorage.setItem('loggedIn', 'true')
         setLoggedIn(true)
       }}
-      onForgotPassword={() => setView('recuperar-senha')}
+      aoEsquecerSenha={() => setView('recuperar-senha')}
     />
   )
 }

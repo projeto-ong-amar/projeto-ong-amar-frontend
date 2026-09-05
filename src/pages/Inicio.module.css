@@ -1,13 +1,13 @@
-/* ── Tela: Início ── */
 
-.content {
+
+.conteudo {
   padding: var(--space-xl) 36px;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
 }
 
-.serviceSearchBar {
+.barraBuscaServico {
   background: #fff;
   border: 1.5px solid var(--border);
   border-radius: 20px;
@@ -20,51 +20,51 @@
   flex-shrink: 0;
 }
 
-.searchLabel {
+.rotuloBusca {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: clamp(13px, 1.4vw, 16px);
+  font-size: clamp(0.8125rem, 1.4vw, 1rem); 
   font-weight: 800;
   color: var(--text-dark);
   white-space: nowrap;
 }
 
-.searchLabel svg {
+.rotuloBusca svg {
   width: 20px;
   height: 20px;
   color: var(--blue);
   flex-shrink: 0;
 }
 
-.searchInputWrap {
+.envoltorioBusca {
   position: relative;
   flex: 1;
 }
 
-.searchInput {
+.campoBusca {
   width: 100%;
   padding: clamp(8px, 1.4vh, 12px) 44px clamp(8px, 1.4vh, 12px) 18px;
   border-radius: 14px;
   border: 1.5px solid var(--border);
   background: var(--bg);
-  font-family: 'Nunito', sans-serif;
-  font-size: clamp(13px, 1.2vw, 14px);
+  font-family: 'Open Sans', sans-serif;
+  font-size: clamp(0.8125rem, 1.2vw, 0.875rem); 
   color: var(--text-dark);
   transition: border-color 0.15s, background 0.15s;
 }
 
-.searchInput::placeholder {
+.campoBusca::placeholder {
   color: var(--text-light);
 }
 
-.searchInput:focus {
+.campoBusca:focus {
   outline: none;
   border-color: var(--blue);
   background: #fff;
 }
 
-.searchInputIcon {
+.iconeBusca {
   position: absolute;
   right: 14px;
   top: 50%;
@@ -75,26 +75,25 @@
   pointer-events: none;
 }
 
-/* ── SERVICES GRID ── */
-.servicesHeading {
+
+.tituloServicos {
   text-align: center;
   margin-bottom: clamp(10px, 2.5vh, 28px);
   flex-shrink: 0;
 }
 
-.servicesHeading h2 {
-  font-size: clamp(18px, 2.4vw, 26px);
-  font-weight: 800;
+.tituloServicos h2 {
+  font-size: clamp(1.125rem, 2.4vw, 1.625rem); 
   color: var(--text-dark);
 }
 
-.servicesHeading p {
-  font-size: clamp(12px, 1.2vw, 14px);
+.tituloServicos p {
+  font-size: clamp(0.75rem, 1.2vw, 0.875rem);
   color: var(--text-light);
   margin-top: 4px;
 }
 
-.servicesGrid {
+.gradeServicos {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(8px, min(1.6vw, 2vh), 20px);
@@ -102,7 +101,7 @@
   min-height: 0;
 }
 
-.serviceCard {
+.cartaoServico {
   background: #fff;
   border: 1.5px solid var(--border);
   border-radius: 24px;
@@ -116,17 +115,17 @@
   cursor: pointer;
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s, transform 0.15s;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   min-width: 0;
   overflow: hidden;
 }
 
-.serviceCard:hover {
+.cartaoServico:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
 }
 
-.serviceIconCircle {
+.circuloIconeServico {
   width: clamp(72px, min(9vw, 14vh), 116px);
   height: clamp(72px, min(9vw, 14vh), 116px);
   border-radius: 50%;
@@ -138,31 +137,31 @@
   flex-shrink: 0;
 }
 
-.serviceIconCircle img {
+.circuloIconeServico img {
   width: 54%;
   height: 54%;
   object-fit: contain;
 }
 
-.serviceBadge {
+.emblemaServico {
   background: var(--blue);
   color: #fff;
   font-weight: 800;
-  font-size: clamp(11px, 1.1vw, 14px);
+  font-size: clamp(0.6875rem, 1.1vw, 0.875rem); 
   padding: clamp(4px, 0.8vh, 7px) clamp(14px, 1.8vw, 24px);
   border-radius: 20px;
   white-space: nowrap;
 }
 
-.serviceTitle {
-  font-size: clamp(12px, 1.3vw, 16px);
+.tituloServico {
+  font-size: clamp(0.75rem, 1.3vw, 1rem); 
   font-weight: 800;
   color: var(--text-dark);
   margin-top: 2px;
 }
 
-.serviceDesc {
-  font-size: clamp(11px, 1vw, 13px);
+.descricaoServico {
+  font-size: clamp(0.6875rem, 1vw, 0.8125rem); 
   color: var(--text-light);
   line-height: 1.4;
   max-width: 260px;
@@ -173,7 +172,7 @@
   overflow: hidden;
 }
 
-.servicesEmpty {
+.servicosVazio {
   text-align: center;
   color: var(--text-light);
   padding: 40px 0;
