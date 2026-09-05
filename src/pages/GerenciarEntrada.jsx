@@ -1,20 +1,71 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from './GerenciarEntrada.module.css';
+import { listarProdutos } from '../services/produtoService';
+import {
+  listarHistoricoEntrada,
+  registrarEntrada,
+  atualizarEntrada,
+  removerEntrada,
+} from '../services/entradaService';
 
-const PRODUTOS = ['Arroz 5kg', 'Feijão 1kg', 'Detergente 500ml', 'Candida 5l'];
-
-const HISTORICO_MOCK = [
-  { data: '29/04/2025', responsavel: 'Juliana Albuquerque', produto: 'Arroz 5kg', quantidade: '+10', categoria: 'Alimentos' },
-];
+const FK_USUARIO_PADRAO = 1;
+const MOTIVO_PADRAO = 'Entrada registrada no sistema';
 
 const formularioVazio = { produto: '', quantidade: '', dataEntrada: '', dataValidade: '' };
 
+function paraBr(dataIso) {
+  if (!dataIso) return '';
+  const [ano, mes, dia] = dataIso.split('-');
+  if (!ano || !mes || !dia) return dataIso;
+  return `${dia}/${mes}/${ano}`;
+}
+
 export function GerenciarEntrada() {
+  const [produtos, setProdutos] = useState([]);
+  const [historico, setHistorico] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
+
   const [formulario, setFormulario] = useState(formularioVazio);
-  const [menuAberto, setMenuAberto] = useState(null); 
-  const [linhaEdicao, setLinhaEdicao] = useState(null); 
+  const [menuAberto, setMenuAberto] = useState(null);
+  const [linhaEdicao, setLinhaEdicao] = useState(null);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
-  const [linhaExclusao, setLinhaExclusao] = useState(null); 
+  const [linhaExclusao, setLinhaExclusao] = useState(null);
+
+  const inputDataEntradaRef = useRef(null);
+  const inputDataValidadeRef = useRef(null);
+  const inputEditDataEntradaRef = useRef(null);
+  const inputEditDataValidadeRef = useRef(null);
+
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  async function carregarDados() {
+    setCarregando(true);
+    setErro('');
+    try {
+      const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
+        listarProdutos(),
+        listarHistoricoEntrada(0, 10),
+      ]);
+
+      setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
+
+      if (resultadoHistorico.status === 'fulfilled') {
+        const pagina = resultadoHistorico.value;
+        setHistorico(pagina?.content || []);
+      } else {
+        setHistorico([]);
+      }
+    } catch (e) {
+      setErro(e.message || 'Não foi possível carregar os dados.');
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   function lidarComMudanca(campo) {
     return (evento) => setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
@@ -22,37 +73,91 @@ export function GerenciarEntrada() {
 
   function lidarComCancelar() {
     setFormulario(formularioVazio);
+    setErro('');
   }
 
-  function lidarComSalvar(evento) {
+  async function lidarComSalvar(evento) {
     evento.preventDefault();
-    console.log('Salvar entrada:', formulario);
+    setErro('');
+    setSucesso('');
+
+    if (!formulario.produto) {
+      setErro('Por favor, selecione um produto.');
+      return;
+    }
+
+    setEnviando(true);
+    try {
+      await registrarEntrada({
+        quantidade: Number(formulario.quantidade),
+        dataEntrada: formulario.dataEntrada,
+        dataValidade: formulario.dataValidade || null,
+        motivo: MOTIVO_PADRAO,
+        fkProduto: Number(formulario.produto),
+        fkUsuario: FK_USUARIO_PADRAO,
+      });
+      setSucesso('Entrada registrada com sucesso!');
+      setFormulario(formularioVazio);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível registrar a entrada.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function abrirEdicao(item) {
     setFormularioEdicao({
-      produto: item.produto,
-      quantidade: item.quantidade.replace('+', '').replace('-', ''),
-      dataEntrada: item.data,
-      dataValidade: '',
+      produto: String(item.produtoId ?? ''),
+      quantidade: String(item.quantidade ?? ''),
+      dataEntrada: item.dataHora ? item.dataHora.split('T')[0] : '',
+      dataValidade: item.dataValidade ? item.dataValidade.split('T')[0] : '',
     });
     setLinhaEdicao(item);
     setMenuAberto(null);
+    setErro('');
   }
 
   function lidarComMudancaEdicao(campo) {
     return (evento) => setFormularioEdicao((anterior) => ({ ...anterior, [campo]: evento.target.value }));
   }
 
-  function lidarComAlterar(evento) {
+  async function lidarComAlterar(evento) {
     evento.preventDefault();
-    console.log('Alterar entrada:', linhaEdicao, formularioEdicao);
-    setLinhaEdicao(null);
+    setErro('');
+    setSucesso('');
+    setEnviando(true);
+    try {
+      await atualizarEntrada(linhaEdicao.id, {
+        quantidade: Number(formularioEdicao.quantidade),
+        dataEntrada: formularioEdicao.dataEntrada,
+        dataValidade: formularioEdicao.dataValidade || null,
+        motivo: MOTIVO_PADRAO,
+        fkProduto: Number(formularioEdicao.produto),
+        fkUsuario: FK_USUARIO_PADRAO,
+      });
+      setSucesso('Entrada atualizada com sucesso!');
+      setLinhaEdicao(null);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível atualizar a entrada.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
-  function confirmarExclusao() {
-    console.log('Excluir entrada confirmado:', linhaExclusao);
-    setLinhaExclusao(null);
+  async function confirmarExclusao() {
+    setErro('');
+    setSucesso('');
+    try {
+      await removerEntrada(linhaExclusao.id);
+      setSucesso('Entrada removida com sucesso!');
+      setLinhaExclusao(null);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível remover a entrada.');
+      setLinhaExclusao(null);
+    }
   }
 
   return (
@@ -67,6 +172,9 @@ export function GerenciarEntrada() {
         </div>
       </div>
 
+      {erro && <div className={styles.mensagemErro}>{erro}</div>}
+      {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
+
       <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={styles.campo}>
@@ -74,9 +182,11 @@ export function GerenciarEntrada() {
               1. Selecionar Produto <span className={styles.obrigatorio}>*</span>
             </label>
             <select id="produto" value={formulario.produto} onChange={lidarComMudanca('produto')} required>
-              <option value="">Selecione o Produto</option>
-              {PRODUTOS.map((produto) => (
-                <option key={produto} value={produto}>{produto}</option>
+              <option value="">Selecione um produto</option>
+              {produtos.map((produto) => (
+                <option key={produto.id} value={produto.id}>
+                  {produto.nome} {produto.unidadeMedida ? `(${produto.unidadeMedida})` : ''}
+                </option>
               ))}
             </select>
           </div>
@@ -102,14 +212,19 @@ export function GerenciarEntrada() {
             </label>
             <div className={styles.envoltorioData}>
               <input
+                ref={inputDataEntradaRef}
                 id="data-entrada"
-                type="text"
-                placeholder="DD/MM/AAAA"
+                type="date"
                 value={formulario.dataEntrada}
                 onChange={lidarComMudanca('dataEntrada')}
                 required
               />
-              <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
+              <button
+                type="button"
+                className={styles.botaoCalendario}
+                aria-label="Selecionar data"
+                onClick={() => inputDataEntradaRef.current?.showPicker()}
+              >
                 <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
               </button>
             </div>
@@ -121,14 +236,19 @@ export function GerenciarEntrada() {
             </label>
             <div className={styles.envoltorioData}>
               <input
+                ref={inputDataValidadeRef}
                 id="data-validade"
-                type="text"
-                placeholder="DD/MM/AAAA"
+                type="date"
                 value={formulario.dataValidade}
                 onChange={lidarComMudanca('dataValidade')}
                 required
               />
-              <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
+              <button
+                type="button"
+                className={styles.botaoCalendario}
+                aria-label="Selecionar data"
+                onClick={() => inputDataValidadeRef.current?.showPicker()}
+              >
                 <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
               </button>
             </div>
@@ -146,12 +266,12 @@ export function GerenciarEntrada() {
             </span>
           </button>
 
-          <button type="submit" className={styles.botaoSalvar}>
+          <button type="submit" className={styles.botaoSalvar} disabled={enviando}>
             <span className={styles.iconeAcao}>
               <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
             </span>
             <span className={styles.textoAcao}>
-              <strong>Salvar Entrada</strong>
+              <strong>{enviando ? 'Salvando...' : 'Salvar Entrada'}</strong>
               <small>Registrar no estoque</small>
             </span>
           </button>
@@ -166,7 +286,7 @@ export function GerenciarEntrada() {
             <p>Histórico de Entrada</p>
           </div>
         </div>
-        <button className={styles.botaoHistorico} type="button">Histórico</button>
+        <button className={styles.botaoHistorico} type="button" onClick={carregarDados}>Histórico</button>
       </div>
 
       <div className={styles.envoltorioTabela}>
@@ -182,13 +302,29 @@ export function GerenciarEntrada() {
             </tr>
           </thead>
           <tbody>
-            {HISTORICO_MOCK.map((item, indice) => (
-              <tr key={indice}>
-                <td>{item.data}</td>
-                <td>{item.responsavel}</td>
-                <td>{item.produto}</td>
-                <td className={styles.quantidadePositiva}>{item.quantidade}</td>
-                <td>{item.categoria}</td>
+            {carregando && (
+              <tr><td colSpan={6}>Carregando...</td></tr>
+            )}
+            {!carregando && historico.length === 0 && (
+              <tr><td colSpan={6}>Nenhuma entrada registrada.</td></tr>
+            )}
+            {!carregando && historico.map((item, indice) => (
+              <tr key={item.id ?? indice}>
+                <td>{paraBr(item.dataHora)}</td>
+                <td>{item.responsavelNome}</td>
+                <td>
+                  {(() => {
+                    const produtoEncontrado = produtos.find((p) => p.id === item.produtoId);
+                    if (!produtoEncontrado) return item.produtoNome || '-';
+                    return `${produtoEncontrado.nome} ${
+                      produtoEncontrado.unidadeMedida ? `(${produtoEncontrado.unidadeMedida})` : ''
+                    }`;
+                  })()}
+                </td>
+                <td className={styles.quantidadePositiva}>+{item.quantidade}</td>
+                <td>
+                  {produtos.find((p) => p.id === item.produtoId)?.categoria?.nome || '-'}
+                </td>
                 <td className={styles.celulaAcoes}>
                   <div className={styles.envoltorioAcoes}>
                     <button
@@ -230,14 +366,6 @@ export function GerenciarEntrada() {
         </table>
       </div>
 
-      <div className={styles.dica}>
-        <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
-        <span>
-          <strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique em Ajuda.
-        </span>
-      </div>
-
-      {}
       {linhaEdicao && (
         <div className={styles.fundoModal} onClick={() => setLinhaEdicao(null)}>
           <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
@@ -264,8 +392,10 @@ export function GerenciarEntrada() {
                   </label>
                   <select id="edit-produto" value={formularioEdicao.produto} onChange={lidarComMudancaEdicao('produto')} required>
                     <option value="">Selecione o Produto</option>
-                    {PRODUTOS.map((produto) => (
-                      <option key={produto} value={produto}>{produto}</option>
+                    {produtos.map((produto) => (
+                      <option key={produto.id} value={produto.id}>
+                        {produto.nome} {produto.unidadeMedida ? `(${produto.unidadeMedida})` : ''}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -291,14 +421,19 @@ export function GerenciarEntrada() {
                   </label>
                   <div className={styles.envoltorioData}>
                     <input
+                      ref={inputEditDataEntradaRef}
                       id="edit-data-entrada"
-                      type="text"
-                      placeholder="DD/MM/AAAA"
+                      type="date"
                       value={formularioEdicao.dataEntrada}
                       onChange={lidarComMudancaEdicao('dataEntrada')}
                       required
                     />
-                    <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
+                    <button
+                      type="button"
+                      className={styles.botaoCalendario}
+                      aria-label="Selecionar data"
+                      onClick={() => inputEditDataEntradaRef.current?.showPicker()}
+                    >
                       <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
                     </button>
                   </div>
@@ -310,14 +445,19 @@ export function GerenciarEntrada() {
                   </label>
                   <div className={styles.envoltorioData}>
                     <input
+                      ref={inputEditDataValidadeRef}
                       id="edit-data-validade"
-                      type="text"
-                      placeholder="DD/MM/AAAA"
+                      type="date"
                       value={formularioEdicao.dataValidade}
                       onChange={lidarComMudancaEdicao('dataValidade')}
                       required
                     />
-                    <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
+                    <button
+                      type="button"
+                      className={styles.botaoCalendario}
+                      aria-label="Selecionar data"
+                      onClick={() => inputEditDataValidadeRef.current?.showPicker()}
+                    >
                       <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
                     </button>
                   </div>
@@ -335,12 +475,12 @@ export function GerenciarEntrada() {
                   </span>
                 </button>
 
-                <button type="submit" className={styles.botaoSalvar}>
+                <button type="submit" className={styles.botaoSalvar} disabled={enviando}>
                   <span className={styles.iconeAcao}>
                     <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
                   </span>
                   <span className={styles.textoAcao}>
-                    <strong>Alterar Entrada</strong>
+                    <strong>{enviando ? 'Salvando...' : 'Alterar Entrada'}</strong>
                     <small>Alterar no estoque</small>
                   </span>
                 </button>
@@ -350,7 +490,6 @@ export function GerenciarEntrada() {
         </div>
       )}
 
-      
       {linhaExclusao && (
         <div className={styles.fundoModal} onClick={() => setLinhaExclusao(null)}>
           <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>

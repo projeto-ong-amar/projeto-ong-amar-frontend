@@ -1,21 +1,61 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import styles from './CadastroProdutos.module.css';
+import { listarProdutos, listarCategorias, cadastrarProduto, atualizarProduto, removerProduto } from '../services/produtoService';
 
-const CATEGORIAS = ['Alimentos', 'Produtos de Higiene'];
-const UNIDADES = ['Quilograma (kg)', 'Litro (l)', 'Unidade (un)', 'Caixa (cx)'];
+function hoje() {
+  const data = new Date();
+  const ano = data.getFullYear();
+  const mes = String(data.getMonth() + 1).padStart(2, '0');
+  const dia = String(data.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
 
-const HISTORICO_MOCK = [
-  { data: '29/04/2025', responsavel: 'Juliana Albuquerque', produto: 'Arroz', categoria: 'Alimentos', unidade: 'Quilograma (kg)' },
-];
+function paraBr(dataIso) {
+  if (!dataIso) return '';
+  const [ano, mes, dia] = dataIso.split('-');
+  if (!ano || !mes || !dia) return dataIso;
+  return `${dia}/${mes}/${ano}`;
+}
 
-const formularioVazio = { nome: '', categoria: '', dataEntrada: '', unidade: '' };
+const formularioVazio = { nome: '', fkCategoria: '', unidadeMedida: '', dataCadastro: hoje() };
 
 export function CadastroProdutos() {
+  const [categorias, setCategorias] = useState([]);
+  const [produtos, setProdutos] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
+  const [sucesso, setSucesso] = useState('');
+
   const [formulario, setFormulario] = useState(formularioVazio);
-  const [menuAberto, setMenuAberto] = useState(null); 
-  const [linhaEdicao, setLinhaEdicao] = useState(null); 
+  const [menuAberto, setMenuAberto] = useState(null);
+  const [linhaEdicao, setLinhaEdicao] = useState(null);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
-  const [linhaExclusao, setLinhaExclusao] = useState(null); 
+  const [linhaExclusao, setLinhaExclusao] = useState(null);
+
+  const inputDataCadastroRef = useRef(null);
+  const inputEditDataCadastroRef = useRef(null);
+
+  useEffect(() => {
+    carregarDados();
+  }, []);
+
+  async function carregarDados() {
+    setCarregando(true);
+    setErro('');
+    try {
+      const [listaCategorias, listaProdutos] = await Promise.all([
+        listarCategorias(),
+        listarProdutos(),
+      ]);
+      setCategorias(listaCategorias || []);
+      setProdutos(listaProdutos || []);
+    } catch (e) {
+      setErro(e.message || 'Não foi possível carregar os dados.');
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   function lidarComMudanca(campo) {
     return (evento) => setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
@@ -23,37 +63,81 @@ export function CadastroProdutos() {
 
   function lidarComCancelar() {
     setFormulario(formularioVazio);
+    setErro('');
   }
 
-  function lidarComSalvar(evento) {
+  async function lidarComSalvar(evento) {
     evento.preventDefault();
-    console.log('Salvar produto:', formulario);
+    setErro('');
+    setSucesso('');
+    setEnviando(true);
+    try {
+      await cadastrarProduto({
+        nome: formulario.nome,
+        unidadeMedida: formulario.unidadeMedida,
+        fkCategoria: Number(formulario.fkCategoria),
+        dataCadastro: formulario.dataCadastro || null,
+      });
+      setSucesso('Produto cadastrado com sucesso!');
+      setFormulario(formularioVazio);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível cadastrar o produto.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function abrirEdicao(item) {
     setFormularioEdicao({
-      nome: item.produto,
-      categoria: item.categoria,
-      dataEntrada: item.data,
-      unidade: item.unidade || '',
+      nome: item.nome,
+      fkCategoria: String(item.categoria?.id ?? ''),
+      unidadeMedida: item.unidadeMedida,
+      dataCadastro: item.dataCadastro ? item.dataCadastro.split('T')[0] : hoje(),
     });
     setLinhaEdicao(item);
     setMenuAberto(null);
+    setErro('');
   }
 
   function lidarComMudancaEdicao(campo) {
     return (evento) => setFormularioEdicao((anterior) => ({ ...anterior, [campo]: evento.target.value }));
   }
 
-  function lidarComAlterar(evento) {
+  async function lidarComAlterar(evento) {
     evento.preventDefault();
-    console.log('Alterar produto:', linhaEdicao, formularioEdicao);
-    setLinhaEdicao(null);
+    setErro('');
+    setSucesso('');
+    setEnviando(true);
+    try {
+      await atualizarProduto(linhaEdicao.id, {
+        nome: formularioEdicao.nome,
+        unidadeMedida: formularioEdicao.unidadeMedida,
+        fkCategoria: Number(formularioEdicao.fkCategoria),
+        dataCadastro: formularioEdicao.dataCadastro || null,
+      });
+      setSucesso('Produto atualizado com sucesso!');
+      setLinhaEdicao(null);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível atualizar o produto.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
-  function confirmarExclusao() {
-    console.log('Excluir produto confirmado:', linhaExclusao);
-    setLinhaExclusao(null);
+  async function confirmarExclusao() {
+    setErro('');
+    setSucesso('');
+    try {
+      await removerProduto(linhaExclusao.id);
+      setSucesso('Produto removido com sucesso!');
+      setLinhaExclusao(null);
+      await carregarDados();
+    } catch (e) {
+      setErro(e.message || 'Não foi possível remover o produto.');
+      setLinhaExclusao(null);
+    }
   }
 
   return (
@@ -68,6 +152,9 @@ export function CadastroProdutos() {
         </div>
       </div>
 
+      {erro && <div className={styles.mensagemErro}>{erro}</div>}
+      {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
+
       <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={styles.campo}>
@@ -80,6 +167,8 @@ export function CadastroProdutos() {
               placeholder="Digite o nome do produto"
               value={formulario.nome}
               onChange={lidarComMudanca('nome')}
+              minLength={3}
+              maxLength={255}
               required
             />
           </div>
@@ -90,48 +179,54 @@ export function CadastroProdutos() {
             </label>
             <select
               id="categoria-produto"
-              value={formulario.categoria}
-              onChange={lidarComMudanca('categoria')}
+              value={formulario.fkCategoria}
+              onChange={lidarComMudanca('fkCategoria')}
               required
             >
               <option value="">Selecione a categoria</option>
-              {CATEGORIAS.map((categoria) => (
-                <option key={categoria} value={categoria}>{categoria}</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
               ))}
             </select>
           </div>
 
           <div className={styles.campo}>
-            <label htmlFor="data-entrada">
-              3. Data de Entrada <span className={styles.obrigatorio}>*</span>
+            <label htmlFor="unidade-medida">
+              3. Unidade de Medida <span className={styles.obrigatorio}>*</span>
             </label>
-            <div className={styles.envoltorioData}>
-              <input
-                id="data-entrada"
-                type="text"
-                placeholder="DD/MM/AAAA"
-                value={formulario.dataEntrada}
-                onChange={lidarComMudanca('dataEntrada')}
-                required
-              />
-              <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
-                <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
-              </button>
-            </div>
+            <input
+              id="unidade-medida"
+              type="text"
+              placeholder="Ex: kg, l, un, cx"
+              value={formulario.unidadeMedida}
+              onChange={lidarComMudanca('unidadeMedida')}
+              maxLength={255}
+              required
+            />
           </div>
 
           <div className={styles.campo}>
-            <label htmlFor="unidade-medida">
-              4. Unidade de Medida <span className={styles.obrigatorio}>*</span>
+            <label htmlFor="data-cadastro">
+              4. Data de Cadastro <span className={styles.obrigatorio}>*</span>
             </label>
-            <input
-              id="nome-produto"
-              type="text"
-              placeholder="Ex: 5kg"
-              value={formulario.nome}
-              onChange={lidarComMudanca('nome')}
-              required
-            />
+            <div className={styles.envoltorioData}>
+              <input
+                ref={inputDataCadastroRef}
+                id="data-cadastro"
+                type="date"
+                value={formulario.dataCadastro}
+                onChange={lidarComMudanca('dataCadastro')}
+                required
+              />
+              <button
+                type="button"
+                className={styles.botaoCalendario}
+                aria-label="Selecionar data"
+                onClick={() => inputDataCadastroRef.current?.showPicker()}
+              >
+                <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -146,12 +241,12 @@ export function CadastroProdutos() {
             </span>
           </button>
 
-          <button type="submit" className={styles.botaoSalvar}>
+          <button type="submit" className={styles.botaoSalvar} disabled={enviando}>
             <span className={styles.iconeAcao}>
               <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
             </span>
             <span className={styles.textoAcao}>
-              <strong>Salvar Produto</strong>
+              <strong>{enviando ? 'Salvando...' : 'Salvar Produto'}</strong>
               <small>Registrar no estoque</small>
             </span>
           </button>
@@ -162,31 +257,37 @@ export function CadastroProdutos() {
         <div className={styles.tituloHistorico}>
           <img src="https://img.icons8.com/ios/50/6B7280/time-machine.png" alt="" />
           <div>
-            <h2>Histórico de Produto</h2>
+            <h2>Produtos Cadastrados</h2>
             <p>Veja os produtos cadastrados no estoque.</p>
           </div>
         </div>
-        <button className={styles.botaoHistorico} type="button">Histórico</button>
+        <button className={styles.botaoHistorico} type="button" onClick={carregarDados}>Histórico</button>
       </div>
 
       <div className={styles.envoltorioTabela}>
         <table className={styles.tabela}>
           <thead>
             <tr>
-              <th>Data</th>
-              <th>Responsável</th>
               <th>Produto</th>
+              <th>Unidade de Medida</th>
               <th>Categoria</th>
+              <th>Data de Cadastro</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            {HISTORICO_MOCK.map((item, indice) => (
-              <tr key={indice}>
-                <td>{item.data}</td>
-                <td>{item.responsavel}</td>
-                <td>{item.produto}</td>
-                <td>{item.categoria}</td>
+            {carregando && (
+              <tr><td colSpan={5}>Carregando...</td></tr>
+            )}
+            {!carregando && produtos.length === 0 && (
+              <tr><td colSpan={5}>Nenhum produto cadastrado.</td></tr>
+            )}
+            {!carregando && produtos.map((item, indice) => (
+              <tr key={item.id ?? indice}>
+                <td>{item.nome}</td>
+                <td>{item.unidadeMedida}</td>
+                <td>{item.categoria?.nome}</td>
+                <td>{paraBr(item.dataCadastro)}</td>
                 <td className={styles.celulaAcoes}>
                   <div className={styles.envoltorioAcoes}>
                     <button
@@ -235,7 +336,6 @@ export function CadastroProdutos() {
         </span>
       </div>
 
-      {}
       {linhaEdicao && (
         <div className={styles.fundoModal} onClick={() => setLinhaEdicao(null)}>
           <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
@@ -266,6 +366,8 @@ export function CadastroProdutos() {
                     placeholder="Digite o nome do produto"
                     value={formularioEdicao.nome}
                     onChange={lidarComMudancaEdicao('nome')}
+                    minLength={3}
+                    maxLength={255}
                     required
                   />
                 </div>
@@ -276,51 +378,54 @@ export function CadastroProdutos() {
                   </label>
                   <select
                     id="edit-categoria-produto"
-                    value={formularioEdicao.categoria}
-                    onChange={lidarComMudancaEdicao('categoria')}
+                    value={formularioEdicao.fkCategoria}
+                    onChange={lidarComMudancaEdicao('fkCategoria')}
                     required
                   >
                     <option value="">Selecione a categoria</option>
-                    {CATEGORIAS.map((categoria) => (
-                      <option key={categoria} value={categoria}>{categoria}</option>
+                    {categorias.map((categoria) => (
+                      <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
                     ))}
                   </select>
-                </div>
-
-                <div className={styles.campo}>
-                  <label htmlFor="edit-data-entrada">
-                    3. Data de Entrada <span className={styles.obrigatorio}>*</span>
-                  </label>
-                  <div className={styles.envoltorioData}>
-                    <input
-                      id="edit-data-entrada"
-                      type="text"
-                      placeholder="DD/MM/AAAA"
-                      value={formularioEdicao.dataEntrada}
-                      onChange={lidarComMudancaEdicao('dataEntrada')}
-                      required
-                    />
-                    <button type="button" className={styles.botaoCalendario} aria-label="Selecionar data">
-                      <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
-                    </button>
-                  </div>
                 </div>
 
                 <div className={styles.campo}>
                   <label htmlFor="edit-unidade-medida">
-                    4. Unidade de Medida <span className={styles.obrigatorio}>*</span>
+                    3. Unidade de Medida <span className={styles.obrigatorio}>*</span>
                   </label>
-                  <select
+                  <input
                     id="edit-unidade-medida"
-                    value={formularioEdicao.unidade}
-                    onChange={lidarComMudancaEdicao('unidade')}
+                    type="text"
+                    placeholder="Ex: kg, l, un, cx"
+                    value={formularioEdicao.unidadeMedida}
+                    onChange={lidarComMudancaEdicao('unidadeMedida')}
+                    maxLength={255}
                     required
-                  >
-                    <option value="">Selecione a unidade de medida</option>
-                    {UNIDADES.map((unidade) => (
-                      <option key={unidade} value={unidade}>{unidade}</option>
-                    ))}
-                  </select>
+                  />
+                </div>
+
+                <div className={styles.campo}>
+                  <label htmlFor="edit-data-cadastro">
+                    4. Data de Cadastro <span className={styles.obrigatorio}>*</span>
+                  </label>
+                  <div className={styles.envoltorioData}>
+                    <input
+                      ref={inputEditDataCadastroRef}
+                      id="edit-data-cadastro"
+                      type="date"
+                      value={formularioEdicao.dataCadastro}
+                      onChange={lidarComMudancaEdicao('dataCadastro')}
+                      required
+                    />
+                    <button
+                      type="button"
+                      className={styles.botaoCalendario}
+                      aria-label="Selecionar data"
+                      onClick={() => inputEditDataCadastroRef.current?.showPicker()}
+                    >
+                      <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -335,12 +440,12 @@ export function CadastroProdutos() {
                   </span>
                 </button>
 
-                <button type="submit" className={styles.botaoSalvar}>
+                <button type="submit" className={styles.botaoSalvar} disabled={enviando}>
                   <span className={styles.iconeAcao}>
                     <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
                   </span>
                   <span className={styles.textoAcao}>
-                    <strong>Alterar Produto</strong>
+                    <strong>{enviando ? 'Salvando...' : 'Alterar Produto'}</strong>
                     <small>Alterar no estoque</small>
                   </span>
                 </button>
@@ -350,7 +455,6 @@ export function CadastroProdutos() {
         </div>
       )}
 
-      {/* ── MODAL: Excluir Produto ── */}
       {linhaExclusao && (
         <div className={styles.fundoModal} onClick={() => setLinhaExclusao(null)}>
           <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>

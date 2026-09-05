@@ -55,7 +55,7 @@ function IconeBusca(propriedades) {
   );
 }
 
-export function Inicio({ aoNavegar }) {
+export function Inicio({ onNavigate }) {
   const [busca, setBusca] = useState('');
 
   const termo = busca.trim().toLowerCase();
@@ -98,7 +98,7 @@ export function Inicio({ aoNavegar }) {
               key={servico.chave}
               type="button"
               className={styles.cartaoServico}
-              onClick={() => aoNavegar?.(servico.chave)}
+              onClick={() => onNavigate?.(servico.chave)}
             >
               <div className={styles.circuloIconeServico}>
                 <img src={servico.icone} alt="" />
