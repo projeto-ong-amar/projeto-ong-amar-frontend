@@ -2,19 +2,7 @@
 // reaproveita o CSS Module da própria tela em vez de ter um módulo à parte.
 import styles from '../../pages/Relatorios.module.css';
 
-/**
- * ReportCard component
- * Renders a single report row with icon, description and action buttons.
- *
- * @param {Object}   report
- * @param {string}   report.id          - Unique identifier
- * @param {string}   report.title       - Report title
- * @param {string}   report.description - Short description
- * @param {string}   report.iconClass   - CSS colour variant class (icon-green | icon-orange | icon-blue | icon-teal)
- * @param {Function} onVer              - Callback invoked with the report id
- * @param {Function} onBaixar           - Callback invoked with the report id
- * @param {boolean}  downloading        - Whether this report's download is in flight
- */
+
 const REPORT_ICONS = {
   entrada: 'https://img.icons8.com/ios/50/059669/open-box.png',
   saida: 'https://img.icons8.com/ios/50/D97706/empty-box.png',

@@ -1,116 +1,116 @@
 import { useState } from 'react';
 import styles from './Inicio.module.css';
 
-const SERVICES = [
+const SERVICOS = [
   {
-    key: 'gerenciar-entrada',
-    badge: 'Entrada',
-    title: 'Gerenciar Entrada no Estoque',
-    description: 'Registre e acompanhe os produtos que entram no estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/open-box.png',
+    chave: 'gerenciar-entrada',
+    rotulo: 'Entrada',
+    titulo: 'Gerenciar Entrada no Estoque',
+    descricao: 'Registre e acompanhe os produtos que entram no estoque.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/open-box.png',
   },
   {
-    key: 'cadastro-produtos',
-    badge: 'Produtos',
-    title: 'Cadastro de Produtos',
-    description: 'Cadastre, edite e organize produtos do seu estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/task.png', 
+    chave: 'cadastro-produtos',
+    rotulo: 'Produtos',
+    titulo: 'Cadastro de Produtos',
+    descricao: 'Cadastre, edite e organize produtos do seu estoque.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/task.png',
   },
   {
-    key: 'gerenciar-saida',
-    badge: 'Saída',
-    title: 'Gerenciar Saída no Estoque',
-    description: 'Registre e acompanhe os produtos que saem dos estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/empty-box.png',
+    chave: 'gerenciar-saida',
+    rotulo: 'Saída',
+    titulo: 'Gerenciar Saída no Estoque',
+    descricao: 'Registre e acompanhe os produtos que saem dos estoque.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/empty-box.png',
   },
   {
-    key: 'relatorios',
-    badge: 'Relatórios',
-    title: 'Gerar Relatórios',
-    description: 'Gere relatórios de entradas, saídas, produtos e muito mais.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/business-report.png', 
+    chave: 'relatorios',
+    rotulo: 'Relatórios',
+    titulo: 'Gerar Relatórios',
+    descricao: 'Gere relatórios de entradas, saídas, produtos e muito mais.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/business-report.png',
   },
   {
-    key: 'desempenho',
-    badge: 'Dashboard',
-    title: 'Visualizar Desempenho',
-    description: 'Acompanhe indicadores e gráficos do desempenho do estoque.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/laptop-metrics--v2.png',
+    chave: 'desempenho',
+    rotulo: 'Dashboard',
+    titulo: 'Visualizar Desempenho',
+    descricao: 'Acompanhe indicadores e gráficos do desempenho do estoque.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/laptop-metrics--v2.png',
   },
   {
-    key: 'cadastro-usuario',
-    badge: 'Usuário',
-    title: 'Cadastro de Usuário',
-    description: 'Cadastre e gerencie os usuários do sistema.',
-    icon: 'https://img.icons8.com/ios/50/2563EB/user-group-man-man.png', 
+    chave: 'cadastro-usuario',
+    rotulo: 'Usuário',
+    titulo: 'Cadastro de Usuário',
+    descricao: 'Cadastre e gerencie os usuários do sistema.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/user-group-man-man.png',
   },
 ];
 
-function SearchIcon(props) {
+function IconeBusca(propriedades) {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...propriedades}>
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
     </svg>
   );
 }
 
-export function Inicio({ onNavigate }) {
-  const [search, setSearch] = useState('');
+export function Inicio({ aoNavegar }) {
+  const [busca, setBusca] = useState('');
 
-  const term = search.trim().toLowerCase();
-  const filteredServices = term
-    ? SERVICES.filter(
-        (s) =>
-          s.badge.toLowerCase().includes(term) ||
-          s.title.toLowerCase().includes(term)
+  const termo = busca.trim().toLowerCase();
+  const servicosFiltrados = termo
+    ? SERVICOS.filter(
+        (servico) =>
+          servico.rotulo.toLowerCase().includes(termo) ||
+          servico.titulo.toLowerCase().includes(termo)
       )
-    : SERVICES;
+    : SERVICOS;
 
   return (
-    <main className={styles.content}>
-      <div className={styles.serviceSearchBar}>
-        <div className={styles.searchLabel}>
-          <SearchIcon />
+    <main className={styles.conteudo}>
+      <div className={styles.barraBuscaServico}>
+        <div className={styles.rotuloBusca}>
+          <IconeBusca />
           Buscar por Serviço
         </div>
-        <div className={styles.searchInputWrap}>
+        <div className={styles.envoltorioBusca}>
           <input
             type="text"
-            className={styles.searchInput}
+            className={styles.campoBusca}
             placeholder="Exemplo: Cadastro de Usuário..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            value={busca}
+            onChange={(evento) => setBusca(evento.target.value)}
           />
-          <SearchIcon className={styles.searchInputIcon} />
+          <IconeBusca className={styles.iconeBusca} />
         </div>
       </div>
 
-      <div className={styles.servicesHeading}>
+      <div className={styles.tituloServicos}>
         <h2>Principais Serviços</h2>
         <p>Selecione um Serviço Desejado</p>
       </div>
 
-      {filteredServices.length > 0 ? (
-        <div className={styles.servicesGrid}>
-          {filteredServices.map((service) => (
+      {servicosFiltrados.length > 0 ? (
+        <div className={styles.gradeServicos}>
+          {servicosFiltrados.map((servico) => (
             <button
-              key={service.key}
+              key={servico.chave}
               type="button"
-              className={styles.serviceCard}
-              onClick={() => onNavigate?.(service.key)}
+              className={styles.cartaoServico}
+              onClick={() => aoNavegar?.(servico.chave)}
             >
-              <div className={styles.serviceIconCircle}>
-                <img src={service.icon} alt="" />
+              <div className={styles.circuloIconeServico}>
+                <img src={servico.icone} alt="" />
               </div>
-              <span className={styles.serviceBadge}>{service.badge}</span>
-              <h3 className={styles.serviceTitle}>{service.title}</h3>
-              <p className={styles.serviceDesc}>{service.description}</p>
+              <span className={styles.emblemaServico}>{servico.rotulo}</span>
+              <h3 className={styles.tituloServico}>{servico.titulo}</h3>
+              <p className={styles.descricaoServico}>{servico.descricao}</p>
             </button>
           ))}
         </div>
       ) : (
-        <p className={styles.servicesEmpty}>Nenhum serviço encontrado para "{search}".</p>
+        <p className={styles.servicosVazio}>Nenhum serviço encontrado para "{busca}".</p>
       )}
     </main>
   );

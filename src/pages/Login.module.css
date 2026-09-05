@@ -1,7 +1,7 @@
-/* ── Tela: Login ── */
 
-.loginBody {
-  font-family: 'Nunito', sans-serif;
+
+.corpoLogin {
+  font-family: 'Open Sans', sans-serif;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
   background: #d5d9e4;
 }
 
-.loginCard {
+.cartaoLogin {
   background: #fff;
   border-radius: 24px;
   padding: 48px 48px 52px;
@@ -21,22 +21,22 @@
   align-items: center;
 }
 
-.loginLogoWrap {
+.envoltorioLogo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.loginLogoImg {
+.imagemLogo {
   width: 120px;
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-.loginBrandTitle {
-  font-size: 22px;
+.tituloMarca {
+  font-size: 1.375rem;
   font-weight: 800;
   color: #2563eb;
   text-align: center;
@@ -44,74 +44,80 @@
   letter-spacing: -0.01em;
 }
 
-.loginBrandSub {
-  font-size: 14px;
+.subtituloMarca {
+  font-size: 0.875rem;
   color: #6b7280;
   font-weight: 500;
   margin-top: 4px;
   text-align: center;
 }
 
-.loginForm {
+.formularioLogin {
   width: 100%;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-.loginFieldLabel {
-  font-size: 16px;
+.rotuloCampo {
+  font-size: 1rem;
   font-weight: 800;
   color: #111827;
   margin-bottom: 10px;
 }
 
-.loginFieldLabel.spaced { margin-top: 28px; }
+.rotuloCampo.espacado {
+  margin-top: 28px;
+}
 
-.loginForm input[type='email'],
-.loginForm input[type='password'] {
+.formularioLogin input[type='email'],
+.formularioLogin input[type='password'] {
   width: 100%;
   padding: 18px 20px;
   background: #dde0e8;
   border: none;
   border-radius: 14px;
-  font-size: 15px;
-  font-family: 'Nunito', sans-serif;
+  font-size: 0.9375rem;
+  font-family: 'Open Sans', sans-serif;
   color: #374151;
   outline: none;
   transition: background 0.2s, box-shadow 0.2s;
 }
 
-.loginForm input::placeholder { color: #9ca3af; }
+.formularioLogin input::placeholder {
+  color: #9ca3af;
+}
 
-.loginForm input:focus {
+.formularioLogin input:focus {
   background: #d0d4de;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
-.loginForgot {
+.linkEsqueciSenha {
   margin-top: 22px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #6b7280;
 }
 
-.loginForgot a {
+.linkEsqueciSenha a {
   color: #ef4444;
   font-weight: 700;
   text-decoration: none;
 }
 
-.loginForgot a:hover { text-decoration: underline; }
+.linkEsqueciSenha a:hover {
+  text-decoration: underline;
+}
 
-.loginBtnEntrar {
+.botaoEntrar {
   margin-top: 26px;
   width: 100%;
   padding: 20px;
   background: #2563eb;
   color: #fff;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 800;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   border: none;
   border-radius: 14px;
   cursor: pointer;
@@ -120,47 +126,65 @@
   box-shadow: 0 4px 16px rgba(37, 99, 235, 0.25);
 }
 
-.loginBtnEntrar:hover { background: #1d4ed8; }
-.loginBtnEntrar:active { transform: scale(0.985); }
-.loginBtnEntrar:disabled { opacity: 0.7; cursor: not-allowed; }
+.botaoEntrar:hover {
+  background: #1d4ed8;
+}
 
-/* Accessibility box, floating bottom-right */
-.accessBox {
+.botaoEntrar:active {
+  transform: scale(0.985);
+}
+
+.botaoEntrar:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+
+.caixaAcessibilidade {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 24px;
   text-align: right;
 }
 
-.accessTitle {
-  font-size: 14px;
+.tituloAcessibilidade {
+  font-size: 0.875rem;
   font-weight: 800;
   color: #111827;
   margin-bottom: 6px;
 }
 
-.accessPill {
+.pilulaAcessibilidade {
   display: flex;
   background: #2563eb;
   border-radius: 8px;
   overflow: hidden;
 }
 
-.accessBtn {
+.botaoAcessibilidade {
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 700;
   padding: 8px 14px;
   cursor: pointer;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.15s;
 }
 
-.accessBtn:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.35); }
-.accessBtn:hover { background: rgba(255, 255, 255, 0.15); }
-.accessBtnIcon svg { width: 18px; height: 18px; }
+.botaoAcessibilidade:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.botaoAcessibilidade:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.iconeBotaoAcessibilidade svg {
+  width: 18px;
+  height: 18px;
+}

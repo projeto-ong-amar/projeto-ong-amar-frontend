@@ -3,49 +3,49 @@ import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
 import styles from './Login.module.css';
 
-function increaseFontSize() {
+function aumentarTamanhoFonte() {
   document.body.style.fontSize = 'larger';
 }
 
-function decreaseFontSize() {
+function diminuirTamanhoFonte() {
   document.body.style.fontSize = 'smaller';
 }
 
-export function Login({ onLoginSuccess, onForgotPassword }) {
+export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [highContrast, setHighContrast] = useState(false);
+  const [altoContraste, setAltoContraste] = useState(false);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    onLoginSuccess?.();
+  function lidarComEnvio(evento) {
+    evento.preventDefault();
+    aoLoginComSucesso?.();
   }
 
-  function toggleHighContrast() {
-    setHighContrast((prev) => !prev);
+  function alternarAltoContraste() {
+    setAltoContraste((anterior) => !anterior);
   }
 
   return (
-    <div className={`${styles.loginBody} ${highContrast ? 'high-contrast' : ''}`}>
-      <div className={styles.loginCard}>
-        <div className={styles.loginLogoWrap}>
+    <div className={`${styles.corpoLogin} ${altoContraste ? 'high-contrast' : ''}`}>
+      <div className={styles.cartaoLogin}>
+        <div className={styles.envoltorioLogo}>
           <img
             src={logo}
             alt="Logo ONG PCA"
-            className={styles.loginLogoImg}
+            className={styles.imagemLogo}
           />
 
-          <div className={styles.loginBrandTitle}>
+          <div className={styles.tituloMarca}>
             Sistema de Gerenciamento de Estoque
           </div>
 
-          <div className={styles.loginBrandSub}>
+          <div className={styles.subtituloMarca}>
             Alimentos e Produtos de Higiene
           </div>
         </div>
 
-        <form className={styles.loginForm} onSubmit={handleSubmit}>
-          <label className={styles.loginFieldLabel} htmlFor="email">
+        <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
+          <label className={styles.rotuloCampo} htmlFor="email">
             Digite seu E-mail
           </label>
 
@@ -55,10 +55,10 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             placeholder="exemplo@email.com"
             autoComplete="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(evento) => setEmail(evento.target.value)}
           />
 
-          <label className={`${styles.loginFieldLabel} ${styles.spaced}`} htmlFor="senha">
+          <label className={`${styles.rotuloCampo} ${styles.espacado}`} htmlFor="senha">
             Digite sua Senha
           </label>
 
@@ -68,15 +68,15 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             placeholder="1234"
             autoComplete="current-password"
             value={senha}
-            onChange={(e) => setSenha(e.target.value)}
+            onChange={(evento) => setSenha(evento.target.value)}
           />
 
-          <div className={styles.loginForgot}>
+          <div className={styles.linkEsqueciSenha}>
             <a
               href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onForgotPassword?.();
+              onClick={(evento) => {
+                evento.preventDefault();
+                aoEsquecerSenha?.();
               }}
             >
               Esqueceu sua senha?
@@ -84,59 +84,34 @@ export function Login({ onLoginSuccess, onForgotPassword }) {
             ← Clique aqui
           </div>
 
-          <button className={styles.loginBtnEntrar} type="submit">
+          <button className={styles.botaoEntrar} type="submit">
             Entrar
           </button>
         </form>
       </div>
 
-      <div className={styles.accessBox}>
-        <div className={styles.accessTitle}>
+      <div className={styles.caixaAcessibilidade}>
+        <div className={styles.tituloAcessibilidade}>
           Acessibilidade
         </div>
 
-        <div className={styles.accessPill}>
+        <div className={styles.pilulaAcessibilidade}>
           <button
-            className={styles.accessBtn}
+            className={styles.botaoAcessibilidade}
             type="button"
-            onClick={increaseFontSize}
+            onClick={aumentarTamanhoFonte}
             aria-label="Aumentar tamanho da fonte"
           >
             A+
           </button>
 
           <button
-            className={styles.accessBtn}
+            className={styles.botaoAcessibilidade}
             type="button"
-            onClick={decreaseFontSize}
+            onClick={diminuirTamanhoFonte}
             aria-label="Diminuir tamanho da fonte"
           >
             a-
-          </button>
-
-          <button
-            className={`${styles.accessBtn} ${styles.accessBtnIcon} ${
-              highContrast ? 'active' : ''
-            }`}
-            type="button"
-            onClick={toggleHighContrast}
-            aria-label="Alto contraste"
-            aria-pressed={highContrast}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" />
-              <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6" />
-              <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8.5" />
-              <path d="M6 14v1.5A5.5 5.5 0 0 0 11.5 21h3a5.5 5.5 0 0 0 5.5-5.5v-3" />
-            </svg>
           </button>
         </div>
       </div>

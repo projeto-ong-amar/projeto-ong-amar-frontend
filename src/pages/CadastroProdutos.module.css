@@ -1,26 +1,20 @@
-/* CadastroProdutos.module.css
- * CSS Module: class names below are scoped locally to this component by
- * Vite's build (compiled to unique hashes), so they never leak into or
- * collide with global.css or other pages' styles.
- */
 
-/* ── CONTEÚDO DA PÁGINA (faltava — sem isso o .content não tem padding/scroll) ── */
-.content {
+
+.conteudo {
     padding: var(--space-xl) 36px;
     flex: 1;
     overflow-y: auto;
     min-height: 0;
 }
 
-/* ── PAGE HEADER (faltava — sem isso o ícone fica sem tamanho/cor) ── */
-.pageHeader {
+.cabecalhoPagina {
     display: flex;
     align-items: flex-start;
     gap: 18px;
     margin-bottom: 30px;
 }
 
-.pageHeaderIcon {
+.iconeCabecalhoPagina {
     width: 60px;
     height: 60px;
     background: var(--blue-bg);
@@ -31,26 +25,25 @@
     flex-shrink: 0;
 }
 
-.pageHeaderIcon img {
+.iconeCabecalhoPagina img {
     width: 60%;
     height: 60%;
 }
 
-.pageHeader h1 {
-    font-size: 26px;
+.cabecalhoPagina h1 {
+    font-size: 1.625rem; 
     font-weight: 800;
     color: var(--text-dark);
     line-height: 1.2;
 }
 
-.pageHeader p {
-    font-size: 14px;
+.cabecalhoPagina p {
+    font-size: 0.875rem;
     color: var(--text-light);
     margin-top: 4px;
 }
 
-/* ── daqui pra baixo é o que você já tinha (form, histórico, dica) ── */
-.formCard {
+.cartaoFormulario {
     background: #fff;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
@@ -59,54 +52,54 @@
     margin-bottom: 40px;
 }
 
-.formGrid {
+.gradeFormulario {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 24px 32px;
     margin-bottom: 28px;
 }
 
-.field {
+.campo {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.field label {
-    font-size: 15px;
+.campo label {
+    font-size: 0.9375rem;
     font-weight: 800;
     color: var(--text-dark);
 }
 
-.required {
+.obrigatorio {
     color: #DC2626;
 }
 
-.field input,
-.field select {
+.campo input,
+.campo select {
     width: 100%;
     padding: 13px 16px;
     border-radius: 10px;
     border: 1.5px solid var(--border);
     background: var(--bg);
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.875rem;
     color: var(--text-dark);
     outline: none;
     transition: border-color 0.15s, background 0.15s;
 }
 
-.field input::placeholder {
+.campo input::placeholder {
     color: #9CA3AF;
 }
 
-.field input:focus,
-.field select:focus {
+.campo input:focus,
+.campo select:focus {
     border-color: var(--blue);
     background: #fff;
 }
 
-.field select {
+.campo select {
     appearance: none;
     cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
@@ -116,19 +109,19 @@
     padding-right: 42px;
 }
 
-.dateInputWrap {
+.envoltorioData {
     display: flex;
     align-items: center;
     gap: 0;
 }
 
-.dateInputWrap input {
+.envoltorioData input {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
     border-right: none;
 }
 
-.calendarBtn {
+.botaoCalendario {
     flex-shrink: 0;
     width: 46px;
     height: 46.5px;
@@ -145,22 +138,22 @@
     transition: background 0.15s;
 }
 
-.calendarBtn:hover {
+.botaoCalendario:hover {
     background: #FDE68A;
 }
 
-.calendarBtn img {
+.botaoCalendario img {
     width: 20px;
     height: 20px;
 }
 
-.actionsRow {
+.linhaAcoes {
     display: flex;
     gap: 16px;
 }
 
-.btnCancelar,
-.btnSalvar {
+.botaoCancelar,
+.botaoSalvar {
     flex: 1;
     display: flex;
     align-items: center;
@@ -169,29 +162,36 @@
     padding: 14px 20px;
     border-radius: 10px;
     cursor: pointer;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     text-align: left;
-    transition: opacity 0.15s;
+    transition: opacity 0.15s, background 0.15s, box-shadow 0.1s, transform 0.1s;
 }
 
-.btnCancelar:hover,
-.btnSalvar:hover {
-    opacity: 0.9;
-}
-
-.btnCancelar {
-    background: #fff;
+.botaoCancelar {
+    background: #FEF2F2;
     border: 1.5px solid #FCA5A5;
     color: #DC2626;
+    box-shadow: 0 1px 2px rgba(220, 38, 38, 0.06);
 }
 
-.btnSalvar {
+.botaoCancelar:hover {
+    background: #FEE2E2;
+    border-color: #DC2626;
+    box-shadow: 0 3px 0 #DC2626;
+    transform: translateY(-1px);
+}
+
+.botaoSalvar {
     background: #16A34A;
     border: 1.5px solid #16A34A;
     color: #fff;
 }
 
-.actionIcon {
+.botaoSalvar:hover {
+    opacity: 0.9;
+}
+
+.iconeAcao {
     width: 34px;
     height: 34px;
     border-radius: 50%;
@@ -201,48 +201,47 @@
     flex-shrink: 0;
 }
 
-.btnCancelar .actionIcon {
+.botaoCancelar .iconeAcao {
     background: #DC2626;
     color: #fff;
 }
 
-.btnSalvar .actionIcon {
+.botaoSalvar .iconeAcao {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
 
-.actionIcon img {
+.iconeAcao img {
     width: 18px;
     height: 18px;
 }
 
-.actionText {
+.textoAcao {
     display: flex;
     flex-direction: column;
     gap: 1px;
 }
 
-.actionText strong {
-    font-size: 15px;
+.textoAcao strong {
+    font-size: 0.9375rem; 
     font-weight: 800;
 }
 
-.actionText small {
-    font-size: 12px;
+.textoAcao small {
+    font-size: 0.75rem; 
     font-weight: 500;
     opacity: 0.85;
 }
 
-.btnCancelar .actionText small {
+.botaoCancelar .textoAcao small {
     color: #B91C1C;
 }
 
-.btnSalvar .actionText small {
+.botaoSalvar .textoAcao small {
     color: #DCFCE7;
 }
 
-/* ── HISTÓRICO ── */
-.historicoHeader {
+.cabecalhoHistorico {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -250,62 +249,67 @@
     gap: 16px;
 }
 
-.historicoHeading {
+.tituloHistorico {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.historicoHeading img {
+.tituloHistorico img {
     width: 20px;
     height: 20px;
 }
 
-.historicoHeading h2 {
-    font-size: 18px;
+.tituloHistorico h2 {
+    font-size: 1.125rem; 
     font-weight: 800;
     color: var(--text-dark);
 }
 
-.historicoHeading p {
-    font-size: 13px;
+.tituloHistorico p {
+    font-size: 0.8125rem; 
     color: var(--text-light);
     margin-top: 2px;
 }
 
-.historicoBtn {
+.botaoHistorico {
     flex-shrink: 0;
     background: #fff;
     border: 1.5px solid var(--border);
     color: var(--text-mid);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 0.875rem;
     padding: 9px 22px;
     border-radius: 8px;
     cursor: pointer;
     transition: border-color 0.15s;
 }
 
-.historicoBtn:hover {
+.botaoHistorico:hover {
     border-color: #9CA3AF;
 }
 
-.tableWrap {
+.envoltorioTabela {
     background: #fff;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
-    overflow: hidden;
     margin-bottom: 20px;
 }
 
-.table {
+.tabela {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.table thead th {
+.tabela thead th:first-child { border-top-left-radius: var(--radius); }
+.tabela thead th:last-child { border-top-right-radius: var(--radius); }
+.tabela tbody tr:last-child td:first-child { border-bottom-left-radius: var(--radius); }
+.tabela tbody tr:last-child td:last-child { border-bottom-right-radius: var(--radius); }
+
+.tabela thead th {
     text-align: left;
-    font-size: 11px;
+    font-size: 0.6875rem;
     font-weight: 800;
     color: var(--text-light);
     letter-spacing: 0.06em;
@@ -314,22 +318,22 @@
     border-bottom: 1px solid var(--border);
 }
 
-.table tbody td {
-    font-size: 14px;
+.tabela tbody td {
+    font-size: 0.875rem; 
     color: var(--text-mid);
     padding: 16px 20px;
     border-bottom: 1px solid var(--border);
 }
 
-.table tbody tr:last-child td {
+.tabela tbody tr:last-child td {
     border-bottom: none;
 }
 
-.actionsCell {
+.celulaAcoes {
     width: 40px;
 }
 
-.actionsMenuBtn {
+.botaoMenuAcoes {
     background: none;
     border: none;
     color: var(--text-light);
@@ -338,13 +342,69 @@
     display: flex;
 }
 
-
-.actionsMenuBtn img {
+.botaoMenuAcoes img {
     width: 18px;
     height: 18px;
 }
 
-/* ── DICA ── */
+.envoltorioAcoes {
+    position: relative;
+    display: inline-flex;
+}
+
+.fundoAcoes {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+}
+
+.menuAcoes {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 6px);
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    padding: 4px;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    z-index: 21;
+}
+
+.menuAcoes button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    background: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.menuAcoes button:hover {
+    background: var(--bg);
+}
+
+.menuAcoes img {
+    width: 18px;
+    height: 18px;
+}
+
+.divisorMenu {
+    height: 1px;
+    background: var(--border);
+    margin: 2px 0;
+}
+
+.excluirMenu:hover {
+    background: #FEF2F2;
+}
+
+
 .dica {
     display: flex;
     align-items: flex-start;
@@ -353,7 +413,7 @@
     border: 1px solid #BFDBFE;
     border-radius: var(--radius);
     padding: 14px 18px;
-    font-size: 13px;
+    font-size: 0.8125rem; 
     color: var(--text-mid);
 }
 
@@ -366,4 +426,169 @@
 
 .dica strong {
     color: var(--text-dark);
+}
+
+
+.fundoModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 24, 39, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+}
+
+.cartaoModal {
+    background: #fff;
+    border-radius: 18px;
+    padding: 28px;
+    width: 100%;
+    max-width: 620px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.cartaoModalPequeno {
+    max-width: 460px;
+}
+
+.cabecalhoModal {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.iconeCabecalhoModal {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #FEF3C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.iconeCabecalhoModal img {
+    width: 22px;
+    height: 22px;
+}
+
+.iconeCabecalhoModalPerigo {
+    background: #FEE2E2;
+}
+
+.textoCabecalhoModal {
+    flex: 1;
+}
+
+.textoCabecalhoModal h2 {
+    font-size: 1.1875rem; 
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.textoCabecalhoModal p {
+    font-size: 0.8125rem;
+    color: var(--text-light);
+    margin-top: 3px;
+}
+
+.botaoFecharModal {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #DC2626;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.botaoFecharModal:hover {
+    background: #B91C1C;
+}
+
+.botaoFecharModal img {
+    width: 13px;
+    height: 13px;
+}
+
+.divisorModal {
+    height: 1px;
+    background: var(--border);
+    margin: 18px 0 22px;
+}
+
+.caixaPerigo {
+    background: #FEE2E2;
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.caixaPerigo strong {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: #991B1B;
+}
+
+.caixaPerigo p {
+    font-size: 0.8125rem; 
+    color: #B91C1C;
+    margin-top: 4px;
+}
+
+.botaoModalCancelar,
+.botaoModalExcluir {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 13px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9375rem; 
+    font-weight: 800;
+    transition: opacity 0.15s, background 0.15s;
+}
+
+.botaoModalCancelar {
+    background: #fff;
+    border: 1.5px solid var(--border);
+    color: var(--text-dark);
+}
+
+.botaoModalCancelar:hover {
+    background: var(--bg);
+}
+
+.botaoModalExcluir {
+    background: #DC2626;
+    border: 1.5px solid #DC2626;
+    color: #fff;
+}
+
+.botaoModalExcluir:hover {
+    background: #B91C1C;
+}
+
+.botaoModalCancelar .iconeAcao {
+    width: 26px;
+    height: 26px;
+    background: #DC2626;
+}
+
+.botaoModalExcluir .iconeAcao {
+    width: 26px;
+    height: 26px;
+    background: rgba(255, 255, 255, 0.25);
 }

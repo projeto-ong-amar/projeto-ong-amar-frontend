@@ -43,18 +43,18 @@
 }
 
 .brandName {
-  font-size: 13px;
+  font-size: 0.8125rem; 
   font-weight: 800;
   color: #1A56DB;
 }
 
 .brandSub {
-  font-size: 11px;
+  font-size: 0.6875rem; 
   color: #6B7280;
 }
 
 .sidebarLabel {
-  font-size: 12px;
+  font-size: 0.75rem; 
   font-weight: 800;
   color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.08em;
@@ -76,7 +76,7 @@
   padding: 11px 12px;
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.85);
-  font-size: 14px;
+  font-size: 0.875rem; 
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
@@ -108,7 +108,7 @@
   flex: 1;
 }
 
-/* ── ACESSIBILIDADE ── */
+
 .sidebarBottom {
   padding: 20px 14px;
 }
@@ -118,7 +118,7 @@
 }
 
 .acessibilidadeTitle {
-  font-size: 15px;
+  font-size: 0.9375rem; 
   font-weight: 700;
   color: #fff;
   margin-bottom: 8px;
@@ -139,12 +139,12 @@
   background: transparent;
   border: none;
   color: #fff;
-  font-size: 15px;
+  font-size: 0.9375rem; 
   font-weight: 600;
   padding: 8px 0;
   cursor: pointer;
   transition: background 0.15s;
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -171,7 +171,7 @@
   padding: 11px 12px;
   border-radius: 8px;
   color: rgba(255, 255, 255, 0.85);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;

@@ -1,15 +1,6 @@
 import logo from '../../assets/img/pca-1.png';
 import styles from './Sidebar.module.css';
 
-/**
- * Sidebar component
- * Renders the left navigation panel, matching the "index2" reference design
- * (colored icons8 icons + accessibility controls).
- *
- * @param {string}   activePage  - Key of the currently active nav item
- * @param {Function} onNavigate  - Callback invoked with the nav item key
- * @param {Function} onSair      - Callback for the "Sair" (logout) button
- */
 const NAV_ITEMS = [
   { key: 'inicio', label: 'Início', icon: 'https://img.icons8.com/ios/50/home.png' },
   { key: 'gerenciar-entrada', label: 'Gerenciar Entrada', icon: 'https://img.icons8.com/ios/50/open-box.png' },
@@ -21,15 +12,26 @@ const NAV_ITEMS = [
   { key: 'configuracoes', label: 'Configurações', icon: 'https://img.icons8.com/ios/50/settings.png' },
 ];
 
-function increaseFontSize() {
-  document.body.style.fontSize = 'larger';
-}
-
-function decreaseFontSize() {
-  document.body.style.fontSize = 'smaller';
-}
-
 export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
+
+  // Aumenta o tamanho da fonte até o limite de 130%
+  function increaseFontSize() {
+    const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    // Limite máximo proporcional (130%)
+    if (currentSize < 22) {
+      document.documentElement.style.fontSize = `${currentSize + 1}px`;
+    }
+  }
+
+  // Diminui o tamanho da fonte até o limite de 80%
+  function decreaseFontSize() {
+    const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    // Limite mínimo proporcional (80%)
+    if (currentSize > 12) {
+      document.documentElement.style.fontSize = `${currentSize - 1}px`;
+    }
+  }
+
   return (
     <aside className={styles.sidebar}>
       <div className={styles.sidebarBrand}>
@@ -68,19 +70,11 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
         <div className={styles.acessibilidadeBox}>
           <div className={styles.acessibilidadeTitle}>Acessibilidade</div>
           <div className={styles.acessibilidadeGroup}>
-            <button className={styles.btnAcesso} type="button" onClick={increaseFontSize}>
+            <button className={styles.btnAcesso} type="button" onClick={increaseFontSize} aria-label="Aumentar fonte">
               A+
             </button>
-            <button className={styles.btnAcesso} type="button" onClick={decreaseFontSize}>
+            <button className={styles.btnAcesso} type="button" onClick={decreaseFontSize} aria-label="Diminuir fonte">
               a-
-            </button>
-            <button className={styles.btnAcesso} type="button" aria-label="Alto contraste">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v5" />
-                <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6" />
-                <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8.5" />
-                <path d="M6 14v1.5A5.5 5.5 0 0 0 11.5 21h3a5.5 5.5 0 0 0 5.5-5.5v-3" />
-              </svg>
             </button>
           </div>
         </div>

@@ -1,10 +1,4 @@
-/**
- * useReports — React hook
- * Manages report fetching and period selection state.
- *
- * Usage:
- *   const { reports, loading, error, period, setPeriod } = useReports();
- */
+
 import { useState, useEffect } from 'react';
 import { fetchReports } from '../services/reportsService.js';
 

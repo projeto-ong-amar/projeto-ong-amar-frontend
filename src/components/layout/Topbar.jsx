@@ -1,13 +1,5 @@
 import styles from './Topbar.module.css';
 
-/**
- * Topbar component
- * Top navigation bar with breadcrumb and action buttons.
- *
- * @param {string}   section  - Current section name shown in breadcrumb
- * @param {Function} onVoltar - Callback for the "Voltar" button
- * @param {Function} onAjuda  - Callback for the "Ajuda" button
- */
 export function Topbar({ section = 'Relatórios', onVoltar, onAjuda }) {
   return (
     <header className={styles.topbar}>
