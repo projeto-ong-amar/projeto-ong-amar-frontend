@@ -41,21 +41,26 @@ export function CadastroProdutos() {
   }, []);
 
   async function carregarDados() {
-    setCarregando(true);
-    setErro('');
-    try {
-      const [listaCategorias, listaProdutos] = await Promise.all([
-        listarCategorias(),
-        listarProdutos(),
-      ]);
-      setCategorias(listaCategorias || []);
-      setProdutos(listaProdutos || []);
-    } catch (e) {
-      setErro(e.message || 'Não foi possível carregar os dados.');
-    } finally {
-      setCarregando(false);
+  setCarregando(true);
+  setErro('');
+  try {
+    const [resultadoCategorias, resultadoProdutos] = await Promise.allSettled([
+      listarCategorias(),
+      listarProdutos(),
+    ]);
+
+    setCategorias(resultadoCategorias.status === 'fulfilled' ? (resultadoCategorias.value || []) : []);
+    setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
+
+    if (resultadoCategorias.status === 'rejected') {
+      setErro(resultadoCategorias.reason?.message || 'Não foi possível carregar as categorias.');
     }
+  } catch (e) {
+    setErro(e.message || 'Não foi possível carregar os dados.');
+  } finally {
+    setCarregando(false);
   }
+}
 
   function lidarComMudanca(campo) {
     return (evento) => setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
