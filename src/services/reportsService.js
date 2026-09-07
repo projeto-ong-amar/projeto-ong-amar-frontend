@@ -1,3 +1,4 @@
+import { apiClient } from './apiClient.js';
 
 export async function fetchReports() {
   return [
@@ -28,9 +29,6 @@ export async function fetchReports() {
   ];
 }
 
-const ASSISTANT_BASE_URL = 'http://localhost:8080';
-
-
 const REPORT_AI_CONFIG = {
   entrada: {
     endpoint: '/assistente/relatorio/entradas/pdf',
@@ -59,16 +57,6 @@ export async function baixarRelatorioIA(reportId) {
   const config = REPORT_AI_CONFIG[reportId];
   if (!config) throw new Error(`Relatório desconhecido: ${reportId}`);
 
-  const response = await fetch(`${ASSISTANT_BASE_URL}${config.endpoint}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ texto: config.texto }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Erro ao baixar relatório: ${response.status}`);
-  }
-
-  const blob = await response.blob();
+  const blob = await apiClient.postBlob(config.endpoint, { pergunta: config.texto });
   return { blob, filename: config.filename };
 }

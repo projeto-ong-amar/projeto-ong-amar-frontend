@@ -9,29 +9,17 @@ import {
   EVENTO_SESSAO_ENCERRADA,
   limparSessaoLocal,
   logout,
-  validarSessao,
 } from './services/authService.js'
 
 function Root() {
   const [usuario, setUsuario] = useState(null)
-  const [carregandoSessao, setCarregandoSessao] = useState(true)
   const [view, setView] = useState('login') 
 
   useEffect(() => {
-    async function carregarSessao() {
-      try {
-        setUsuario(await validarSessao())
-      } catch {
-        limparSessaoLocal()
-        setUsuario(null)
-      } finally {
-        setCarregandoSessao(false)
-      }
-    }
+    limparSessaoLocal()
 
     function encerrarSessao() {
       setUsuario(null)
-      setCarregandoSessao(false)
     }
 
     function sincronizarLogout(evento) {
@@ -42,17 +30,12 @@ function Root() {
 
     window.addEventListener(EVENTO_SESSAO_ENCERRADA, encerrarSessao)
     window.addEventListener('storage', sincronizarLogout)
-    carregarSessao()
 
     return () => {
       window.removeEventListener(EVENTO_SESSAO_ENCERRADA, encerrarSessao)
       window.removeEventListener('storage', sincronizarLogout)
     }
   }, [])
-
-  if (carregandoSessao) {
-    return null
-  }
 
   if (usuario) {
     return (
