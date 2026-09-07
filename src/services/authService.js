@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient.js';
+import { apiClient, inicializarCsrf } from './apiClient.js';
 
 const CHAVE_USUARIO = 'usuarioLogado';
 export const EVENTO_SESSAO_ENCERRADA = 'sessao-encerrada';
@@ -30,6 +30,7 @@ export async function logout() {
 
 export async function validarSessao() {
   const usuario = await apiClient.get('/usuarios/me');
+  await inicializarCsrf();
   return salvarUsuario(usuario);
 }
 

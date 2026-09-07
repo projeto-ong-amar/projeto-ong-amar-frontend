@@ -2,6 +2,31 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 const EVENTO_SESSAO_ENCERRADA = 'sessao-encerrada';
+const METODOS_MUTAVEIS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+
+function obterCookie(nome) {
+  const prefixo = `${encodeURIComponent(nome)}=`;
+  const cookie = document.cookie
+    .split('; ')
+    .find((item) => item.startsWith(prefixo));
+
+  return cookie ? decodeURIComponent(cookie.slice(prefixo.length)) : null;
+}
+
+function criarHeaders(options) {
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
+  });
+  const metodo = (options.method || 'GET').toUpperCase();
+  const csrfToken = obterCookie('XSRF-TOKEN');
+
+  if (METODOS_MUTAVEIS.has(metodo) && csrfToken) {
+    headers.set('X-XSRF-TOKEN', csrfToken);
+  }
+
+  return headers;
+}
 
 function encerrarSessaoPorNaoAutorizado() {
   localStorage.removeItem('usuarioLogado');
@@ -32,11 +57,8 @@ function extrairMensagemDeErro(corpo, status) {
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
     ...options,
+    headers: criarHeaders(options),
   });
 
   if (response.status === 204) {
@@ -58,11 +80,8 @@ async function request(path, options = {}) {
 async function requestBlob(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {}),
-    },
     ...options,
+    headers: criarHeaders(options),
   });
 
   if (!response.ok) {
@@ -80,8 +99,13 @@ export const apiClient = {
   get: (path) => request(path, { method: 'GET' }),
   post: (path, body) => request(path, { method: 'POST', body: JSON.stringify(body) }),
   put: (path, body) => request(path, { method: 'PUT', body: JSON.stringify(body) }),
+  patch: (path, body) => request(path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: (path) => request(path, { method: 'DELETE' }),
   postBlob: (path, body) => requestBlob(path, { method: 'POST', body: JSON.stringify(body) }),
 };
+
+export async function inicializarCsrf() {
+  await request('/csrf', { method: 'GET' });
+}
 
 export { API_BASE_URL };
