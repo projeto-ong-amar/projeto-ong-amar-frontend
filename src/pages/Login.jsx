@@ -33,10 +33,10 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
     setEnviando(true);
 
     try {
-      await login(email, senha);
-      aoLoginComSucesso?.();
-    } catch (error) {
-      setErro(error.message || 'Não foi possível realizar o login.');
+      const usuario = await login(email, senha);
+      aoLoginComSucesso?.(usuario);
+    } catch {
+      setErro('Não foi possível realizar o login. Verifique suas credenciais e tente novamente.');
     } finally {
       setEnviando(false);
     }

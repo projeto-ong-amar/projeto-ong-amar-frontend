@@ -12,7 +12,7 @@ const NAV_ITEMS = [
   { key: 'configuracoes', label: 'Configurações', icon: 'https://img.icons8.com/ios/50/settings.png' },
 ];
 
-export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
+export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario }) {
 
   // Aumenta o tamanho da fonte até o limite de 130%
   function increaseFontSize() {
@@ -39,8 +39,8 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair }) {
           <img id="sidebar-logo" className={styles.sidebarLogo} src={logo} alt="Logo ONG PCA" />
         </div>
         <div className={styles.brandInfo}>
-          <div className={styles.brandName}>Helena</div>
-          <div className={styles.brandSub}>helena@email.com</div>
+          <div className={styles.brandName}>{usuario?.nome}</div>
+          <div className={styles.brandSub}>{usuario?.email}</div>
         </div>
       </div>
 

@@ -1,6 +1,13 @@
 
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const EVENTO_SESSAO_ENCERRADA = 'sessao-encerrada';
+
+function encerrarSessaoPorNaoAutorizado() {
+  localStorage.removeItem('usuarioLogado');
+  localStorage.removeItem('loggedIn');
+  window.dispatchEvent(new Event(EVENTO_SESSAO_ENCERRADA));
+}
 
 async function extrairCorpo(response) {
   const texto = await response.text();
@@ -39,6 +46,9 @@ async function request(path, options = {}) {
   const corpo = await extrairCorpo(response);
 
   if (!response.ok) {
+    if (response.status === 401) {
+      encerrarSessaoPorNaoAutorizado();
+    }
     throw new Error(extrairMensagemDeErro(corpo, response.status));
   }
 

@@ -6,7 +6,6 @@ import { RelatoriosPage } from './pages/Relatorios.jsx';
 import styles from './App.module.css';
 import CadastroProdutos from './pages/CadastroProdutos.jsx';
 import GerenciarEntrada from './pages/GerenciarEntrada.jsx';
-import { logout } from './services/authService.js';
 
 
 
@@ -30,7 +29,7 @@ const SECTION_LABELS = {
 };
 
 
-function App() {
+function App({ usuario, onSair }) {
   const [activePage, setActivePage] = useState('inicio');
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
@@ -41,13 +40,8 @@ function App() {
       <Sidebar
         activePage={activePage}
         onNavigate={setActivePage}
-        onSair={async () => {
-          try {
-            await logout();
-          } finally {
-            window.location.reload();
-          }
-        }}
+        usuario={usuario}
+        onSair={onSair}
       />
       <div className={styles.main}>
         <Topbar section={sectionLabel} onVoltar={() => setActivePage('inicio')} />
