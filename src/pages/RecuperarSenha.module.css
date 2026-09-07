@@ -67,7 +67,7 @@
   margin-bottom: 10px;
 }
 
-.formularioLogin input[type='email'] {
+.formularioLogin input {
   width: 100%;
   padding: 18px 20px;
   background: #dde0e8;
@@ -93,13 +93,36 @@
   color: #6b7280;
 }
 
-.linkEsqueciSenha a {
+.linkEsqueciSenha a,
+.linkEsqueciSenha button {
   color: #ef4444;
   font-weight: 700;
   text-decoration: none;
 }
 
-.linkEsqueciSenha a:hover { text-decoration: underline; }
+.linkEsqueciSenha button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+
+.linkEsqueciSenha a:hover,
+.linkEsqueciSenha button:hover { text-decoration: underline; }
+
+.espacado { margin-top: 22px; }
+
+.mensagemErro,
+.mensagemSucesso {
+  font-size: calc(14px * var(--escala-fonte));
+  line-height: 1.5;
+  margin: 18px 0 0;
+}
+
+.mensagemErro { color: #b91c1c; }
+.mensagemSucesso { color: #15803d; }
 
 .botaoEntrar {
   margin-top: 26px;

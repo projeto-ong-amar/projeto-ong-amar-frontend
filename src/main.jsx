@@ -5,6 +5,7 @@ import './styles/global.css'
 import App from './App.jsx'
 import Login from './pages/Login.jsx'
 import RecuperarSenha from './pages/RecuperarSenha.jsx'
+import RedefinirSenha from './pages/RedefinirSenha.jsx'
 import {
   EVENTO_SESSAO_ENCERRADA,
   limparSessaoLocal,
@@ -13,7 +14,9 @@ import {
 
 function Root() {
   const [usuario, setUsuario] = useState(null)
-  const [view, setView] = useState('login') 
+  const [view, setView] = useState(() => (
+    window.location.pathname === '/redefinir-senha' ? 'redefinir-senha' : 'login'
+  ))
 
   useEffect(() => {
     limparSessaoLocal()
@@ -52,6 +55,17 @@ function Root() {
 
   if (view === 'recuperar-senha') {
     return <RecuperarSenha onVoltar={() => setView('login')} />
+  }
+
+  if (view === 'redefinir-senha') {
+    return (
+      <RedefinirSenha
+        aoVoltar={() => {
+          window.history.replaceState({}, '', '/')
+          setView('login')
+        }}
+      />
+    )
   }
 
   return (

@@ -23,6 +23,14 @@ export async function login(email, senha) {
   return validarSessao();
 }
 
+export async function solicitarRecuperacaoSenha(email) {
+  await apiClient.post('/usuarios/recuperacao-senha', { email });
+}
+
+export async function redefinirSenha(token, novaSenha) {
+  await apiClient.post('/usuarios/redefinir-senha', { token, novaSenha });
+}
+
 export async function logout() {
   limparSessaoLocal();
   await apiClient.post('/usuarios/logout');

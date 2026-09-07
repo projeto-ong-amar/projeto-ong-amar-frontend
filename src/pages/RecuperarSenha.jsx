@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
+import { solicitarRecuperacaoSenha } from '../services/authService.js';
 import styles from './RecuperarSenha.module.css';
 
 export function RecuperarSenha({ aoVoltar }) {
   const [email, setEmail] = useState('');
   const [enviado, setEnviado] = useState(false);
+  const [enviando, setEnviando] = useState(false);
+  const [erro, setErro] = useState('');
 
 
   const [escala, setEscala] = useState(1);
@@ -17,13 +20,27 @@ export function RecuperarSenha({ aoVoltar }) {
     setEscala((atual) => Math.max(Number((atual - 0.1).toFixed(1)), 0.8)); 
   }
 
-  function lidarComEnvio(evento) {
+  async function lidarComEnvio(evento) {
     evento.preventDefault();
-    if (!email) {
-      alert('Digite seu e-mail.');
+    const emailNormalizado = email.trim();
+
+    if (!emailNormalizado) {
+      setErro('Digite seu e-mail.');
       return;
     }
-    setEnviado(true);
+
+    setEnviando(true);
+    setErro('');
+
+    try {
+      await solicitarRecuperacaoSenha(emailNormalizado);
+      setEnviado(true);
+    } catch (error) {
+      setEnviado(false);
+      setErro(error.message || 'Não foi possível enviar o e-mail de recuperação.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   return (
@@ -62,15 +79,21 @@ export function RecuperarSenha({ aoVoltar }) {
             placeholder="exemplo@gmail.com"
             autoComplete="email"
             value={email}
-            onChange={(evento) => setEmail(evento.target.value)}
+            onChange={(evento) => {
+              setEmail(evento.target.value);
+              setErro('');
+            }}
+            disabled={enviando}
           />
 
           <div className={styles.linkEsqueciSenha}>
-            <a href="#">Reenviar E-mail</a> ← Clique aqui
+            <button type="submit" disabled={enviando}>Reenviar E-mail</button> ← Clique aqui
           </div>
 
-          <button className={styles.botaoEntrar} type="submit">
-            {enviado ? 'E-mail enviado ✓' : 'Enviar'}
+          {erro && <p role="alert">{erro}</p>}
+
+          <button className={styles.botaoEntrar} type="submit" disabled={enviando}>
+            {enviando ? 'Enviando...' : enviado ? 'E-mail enviado' : 'Enviar'}
           </button>
         </form>
       </div>
