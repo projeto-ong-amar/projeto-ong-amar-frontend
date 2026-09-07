@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 
 import logo from '../assets/img/pca-1.png';
+import { login } from '../services/authService.js';
 import styles from './Login.module.css';
 
 export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [altoContraste, setAltoContraste] = useState(false);
+  const [erro, setErro] = useState('');
+  const [enviando, setEnviando] = useState(false);
   
   // Estado para controlar a porcentagem do tamanho da fonte
   const [tamanhoFonte, setTamanhoFonte] = useState(100);
@@ -24,9 +27,19 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
     setTamanhoFonte((tamanhoAtual) => Math.max(tamanhoAtual - 5, 85)); // Limite mínimo de 85%
   }
 
-  function lidarComEnvio(evento) {
+  async function lidarComEnvio(evento) {
     evento.preventDefault();
-    aoLoginComSucesso?.();
+    setErro('');
+    setEnviando(true);
+
+    try {
+      await login(email, senha);
+      aoLoginComSucesso?.();
+    } catch (error) {
+      setErro(error.message || 'Não foi possível realizar o login.');
+    } finally {
+      setEnviando(false);
+    }
   }
 
   function alternarAltoContraste() {
@@ -64,6 +77,7 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
             autoComplete="email"
             value={email}
             onChange={(evento) => setEmail(evento.target.value)}
+            required
           />
 
           <label className={`${styles.rotuloCampo} ${styles.espacado}`} htmlFor="senha">
@@ -77,7 +91,14 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
             autoComplete="current-password"
             value={senha}
             onChange={(evento) => setSenha(evento.target.value)}
+            required
           />
+
+          {erro && (
+            <p className={styles.mensagemErro} role="alert">
+              {erro}
+            </p>
+          )}
 
           <div className={styles.linkEsqueciSenha}>
             <a
@@ -92,8 +113,8 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
             ← Clique aqui
           </div>
 
-          <button className={styles.botaoEntrar} type="submit">
-            Entrar
+          <button className={styles.botaoEntrar} type="submit" disabled={enviando}>
+            {enviando ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </div>

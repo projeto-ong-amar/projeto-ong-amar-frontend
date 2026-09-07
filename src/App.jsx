@@ -6,6 +6,7 @@ import { RelatoriosPage } from './pages/Relatorios.jsx';
 import styles from './App.module.css';
 import CadastroProdutos from './pages/CadastroProdutos.jsx';
 import GerenciarEntrada from './pages/GerenciarEntrada.jsx';
+import { logout } from './services/authService.js';
 
 
 
@@ -40,9 +41,12 @@ function App() {
       <Sidebar
         activePage={activePage}
         onNavigate={setActivePage}
-        onSair={() => {
-          localStorage.removeItem('loggedIn');
-          window.location.reload();
+        onSair={async () => {
+          try {
+            await logout();
+          } finally {
+            window.location.reload();
+          }
         }}
       />
       <div className={styles.main}>
