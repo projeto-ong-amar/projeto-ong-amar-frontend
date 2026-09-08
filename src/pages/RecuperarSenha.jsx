@@ -3,21 +3,28 @@ import logo from '../assets/img/pca-1.png';
 import { solicitarRecuperacaoSenha } from '../services/authService.js';
 import styles from './RecuperarSenha.module.css';
 
-export function RecuperarSenha({ aoVoltar }) {
+export function RecuperarSenha({ onNavigate, onVoltar }) {
   const [email, setEmail] = useState('');
   const [enviado, setEnviado] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
 
-
   const [escala, setEscala] = useState(1);
 
   function aumentarTamanhoFonte() {
-    setEscala((atual) => Math.min(Number((atual + 0.1).toFixed(1)), 1.4)); 
+    setEscala((atual) => Math.min(Number((atual + 0.1).toFixed(1)), 1.4));
   }
 
   function diminuirTamanhoFonte() {
-    setEscala((atual) => Math.max(Number((atual - 0.1).toFixed(1)), 0.8)); 
+    setEscala((atual) => Math.max(Number((atual - 0.1).toFixed(1)), 0.8));
+  }
+
+  function tratarVoltar() {
+    if (onVoltar) {
+      onVoltar();
+    } else if (onNavigate) {
+      onNavigate('inicio');
+    }
   }
 
   async function lidarComEnvio(evento) {
@@ -44,11 +51,15 @@ export function RecuperarSenha({ aoVoltar }) {
   }
 
   return (
-    <div 
-      className={styles.corpoLogin} 
+    <div
+      className={styles.corpoLogin}
       style={{ '--escala-fonte': escala }}
     >
-      <button className={`${styles.botaoVoltar} ${styles.botaoVoltarRecuperar}`} type="button" onClick={aoVoltar}>
+      <button
+        className={`${styles.botaoVoltar} ${styles.botaoVoltarRecuperar}`}
+        type="button"
+        onClick={tratarVoltar}
+      >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12" />
           <polyline points="12 19 5 12 12 5" />
