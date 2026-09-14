@@ -31,6 +31,10 @@ export async function redefinirSenha(token, novaSenha) {
   await apiClient.post('/usuarios/redefinir-senha', { token, novaSenha });
 }
 
+export function cadastrarUsuario({ nome, email, senha, tipoUsuario, status }) {
+  return apiClient.post('/usuarios/cadastrar', { nome, email, senha, tipoUsuario, status });
+}
+
 export async function logout() {
   limparSessaoLocal();
   await apiClient.post('/usuarios/logout');

@@ -8,6 +8,7 @@ import CadastroProdutos from './pages/CadastroProdutos.jsx';
 import GerenciarEntrada from './pages/GerenciarEntrada.jsx';
 import RecuperarSenha from './pages/RecuperarSenha.jsx';
 import RedefinirSenha from './pages/RedefinirSenha.jsx';
+import CadastroUsuario from './pages/CadastroUsuario.jsx';
 
 const PAGES = {
   inicio: Inicio,
@@ -16,6 +17,7 @@ const PAGES = {
   'gerenciar-entrada': GerenciarEntrada,
   'recuperar-senha': RecuperarSenha,
   'redefinir-senha': RedefinirSenha,
+  'cadastro-usuario': CadastroUsuario,
 };
 
 const SECTION_LABELS = {
