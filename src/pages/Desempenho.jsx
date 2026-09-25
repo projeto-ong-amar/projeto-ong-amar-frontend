@@ -1,6 +1,12 @@
+import { useEffect } from 'react'
 import style from './Desempenho.module.css'
+import { todaysDate } from '../utils/dateSelector'
 
 export function Desempenho() {
+  useEffect(() => {
+    todaysDate('dateInput')
+  }, [])
+
   return (
     <>
       <div className={ style.divProximaDoacao }>
