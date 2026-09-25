@@ -9,6 +9,7 @@ import GerenciarEntrada from './pages/GerenciarEntrada.jsx';
 import RecuperarSenha from './pages/RecuperarSenha.jsx';
 import RedefinirSenha from './pages/RedefinirSenha.jsx';
 import CadastroUsuario from './pages/CadastroUsuario.jsx';
+import { Desempenho } from './pages/Desempenho.jsx';
 
 const PAGES = {
   inicio: Inicio,
@@ -18,6 +19,7 @@ const PAGES = {
   'recuperar-senha': RecuperarSenha,
   'redefinir-senha': RedefinirSenha,
   'cadastro-usuario': CadastroUsuario,
+  desempenho: Desempenho
 };
 
 const SECTION_LABELS = {

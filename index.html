@@ -35,8 +35,8 @@
     const interval = setInterval(() => {
       const btn = document.querySelector('[vw-access-button]');
       if (btn) {
-        btn.style.top = 'auto';
-        btn.style.bottom = '-150px'; // Altere este valor em px para ajustar a altura desejada
+        btn.style.top = '';
+        btn.style.bottom = '5px';
         clearInterval(interval);
       }
     }, 100);
