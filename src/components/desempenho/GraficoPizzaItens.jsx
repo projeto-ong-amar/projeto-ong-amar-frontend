@@ -4,7 +4,7 @@ export function GraficoPizzaItens() {
   return (
     <>
     <div className={ style.card }>
-      Grafico pizza
+      <h2 className={ style.cardTitle }>Porcentagem dos itens armazenados</h2>
     </div>
     </>
   )

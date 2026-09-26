@@ -3,4 +3,5 @@
 .card {
   background-color: var(--white);
   padding: 20px;
+  gap: 40px;
 }
