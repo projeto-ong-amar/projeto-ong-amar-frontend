@@ -3,15 +3,6 @@ import { Chart } from "react-google-charts"
 import { getDadosGraficoBarra } from '../../services/desempenhoService'
 import { useEffect, useState } from 'react';
 
-// const data = [
-//   ["Mês", "Entradas", "Saídas"],
-//   ["Março", 340, 480],
-//   ["Abril", 480, 310],
-//   ["Maio", 450, 320],
-// ]
-
-const data = []
-
 const options = {
   bars: "vertical",
   legend: { position: "top" },
@@ -20,7 +11,6 @@ const options = {
 
 export function GraficoDistribuicao() {
 
-  const [dados, setDados] = useState([])
   const [dadosGrafico, setDadosGrafico] = useState([
     ["Mês", "Entradas", "Saídas"]
   ])
@@ -59,7 +49,7 @@ export function GraficoDistribuicao() {
       data={ dadosGrafico }
       options={ options }
       width="100%"
-      height={ 238 }
+      height="100%"
     />
     </div>
     </>
