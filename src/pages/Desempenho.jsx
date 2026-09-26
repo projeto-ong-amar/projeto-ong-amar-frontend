@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import style from './Desempenho.module.css'
 import { todaysDate } from '../utils/dateSelector'
+import { CardsDesempenho } from '../components/desempenho/CardsDesempenho'
 
 export function Desempenho() {
   useEffect(() => {
@@ -39,6 +40,40 @@ export function Desempenho() {
             className={ style.inputDate }
           />
         </span>
+      </div>
+      <div className={ style.divCards }>
+        <CardsDesempenho 
+          cor="var(--blue-icon)"
+          icone="box"
+          data={ 20 }
+          dataLabel="itens"
+          descricao="Total de itens distribuidos entre alimentos e produtos de higiene"
+          titulo="Estoque Atual"
+        />
+        <CardsDesempenho 
+          cor="var(--red)" 
+          icone="alert"
+          data={ 4 }
+          dataLabel="produtos"
+          descricao="Vencem nos próximos 30 dias"
+          titulo="Risco de Vencimento"
+        />
+        <CardsDesempenho 
+          cor="var(--green-icon)"
+          icone="hand"
+          data={ 200 }
+          dataLabel="itens"
+          descricao="Quantidade de entradas no estoque nesse mês"
+          titulo="Doações Recebidas"
+        />
+        <CardsDesempenho 
+          cor="var(--orange-icon)"
+          icone="doacao"
+          data={ 200 }
+          dataLabel="itens"
+          descricao="Quantidade de saídas no estoque esse mês"
+          titulo="Itens Distribuídos"
+        />
       </div>
     </>
   )
