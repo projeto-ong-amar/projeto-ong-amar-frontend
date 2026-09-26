@@ -1,14 +1,6 @@
+@import './ConfigGlobalCards.css';
+
 .card {
-  background-color: var(--white);
-  padding: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow);
-  border-radius: var(--radius-sm);
-  min-width: 0;
-  box-sizing: border-box;
   height: 250px;
   gap: 20px;
 }

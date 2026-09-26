@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import style from './Desempenho.module.css'
 import { todaysDate } from '../utils/dateSelector'
 import { CardsDesempenho } from '../components/desempenho/CardsDesempenho'
+import { GraficoDistribuicao } from '../components/desempenho/GraficoDistribuicao'
+import { GraficoPizzaItens } from '../components/desempenho/GraficoPizzaItens'
 
 export function Desempenho() {
   useEffect(() => {
@@ -74,6 +76,10 @@ export function Desempenho() {
           descricao="Quantidade de saídas no estoque esse mês"
           titulo="Itens Distribuídos"
         />
+      </div>
+      <div className={ style.divGraficosBarraEPizza }>
+        <GraficoDistribuicao />
+        <GraficoPizzaItens />
       </div>
     </>
   )
