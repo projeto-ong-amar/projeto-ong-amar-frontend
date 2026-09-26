@@ -53,10 +53,11 @@ const REPORT_AI_CONFIG = {
 };
 
 
-export async function baixarRelatorioIA(reportId) {
+export async function baixarRelatorioIA(reportId, signal) {
   const config = REPORT_AI_CONFIG[reportId];
   if (!config) throw new Error(`Relatório desconhecido: ${reportId}`);
 
-  const blob = await apiClient.postBlob(config.endpoint, { pergunta: config.texto });
+  
+  const blob = await apiClient.postBlob(config.endpoint, { pergunta: config.texto }, { signal });
   return { blob, filename: config.filename };
 }

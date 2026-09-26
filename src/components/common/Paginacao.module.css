@@ -1,0 +1,69 @@
+.paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px 0 4px;
+}
+
+.botaoPagina {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 6px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.botaoPagina:hover {
+    background: var(--bg);
+}
+
+.paginaAtiva {
+    background: var(--yellow);
+    color: var(--text-dark);
+}
+
+.paginaAtiva:hover {
+    background: var(--yellow);
+}
+
+.reticencias {
+    color: var(--text-light);
+    font-size: 0.8125rem;
+    padding: 0 2px;
+}
+
+.botaoSeta {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--border);
+    background: #fff;
+    border-radius: 8px;
+    color: var(--text-mid);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+}
+
+.botaoSeta svg {
+    width: 16px;
+    height: 16px;
+}
+
+.botaoSeta:hover:not(:disabled) {
+    border-color: var(--blue);
+    color: var(--blue);
+}
+
+.botaoSeta:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

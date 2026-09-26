@@ -19,7 +19,7 @@ function paraBr(dataIso) {
 
 const formularioVazio = { nome: '', fkCategoria: '', unidadeMedida: '', dataCadastro: hoje() };
 
-export function CadastroProdutos() {
+export function CadastroProdutos({ onNavigate }) {
   const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -266,7 +266,13 @@ export function CadastroProdutos() {
             <p>Veja os produtos cadastrados no estoque.</p>
           </div>
         </div>
-        <button className={styles.botaoHistorico} type="button" onClick={carregarDados}>Histórico</button>
+        <button
+          className={styles.botaoHistorico}
+          type="button"
+          onClick={() => onNavigate?.('historico-produtos')}
+        >
+          Histórico
+        </button>
       </div>
 
       <div className={styles.envoltorioTabela}>

@@ -1,6 +1,5 @@
-
 .content {
-  padding: var(--space-xl) 36px;
+  padding: var(--space-xl) 2.25rem;
   flex: 1;
   overflow-y: auto;
   min-height: 0;
@@ -10,15 +9,15 @@
 .pageHeader {
   display: flex;
   align-items: flex-start;
-  gap: 18px;
-  margin-bottom: 30px;
+  gap: 1.125rem;
+  margin-bottom: 1.875rem;
 }
 
 .pageHeaderIcon {
-  width: 60px;
-  height: 60px;
+  width: 3.75rem;
+  height: 3.75rem;
   background: var(--blue-bg);
-  border-radius: 14px;
+  border-radius: 0.875rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -26,64 +25,65 @@
 }
 
 .pageHeaderIcon svg {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
   color: var(--blue);
 }
 
 .pageHeader h1 {
-  font-size: 26px;
+  font-size: 1.625rem;
   font-weight: 800;
   color: var(--text-dark);
   line-height: 1.2;
 }
 
 .pageHeader p {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: var(--text-light);
-  margin-top: 4px;
+  margin-top: 0.25rem;
 }
 
 .periodBar {
   background: #fff;
-  border: 1.5px solid var(--border);
+  border: 0.09375rem solid var(--border);
   border-radius: var(--radius);
-  padding: 14px 20px;
+  padding: 0.875rem 1.25rem;
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
+  gap: 0.875rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .periodLabel {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: var(--text-dark);
   white-space: nowrap;
 }
 
 .periodLabel svg {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   color: var(--text-mid);
 }
 
 .periodOptions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   flex-wrap: wrap;
 }
 
 .periodBtn {
-  padding: 7px 18px;
-  border-radius: 7px;
-  border: 1.5px solid var(--border);
+  padding: 0.4375rem 1.125rem;
+  border-radius: 0.4375rem;
+  border: 0.09375rem solid var(--border);
   background: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-mid);
   cursor: pointer;
@@ -104,42 +104,163 @@
 .periodCustom {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 7px;
-  border: 1.5px solid var(--border);
+  gap: 0.5rem;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 0.4375rem;
+  border: 0.09375rem solid var(--border);
   background: #fff;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--text-mid);
   cursor: pointer;
-  margin-left: 4px;
+  margin-left: 0.25rem;
 }
 
 .periodCustom svg {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .periodCustom .chevron {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
+  transition: transform 0.15s;
+}
+
+.chevronAberto {
+  transform: rotate(180deg);
+}
+
+.periodCustomAtivo {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+
+.periodCustomAtivo svg {
+  color: #fff;
+}
+
+.periodPersonalizado {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.875rem;
+  flex-basis: 100%;
+  margin-top: 0.75rem;
+  padding-top: 0.875rem;
+  border-top: 0.0625rem solid var(--border);
+  flex-wrap: wrap;
+}
+
+.periodPersonalizadoCampo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.periodPersonalizadoCampo label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.envoltorioData {
+  display: flex;
+  align-items: center;
+}
+
+.envoltorioData input {
+  padding: 0.625rem 0.875rem;
+  border: 0.09375rem solid var(--border);
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.8125rem;
+  color: var(--text-dark);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.envoltorioData input:focus {
+  border-color: var(--blue);
+  background: #fff;
+}
+
+.botaoCalendario {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.4375rem;
+  background: #FEF3C7;
+  border: 0.09375rem solid var(--border);
+  border-left: none;
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #B45309;
+  transition: background 0.15s;
+}
+
+.botaoCalendario:hover {
+  background: #FDE68A;
+}
+
+.botaoCalendario img {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.envoltorioData input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.envoltorioData input[type="date"] {
+  appearance: none;
+}
+
+.periodAplicarBtn {
+  align-self: flex-end;
+  padding: 0.625rem 1.125rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.periodAplicarBtn:hover {
+  background: var(--blue-dark);
+}
+
+.periodAplicarBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .reportsList {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 0.875rem;
 }
 
 .reportCard {
   background: #fff;
-  border: 1.5px solid var(--border);
+  border: 0.09375rem solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 24px;
+  padding: 1.25rem 1.5rem;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.25rem;
   box-shadow: var(--shadow);
   transition: box-shadow 0.2s;
 }
@@ -149,9 +270,9 @@
 }
 
 .reportIcon {
-  width: 64px;
-  height: 64px;
-  border-radius: 12px;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -159,8 +280,8 @@
 }
 
 .reportIcon img {
-  width: 36px;
-  height: 36px;
+  width: 2.25rem;
+  height: 2.25rem;
 }
 
 .iconGreen {
@@ -185,62 +306,38 @@
 }
 
 .reportInfo h3 {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 800;
   color: var(--text-dark);
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
 }
 
 .reportInfo p {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-light);
   line-height: 1.5;
-  max-width: 460px;
+  max-width: 28.75rem;
 }
 
 .reportActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   flex-shrink: 0;
-}
-
-.btnVer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--blue);
-  color: #fff;
-  border: none;
-  padding: 11px 22px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
-}
-
-.btnVer:hover {
-  background: var(--blue-dark);
-}
-
-.btnVer svg {
-  width: 18px;
-  height: 18px;
+  margin-right: 1.5rem;
 }
 
 .btnBaixar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 0.125rem;
   background: #fff;
   color: var(--text-mid);
-  border: 1.5px solid var(--border);
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 13px;
+  border: 0.09375rem solid var(--border);
+  padding: 0.625rem 1.125rem;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.15s;
@@ -256,16 +353,16 @@
 .btnBaixarInner {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 }
 
 .btnBaixar svg {
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .btnBaixar .excelLabel {
-  font-size: 11px;
+  font-size: 0.6875rem;
   color: var(--text-light);
   font-weight: 600;
 }
@@ -288,25 +385,65 @@
 }
 
 .loadingCard {
+  position: relative;
   background: #fff;
-  border-radius: 12px;
-  padding: 32px 48px;
+  border-radius: 0.75rem;
+  padding: 2rem 3rem;
   text-align: center;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.loadingFechar {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F3F4F6;
+  border: none;
+  border-radius: 50%;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.loadingFechar:hover {
+  background: #E5E7EB;
+  color: var(--text-dark);
+}
+
+.loadingFechar svg {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
 .loadingCard .modalSpinner {
-  margin: 0 auto 16px;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 auto 1rem;
+  border: 0.1875rem solid var(--border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: girarSpinner 0.8s linear infinite;
+}
+
+@keyframes girarSpinner {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .loadingTitle {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--text-dark);
-  margin-bottom: 4px;
+  margin-bottom: 0.25rem;
 }
 
 .loadingSub {
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--text-light);
 }
