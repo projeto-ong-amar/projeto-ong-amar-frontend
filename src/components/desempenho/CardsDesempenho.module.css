@@ -7,7 +7,8 @@
   justify-content: center;
   box-shadow: var(--shadow);
   border-radius: var(--radius-sm);
-  width: 280px;
+  min-width: 0;
+  box-sizing: border-box;
   height: 250px;
   gap: 20px;
 }
