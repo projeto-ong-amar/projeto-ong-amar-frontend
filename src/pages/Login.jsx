@@ -11,20 +11,18 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
   
-  // Estado para controlar a porcentagem do tamanho da fonte
   const [tamanhoFonte, setTamanhoFonte] = useState(100);
 
-  // Aplica o tamanho da fonte no elemento <html> sempre que o estado mudar
   useEffect(() => {
     document.documentElement.style.fontSize = `${tamanhoFonte}%`;
   }, [tamanhoFonte]);
 
   function aumentarTamanhoFonte() {
-    setTamanhoFonte((tamanhoAtual) => Math.min(tamanhoAtual + 5, 130)); // Limite máximo de 130%
+    setTamanhoFonte((tamanhoAtual) => Math.min(tamanhoAtual + 5, 130)); 
   }
 
   function diminuirTamanhoFonte() {
-    setTamanhoFonte((tamanhoAtual) => Math.max(tamanhoAtual - 5, 85)); // Limite mínimo de 85%
+    setTamanhoFonte((tamanhoAtual) => Math.max(tamanhoAtual - 5, 85));
   }
 
   async function lidarComEnvio(evento) {

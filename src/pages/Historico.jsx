@@ -4,21 +4,7 @@ import { Paginacao } from '../components/common/Paginacao.jsx';
 
 const TAMANHO_PAGINA_PADRAO = 10;
 
-/**
- * Tela genérica de "Histórico", usada por Gerenciar Entrada, Gerenciar Saída,
- * Cadastro de Produtos e Cadastro de Usuário.
- *
- * Props:
- * - icone: url do ícone exibido ao lado do título
- * - titulo / subtitulo: textos do cabeçalho
- * - colunas: [{ chave, rotulo, render(item, indice) }]
- * - carregarPagina(pagina, tamanho) => Promise<{ itens, totalPaginas, totalElementos }>
- * - tamanhoPagina: itens por página (padrão 10)
- * - aoEditar(item): opcional, exibido no menu de ações
- * - aoExcluir(item): opcional (async), exibido no menu de ações com modal de confirmação
- * - mensagemVazio: texto exibido quando não há registros
- * - entidadeNome: nome usado nas mensagens do modal de exclusão (ex: "entrada")
- */
+
 export function Historico({
   icone,
   titulo,
@@ -61,7 +47,7 @@ export function Historico({
 
   useEffect(() => {
     buscar(pagina);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [pagina, carregarPagina]);
 
   function mudarPagina(novaPagina) {

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import styles from './GerenciarEntrada.module.css';
 import { listarProdutos } from '../services/produtoService';
+import { getUsuarioLogado } from '../services/authService.js';
 import {
   listarHistoricoEntrada,
   registrarEntrada,
@@ -8,8 +9,11 @@ import {
   removerEntrada,
 } from '../services/entradaService';
 
-const FK_USUARIO_PADRAO = 1;
 const MOTIVO_PADRAO = 'Entrada registrada no sistema';
+
+function fkUsuarioAtual() {
+  return getUsuarioLogado()?.id ?? null;
+}
 
 const formularioVazio = { produto: '', quantidade: '', dataEntrada: '', dataValidade: '' };
 
@@ -49,7 +53,7 @@ export function GerenciarEntrada({ onNavigate }) {
     try {
       const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
         listarProdutos(),
-        listarHistoricoEntrada(0, 10),
+        listarHistoricoEntrada(0, 1),
       ]);
 
       setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
@@ -94,7 +98,7 @@ export function GerenciarEntrada({ onNavigate }) {
         dataValidade: formulario.dataValidade || null,
         motivo: MOTIVO_PADRAO,
         fkProduto: Number(formulario.produto),
-        fkUsuario: FK_USUARIO_PADRAO,
+        fkUsuario: fkUsuarioAtual(),
       });
       setSucesso('Entrada registrada com sucesso!');
       setFormulario(formularioVazio);
@@ -134,7 +138,7 @@ export function GerenciarEntrada({ onNavigate }) {
         dataValidade: formularioEdicao.dataValidade || null,
         motivo: MOTIVO_PADRAO,
         fkProduto: Number(formularioEdicao.produto),
-        fkUsuario: FK_USUARIO_PADRAO,
+        fkUsuario: fkUsuarioAtual(),
       });
       setSucesso('Entrada atualizada com sucesso!');
       setLinhaEdicao(null);
@@ -536,7 +540,7 @@ export function GerenciarEntrada({ onNavigate }) {
           </div>
           <div className={styles.dica}>
                   <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
-                  <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique em Ajuda.</span>
+                  <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique no ChatBot</span>
           </div>
         </div>
 
