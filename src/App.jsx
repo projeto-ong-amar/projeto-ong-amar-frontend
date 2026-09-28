@@ -61,11 +61,13 @@ function App({ usuario, onSair }) {
       <div className={styles.main}>
         <Topbar section={sectionLabel} onVoltar={handleVoltar} />
         {PageComponent ? (
-          <PageComponent 
-            onNavigate={setActivePage} 
-            onVoltar={handleVoltar}
-            aoVoltar={handleVoltar}
-          />
+          <main className={styles.pageScroll}>
+            <PageComponent 
+              onNavigate={setActivePage} 
+              onVoltar={handleVoltar}
+              aoVoltar={handleVoltar}
+            />
+          </main>
         ) : (
           <main className={styles.content}>
             <p>Página "{sectionLabel}" ainda não implementada.</p>

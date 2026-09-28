@@ -3,12 +3,6 @@ import style from './GraficoPizzaItens.module.css'
 import { Chart } from "react-google-charts"
 import { getDadosGraficoPizza } from '../../services/desempenhoService';
 
-// const dadosGrafico = [
-//     ["Tipo", "Quantidade"],
-//     ["Alimentos", 9],
-//     ["Higiene", 2],
-//   ];
-
 const options = {
   legend: { position: "right" },
   colors: ["#3B82F6", "#4CAF50"],
