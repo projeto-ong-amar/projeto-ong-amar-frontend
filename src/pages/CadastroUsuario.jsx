@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import { cadastrarUsuario } from '../services/authService.js';
-// import {
-//   salvarUsuarioNoHistorico,
-//   atualizarUsuarioNoHistorico,
-//   removerUsuarioDoHistorico,
-// } from '../services/usuarioHistoricoLocal.js';
 import styles from './CadastroUsuario.module.css';
 
 const formularioInicial = {
   nome: '',
   email: '',
+  senha: '',
+  confirmarSenha: '',
   tipoUsuario: 'VOLUNTARIO',
   status: 'Ativo',
 };
+
+const REGEX_SENHA = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const AJUDA_SENHA = 'Mínimo de 8 caracteres, com letra maiúscula, minúscula, número e caractere especial (@$!%*?&).';
 
 export function CadastroUsuario({ onNavigate }) {
   const [formulario, setFormulario] = useState(formularioInicial);
@@ -42,6 +42,15 @@ export function CadastroUsuario({ onNavigate }) {
   async function cadastrar(evento) {
     evento.preventDefault();
 
+    if (formulario.senha !== formulario.confirmarSenha) {
+      setErro('As senhas não coincidem.');
+      return;
+    }
+    if (!REGEX_SENHA.test(formulario.senha)) {
+      setErro(`Senha inválida. ${AJUDA_SENHA}`);
+      return;
+    }
+
     setEnviando(true);
     setErro('');
     setSucesso('');
@@ -49,14 +58,10 @@ export function CadastroUsuario({ onNavigate }) {
     try {
       await cadastrarUsuario(formulario);
       setSucesso('Usuário cadastrado com sucesso!');
-      const novoUsuario = {
+      setUltimoUsuario({
         ...formulario,
-        id: Date.now(),
-        criadoEm: Date.now(),
         dataCadastro: new Intl.DateTimeFormat('pt-BR').format(new Date()),
-      };
-      setUltimoUsuario(novoUsuario);
-      salvarUsuarioNoHistorico(novoUsuario);
+      });
       setFormulario(formularioInicial);
     } catch (error) {
       setErro(error.message || 'Não foi possível cadastrar o usuário.');
@@ -84,9 +89,6 @@ export function CadastroUsuario({ onNavigate }) {
   function salvarEdicao(evento) {
     evento.preventDefault();
     setUltimoUsuario((anterior) => ({ ...anterior, ...formularioEdicao }));
-    if (ultimoUsuario?.id) {
-      atualizarUsuarioNoHistorico(ultimoUsuario.id, formularioEdicao);
-    }
     setEdicaoAberta(false);
   }
 
@@ -96,9 +98,6 @@ export function CadastroUsuario({ onNavigate }) {
   }
 
   function confirmarExclusao() {
-    if (ultimoUsuario?.id) {
-      removerUsuarioDoHistorico(ultimoUsuario.id);
-    }
     setUltimoUsuario(null);
     setExclusaoAberta(false);
   }
@@ -131,7 +130,18 @@ export function CadastroUsuario({ onNavigate }) {
           </div>
 
           <div className={styles.campo}>
-            <label htmlFor="tipo-usuario">3. Tipo de Usuário <span className={styles.obrigatorio}>*</span></label>
+            <label htmlFor="senha-usuario">3. Senha <span className={styles.obrigatorio}>*</span></label>
+            <input id="senha-usuario" type="password" placeholder="Digite a senha" value={formulario.senha} onChange={alterarCampo('senha')} minLength={8} maxLength={25} autoComplete="new-password" required />
+            <p className={styles.ajudaStatus}><img src="https://img.icons8.com/ios-filled/50/2563EB/info.png" alt="" />{AJUDA_SENHA}</p>
+          </div>
+
+          <div className={styles.campo}>
+            <label htmlFor="confirmar-senha-usuario">4. Confirmar Senha <span className={styles.obrigatorio}>*</span></label>
+            <input id="confirmar-senha-usuario" type="password" placeholder="Digite a senha novamente" value={formulario.confirmarSenha} onChange={alterarCampo('confirmarSenha')} minLength={8} maxLength={25} autoComplete="new-password" required />
+          </div>
+
+          <div className={styles.campo}>
+            <label htmlFor="tipo-usuario">5. Tipo de Usuário <span className={styles.obrigatorio}>*</span></label>
             <select id="tipo-usuario" value={formulario.tipoUsuario} onChange={alterarCampo('tipoUsuario')} required>
               <option value="VOLUNTARIO">Voluntário</option>
               <option value="ADMINISTRADOR">Administrador</option>
@@ -139,7 +149,7 @@ export function CadastroUsuario({ onNavigate }) {
           </div>
 
           <div className={`${styles.campo} ${styles.campoStatus}`}>
-            <span className={styles.rotulo}>4. Status <span className={styles.obrigatorio}>*</span></span>
+            <span className={styles.rotulo}>6. Status <span className={styles.obrigatorio}>*</span></span>
             <label className={styles.interruptor} htmlFor="status-usuario">
               <input id="status-usuario" type="checkbox" checked={formulario.status === 'Ativo'} onChange={(evento) => setFormulario((anterior) => ({ ...anterior, status: evento.target.checked ? 'Ativo' : 'Inativo' }))} />
               <span className={styles.trilho} aria-hidden="true" />
@@ -222,7 +232,7 @@ export function CadastroUsuario({ onNavigate }) {
 
       <div className={styles.dica}>
         <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
-        <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique em Ajuda.</span>
+        <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique no ChatBot</span>
       </div>
 
       {edicaoAberta && (

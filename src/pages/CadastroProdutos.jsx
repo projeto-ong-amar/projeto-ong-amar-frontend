@@ -19,6 +19,11 @@ function paraBr(dataIso) {
 
 const formularioVazio = { nome: '', fkCategoria: '', unidadeMedida: '', dataCadastro: hoje() };
 
+function obterUltimoProduto(lista) {
+  if (!lista.length) return null;
+  return lista.reduce((maisRecente, atual) => ((atual.id ?? 0) > (maisRecente.id ?? 0) ? atual : maisRecente));
+}
+
 export function CadastroProdutos({ onNavigate }) {
   const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
@@ -35,32 +40,33 @@ export function CadastroProdutos({ onNavigate }) {
 
   const inputDataCadastroRef = useRef(null);
   const inputEditDataCadastroRef = useRef(null);
+  const ultimoProduto = obterUltimoProduto(produtos);
 
   useEffect(() => {
     carregarDados();
   }, []);
 
   async function carregarDados() {
-  setCarregando(true);
-  setErro('');
-  try {
-    const [resultadoCategorias, resultadoProdutos] = await Promise.allSettled([
-      listarCategorias(),
-      listarProdutos(),
-    ]);
+    setCarregando(true);
+    setErro('');
+    try {
+      const [resultadoCategorias, resultadoProdutos] = await Promise.allSettled([
+        listarCategorias(),
+        listarProdutos(),
+      ]);
 
-    setCategorias(resultadoCategorias.status === 'fulfilled' ? (resultadoCategorias.value || []) : []);
-    setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
+      setCategorias(resultadoCategorias.status === 'fulfilled' ? (resultadoCategorias.value || []) : []);
+      setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
 
-    if (resultadoCategorias.status === 'rejected') {
-      setErro(resultadoCategorias.reason?.message || 'Não foi possível carregar as categorias.');
+      if (resultadoCategorias.status === 'rejected') {
+        setErro(resultadoCategorias.reason?.message || 'Não foi possível carregar as categorias.');
+      }
+    } catch (e) {
+      setErro(e.message || 'Não foi possível carregar os dados.');
+    } finally {
+      setCarregando(false);
     }
-  } catch (e) {
-    setErro(e.message || 'Não foi possível carregar os dados.');
-  } finally {
-    setCarregando(false);
   }
-}
 
   function lidarComMudanca(campo) {
     return (evento) => setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
@@ -262,7 +268,7 @@ export function CadastroProdutos({ onNavigate }) {
         <div className={styles.tituloHistorico}>
           <img src="https://img.icons8.com/ios/50/6B7280/time-machine.png" alt="" />
           <div>
-            <h2>Produtos Cadastrados</h2>
+            <h2>Último Produto Cadastrado</h2>
             <p>Veja os produtos cadastrados no estoque.</p>
           </div>
         </div>
@@ -290,10 +296,10 @@ export function CadastroProdutos({ onNavigate }) {
             {carregando && (
               <tr><td colSpan={5}>Carregando...</td></tr>
             )}
-            {!carregando && produtos.length === 0 && (
+            {!carregando && !ultimoProduto && (
               <tr><td colSpan={5}>Nenhum produto cadastrado.</td></tr>
             )}
-            {!carregando && produtos.map((item, indice) => (
+            {!carregando && [ultimoProduto].filter(Boolean).map((item, indice) => (
               <tr key={item.id ?? indice}>
                 <td>{item.nome}</td>
                 <td>{item.unidadeMedida}</td>
@@ -343,7 +349,7 @@ export function CadastroProdutos({ onNavigate }) {
       <div className={styles.dica}>
         <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
         <span>
-          <strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique em Ajuda.
+          <strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique no ChatBot
         </span>
       </div>
 

@@ -60,7 +60,6 @@ export function HistoricoEntrada({ onNavigate }) {
           render: (item) => `+${item.quantidade}`,
         },
         { chave: 'categoria', rotulo: 'Categoria', render: (item) => categoriaProduto(item) },
-        { chave: 'motivo', rotulo: 'Motivo', render: (item) => item.motivo || '-' },
       ]}
     />
   );

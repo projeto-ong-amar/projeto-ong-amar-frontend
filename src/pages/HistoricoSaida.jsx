@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import styles from './Historico.module.css';
 import Historico from './Historico.jsx';
 import { listarProdutos } from '../services/produtoService';
-// import { listarHistoricoSaida, removerSaida } from '../services/saidaService';
+import { listarHistoricoSaida, removerSaida } from '../services/saidaService';
+import { rotuloMotivoSaida } from '../utils/motivoSaida';
 
 function paraBr(dataIso) {
   if (!dataIso) return '';
@@ -63,7 +64,7 @@ export function HistoricoSaida({ onNavigate }) {
         {
           chave: 'motivo',
           rotulo: 'Motivo',
-          render: (item) => (item.perda ? 'Perda' : item.motivo || 'Doação'),
+          render: (item) => rotuloMotivoSaida(item.motivo),
         },
       ]}
     />

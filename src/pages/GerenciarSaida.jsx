@@ -1,14 +1,18 @@
 import { useEffect, useState, useRef } from 'react';
 import styles from './GerenciarSaida.module.css';
 import { listarProdutos } from '../services/produtoService';
-// import {
-//   listarHistoricoSaida,
-//   registrarSaida,
-//   atualizarSaida,
-//   removerSaida,
-// } from '../services/saidaService';
+import { getUsuarioLogado } from '../services/authService.js';
+import {
+  listarHistoricoSaida,
+  registrarSaida,
+  atualizarSaida,
+  removerSaida,
+} from '../services/saidaService';
+import { formatarMotivoSaida, interpretarMotivoSaida, rotuloMotivoSaida } from '../utils/motivoSaida';
 
-const FK_USUARIO_PADRAO = 1;
+function fkUsuarioAtual() {
+  return getUsuarioLogado()?.id ?? null;
+}
 
 const formularioVazio = { produto: '', quantidade: '', dataSaida: '', motivo: '', perda: false };
 
@@ -46,7 +50,7 @@ export function GerenciarSaida({ onNavigate }) {
     try {
       const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
         listarProdutos(),
-        listarHistoricoSaida(0, 10),
+        listarHistoricoSaida(0, 1),
       ]);
 
       setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
@@ -92,10 +96,9 @@ export function GerenciarSaida({ onNavigate }) {
       await registrarSaida({
         quantidade: Number(formulario.quantidade),
         dataSaida: formulario.dataSaida,
-        motivo: formulario.motivo,
-        perda: formulario.perda,
+        motivo: formatarMotivoSaida(formulario),
         fkProduto: Number(formulario.produto),
-        fkUsuario: FK_USUARIO_PADRAO,
+        fkUsuario: fkUsuarioAtual(),
       });
       setSucesso('Saída registrada com sucesso!');
       setFormulario(formularioVazio);
@@ -108,12 +111,13 @@ export function GerenciarSaida({ onNavigate }) {
   }
 
   function abrirEdicao(item) {
+    const { perda, motivo } = interpretarMotivoSaida(item.motivo);
     setFormularioEdicao({
       produto: String(item.produtoId ?? ''),
       quantidade: String(item.quantidade ?? ''),
       dataSaida: item.dataHora ? item.dataHora.split('T')[0] : '',
-      motivo: item.motivo ?? '',
-      perda: Boolean(item.perda),
+      motivo,
+      perda,
     });
     setLinhaEdicao(item);
     setMenuAberto(null);
@@ -137,10 +141,9 @@ export function GerenciarSaida({ onNavigate }) {
       await atualizarSaida(linhaEdicao.id, {
         quantidade: Number(formularioEdicao.quantidade),
         dataSaida: formularioEdicao.dataSaida,
-        motivo: formularioEdicao.motivo,
-        perda: formularioEdicao.perda,
+        motivo: formatarMotivoSaida(formularioEdicao),
         fkProduto: Number(formularioEdicao.produto),
-        fkUsuario: FK_USUARIO_PADRAO,
+        fkUsuario: fkUsuarioAtual(),
       });
       setSucesso('Saída atualizada com sucesso!');
       setLinhaEdicao(null);
@@ -312,15 +315,16 @@ export function GerenciarSaida({ onNavigate }) {
               <th>Produto</th>
               <th>Quantidade</th>
               <th>Categoria</th>
+              <th>Motivo</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {carregando && (
-              <tr><td colSpan={6}>Carregando...</td></tr>
+              <tr><td colSpan={7}>Carregando...</td></tr>
             )}
             {!carregando && historico.length === 0 && (
-              <tr><td colSpan={6}>Nenhuma saída registrada.</td></tr>
+              <tr><td colSpan={7}>Nenhuma saída registrada.</td></tr>
             )}
             {!carregando && historico.map((item, indice) => (
               <tr key={item.id ?? indice}>
@@ -339,6 +343,7 @@ export function GerenciarSaida({ onNavigate }) {
                 <td>
                   {produtos.find((p) => p.id === item.produtoId)?.categoria?.nome || '-'}
                 </td>
+                <td>{rotuloMotivoSaida(item.motivo)}</td>
                 <td className={styles.celulaAcoes}>
                   <div className={styles.envoltorioAcoes}>
                     <button

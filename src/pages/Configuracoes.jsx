@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import styles from './Configuracoes.module.css';
-// import {
-//   obterPerfil,
-//   atualizarPerfil,
-//   alterarSenha,
-//   obterPreferenciasNotificacao,
-//   atualizarPreferenciasNotificacao,
-// } from '../services/configuracoesService';
+import {
+  obterPerfil,
+  atualizarPerfil,
+  alterarSenha,
+  obterPreferenciasNotificacao,
+  atualizarPreferenciasNotificacao,
+} from '../services/configuracoesService';
 
-const perfilVazio = { nome: '', email: '', nivelAcesso: '' };
+const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo', senhaAtual: '' };
 const senhaVazia = { senhaAtual: '', novaSenha: '', confirmarNovaSenha: '' };
 const notificacoesVazias = {
   estoqueBaixo: true,
@@ -46,13 +46,16 @@ export function Configuracoes() {
       const dadosPerfil = await obterPerfil();
       if (dadosPerfil) {
         setPerfil({
+          id: dadosPerfil.id ?? null,
           nome: dadosPerfil.nome ?? '',
           email: dadosPerfil.email ?? '',
           nivelAcesso: dadosPerfil.nivelAcesso ?? '',
+          status: dadosPerfil.status ?? 'Ativo',
+          senhaAtual: '',
         });
       }
     } catch (error) {
-      // Se não for possível carregar o perfil atual, o formulário simplesmente começa em branco.
+      
     }
 
     try {
@@ -66,7 +69,6 @@ export function Configuracoes() {
         });
       }
     } catch (error) {
-      // Mantém os valores padrão caso as preferências ainda não existam.
     }
   }
 
@@ -96,6 +98,7 @@ export function Configuracoes() {
     try {
       await atualizarPerfil(perfil);
       setSucessoPerfil('Informações atualizadas com sucesso!');
+      setPerfil((anterior) => ({ ...anterior, senhaAtual: '' }));
     } catch (error) {
       setErroPerfil(error.message || 'Não foi possível salvar as informações.');
     } finally {
@@ -115,7 +118,7 @@ export function Configuracoes() {
 
     setEnviandoSenha(true);
     try {
-      await alterarSenha(senha);
+      await alterarSenha({ ...perfil, novaSenha: senha.novaSenha });
       setSucessoSenha('Senha alterada com sucesso!');
       setSenha(senhaVazia);
     } catch (error) {
@@ -197,6 +200,19 @@ export function Configuracoes() {
                 <option value="ADMINISTRADOR">Administrador</option>
                 <option value="VOLUNTARIO">Voluntário</option>
               </select>
+            </div>
+
+            <div className={styles.campo}>
+              <label htmlFor="senha-atual-perfil">Confirme sua senha atual para salvar</label>
+              <input
+                id="senha-atual-perfil"
+                type="password"
+                placeholder="Digite sua senha atual"
+                value={perfil.senhaAtual}
+                onChange={alterarCampoPerfil('senhaAtual')}
+                autoComplete="current-password"
+                required
+              />
             </div>
 
             <button type="submit" className={styles.botaoSalvar} disabled={enviandoPerfil}>

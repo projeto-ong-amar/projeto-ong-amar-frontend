@@ -11,9 +11,7 @@ function paraBr(dataIso) {
 }
 
 export function HistoricoProdutos({ onNavigate }) {
-  // A listagem de produtos ainda não é paginada no backend, então buscamos
-  // tudo e paginamos no cliente para manter a mesma experiência das outras
-  // telas de histórico.
+ 
   const carregarPagina = useCallback(async (pagina, tamanho) => {
     const todos = (await listarProdutos()) || [];
     const totalPaginas = Math.max(1, Math.ceil(todos.length / tamanho));
