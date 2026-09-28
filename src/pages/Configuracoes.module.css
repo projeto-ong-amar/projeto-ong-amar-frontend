@@ -1,0 +1,316 @@
+.conteudo {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-xl) 36px;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 24px;
+  align-items: start;
+}
+
+.cartao {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.grade .cartao {
+  margin-bottom: 0;
+}
+
+.cabecalhoCartao {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.iconeCartao {
+  display: flex;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--blue-bg);
+}
+
+.iconeCartao img {
+  width: 24px;
+  height: 24px;
+}
+
+.cabecalhoCartao h2 {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.cabecalhoCartao p {
+  margin-top: 2px;
+  font-size: 0.8125rem;
+  color: var(--text-light);
+}
+
+.divisor {
+  height: 1px;
+  margin: 18px 0 22px;
+  background: var(--border);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.campo label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 13px 16px;
+  color: var(--text-dark);
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.campo input::placeholder {
+  color: #9ca3af;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--blue);
+  background: #fff;
+}
+
+.campo select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px;
+  padding-right: 42px;
+}
+
+.envoltorioSenha {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.envoltorioSenha input {
+  padding-right: 46px;
+}
+
+.botaoOlho {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  color: var(--text-light);
+  cursor: pointer;
+}
+
+.botaoOlho img {
+  width: 18px;
+  height: 18px;
+}
+
+.botaoSalvar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 4px;
+  padding: 14px 20px;
+  background: #16a34a;
+  border: 1.5px solid #16a34a;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.botaoSalvar img {
+  width: 18px;
+  height: 18px;
+}
+
+.botaoSalvar:hover {
+  background: #15803d;
+  transform: translateY(-1px);
+}
+
+.botaoSalvar:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.gradeNotificacoes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 32px;
+  margin-bottom: 8px;
+}
+
+.linhaNotificacao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+}
+
+.linhaNotificacao strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.linhaNotificacao p {
+  font-size: 0.75rem;
+  color: var(--text-light);
+}
+
+.interruptor {
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  padding: 0;
+  background: #d1d5db;
+  border: none;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.interruptorAtivo {
+  background: #2563eb;
+}
+
+.bolinha {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s;
+}
+
+.interruptorAtivo .bolinha {
+  transform: translateX(20px);
+}
+
+.linhaBotaoCentral {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.botaoSalvarPreferencias {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 32px;
+  background: #2563eb;
+  border: 1.5px solid #2563eb;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.botaoSalvarPreferencias img {
+  width: 18px;
+  height: 18px;
+}
+
+.botaoSalvarPreferencias:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.botaoSalvarPreferencias:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.mensagemErro,
+.mensagemSucesso {
+  margin-bottom: 16px;
+  padding: 11px 15px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+}
+
+.mensagemErro {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.mensagemSucesso {
+  color: #166534;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+}
+
+@media (max-width: 900px) {
+  .grade {
+    grid-template-columns: 1fr;
+  }
+
+  .gradeNotificacoes {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 760px) {
+  .conteudo {
+    padding: 20px 14px;
+  }
+
+  .cartao {
+    padding: 20px 16px;
+  }
+}

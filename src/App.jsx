@@ -9,6 +9,13 @@ import GerenciarEntrada from './pages/GerenciarEntrada.jsx';
 import RecuperarSenha from './pages/RecuperarSenha.jsx';
 import RedefinirSenha from './pages/RedefinirSenha.jsx';
 import CadastroUsuario from './pages/CadastroUsuario.jsx';
+import GerenciarSaida from './pages/GerenciarSaida.jsx';
+import Configuracoes from './pages/Configuracoes.jsx';
+import Historico from './pages/Historico.jsx';
+import HistoricoEntrada from './pages/HistoricoEntrada.jsx';
+import HistoricoSaida from './pages/HistoricoSaida.jsx';
+import HistoricoUsuario from './pages/HistoricoUsuario.jsx';
+import HistoricoProdutos from './pages/HistoricoProdutos.jsx';
 
 const PAGES = {
   inicio: Inicio,
@@ -18,6 +25,13 @@ const PAGES = {
   'recuperar-senha': RecuperarSenha,
   'redefinir-senha': RedefinirSenha,
   'cadastro-usuario': CadastroUsuario,
+  'gerenciar-saida': GerenciarSaida,
+   configuracoes: Configuracoes,
+   historico: Historico,
+  'historico-entrada': HistoricoEntrada,
+  'historico-saida': HistoricoSaida,
+  'historico-usuario': HistoricoUsuario,
+  'historico-produtos': HistoricoProdutos,
 };
 
 const SECTION_LABELS = {
@@ -31,6 +45,11 @@ const SECTION_LABELS = {
   configuracoes: 'Configurações',
   'recuperar-senha': 'Recuperar Senha',
   'redefinir-senha': 'Redefinir Senha',
+  historico: Historico,
+  'historico-entrada': HistoricoEntrada,
+  'historico-saida': HistoricoSaida,
+  'historico-usuario': HistoricoUsuario,
+  'historico-produtos': HistoricoProdutos,
 };
 
 function App({ usuario, onSair }) {

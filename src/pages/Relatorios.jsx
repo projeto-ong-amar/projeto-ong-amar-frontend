@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { PeriodFilter } from '../components/reports/PeriodFilter.jsx';
 import { ReportCard } from '../components/reports/ReportCard.jsx';
 import { useReports } from '../hooks/useReports.js';
@@ -8,11 +8,15 @@ import styles from './Relatorios.module.css';
 export function RelatoriosPage() {
   const { reports, loading, error, period, setPeriod } = useReports();
   const [downloadingId, setDownloadingId] = useState(null);
+  const controladorRef = useRef(null);
 
   async function handleBaixar(id) {
     setDownloadingId(id);
+    const controlador = new AbortController();
+    controladorRef.current = controlador;
+
     try {
-      const { blob, filename } = await baixarRelatorioIA(id);
+      const { blob, filename } = await baixarRelatorioIA(id, controlador.signal);
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -22,11 +26,19 @@ export function RelatoriosPage() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      alert('Não foi possível baixar o relatório. Verifique se o servidor está disponível.');
-      console.error(err);
+      if (err.name !== 'AbortError') {
+        alert('Não foi possível baixar o relatório. Verifique se o servidor está disponível.');
+        console.error(err);
+      }
     } finally {
       setDownloadingId(null);
+      controladorRef.current = null;
     }
+  }
+
+  function handleCancelarDownload() {
+    controladorRef.current?.abort();
+    setDownloadingId(null);
   }
 
   return (
@@ -57,7 +69,6 @@ export function RelatoriosPage() {
             <ReportCard
               key={report.id}
               report={report}
-              onVer={(id) => console.log('Ver:', id)}
               onBaixar={handleBaixar}
               downloading={downloadingId === report.id}
             />
@@ -68,6 +79,17 @@ export function RelatoriosPage() {
       {downloadingId && (
         <div className={styles.loadingOverlay}>
           <div className={styles.loadingCard}>
+            <button
+              type="button"
+              className={styles.loadingFechar}
+              aria-label="Cancelar geração do relatório"
+              onClick={handleCancelarDownload}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
             <div className={styles.modalSpinner} />
             <p className={styles.loadingTitle}>Gerando relatório...</p>
             <p className={styles.loadingSub}>Aguarde enquanto a IA processa sua solicitação.</p>

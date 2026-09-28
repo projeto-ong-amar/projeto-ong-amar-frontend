@@ -20,7 +20,7 @@ function paraBr(dataIso) {
   return `${dia}/${mes}/${ano}`;
 }
 
-export function GerenciarEntrada() {
+export function GerenciarEntrada({ onNavigate }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -286,7 +286,13 @@ export function GerenciarEntrada() {
             <p>Histórico de Entrada</p>
           </div>
         </div>
-        <button className={styles.botaoHistorico} type="button" onClick={carregarDados}>Histórico</button>
+        <button
+          className={styles.botaoHistorico}
+          type="button"
+          onClick={() => onNavigate?.('historico-entrada')}
+        >
+          Histórico
+        </button>
       </div>
 
       <div className={styles.envoltorioTabela}>
@@ -528,7 +534,13 @@ export function GerenciarEntrada() {
               </button>
             </div>
           </div>
+          <div className={styles.dica}>
+                  <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
+                  <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique em Ajuda.</span>
+          </div>
         </div>
+
+        
       )}
     </main>
   );
