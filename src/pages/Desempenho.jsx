@@ -4,6 +4,10 @@ import { todaysDate } from '../utils/dateSelector'
 import { CardsDesempenho } from '../components/desempenho/CardsDesempenho'
 import { GraficoDistribuicao } from '../components/desempenho/GraficoDistribuicao'
 import { GraficoPizzaItens } from '../components/desempenho/GraficoPizzaItens'
+import { CardAcoesRapidas } from '../components/desempenho/CardAcoesRapidas'
+import { CardAlertasImportantes } from '../components/desempenho/CardAlertasImportantes'
+import { CardDica } from '../components/desempenho/CardDica'
+import { GraficoLinhaMensal } from '../components/desempenho/GraficoLinhaMensal'
 
 export function Desempenho() {
   useEffect(() => {
@@ -81,6 +85,14 @@ export function Desempenho() {
         <GraficoDistribuicao />
         <GraficoPizzaItens />
       </div>
+      <div className={ style.divGraficoLinhaEAcoes }>
+        <GraficoLinhaMensal />
+        <div className={ style.acessosLaterais }>
+          <CardDica />
+          <CardAlertasImportantes />
+          <CardAcoesRapidas />
+        </div>
+      </div> 
     </>
   )
 }

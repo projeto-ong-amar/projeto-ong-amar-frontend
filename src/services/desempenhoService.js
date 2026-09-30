@@ -7,3 +7,7 @@ export function getDadosGraficoBarra() {
 export function getDadosGraficoPizza() {
   return apiClient.get('/dashboard/estoque-por-tipo')
 }
+
+export function getDadosGraficoLinha() {
+  return apiClient.get('/dashboard/estoque-fechamento-por-mes')
+}
