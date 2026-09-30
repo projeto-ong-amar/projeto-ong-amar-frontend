@@ -128,5 +128,25 @@
 
 .divGraficoLinhaEAcoes {
   margin: var(--space-md);
-  width:100vw - var(--space-md);
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.acessosLaterais {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 300px;
+  min-width: 0;
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .divGraficoLinhaEAcoes {
+    flex-direction: column;
+  }
+
+  .acessosLaterais {
+    flex-basis: auto;
+  }
 }

@@ -1,0 +1,9 @@
+@import './ConfigGlobalCards.css';
+
+.text {
+  color: var(--text-color);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
