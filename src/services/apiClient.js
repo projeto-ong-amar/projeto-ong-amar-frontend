@@ -1,47 +1,23 @@
-
+import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 const EVENTO_SESSAO_ENCERRADA = 'sessao-encerrada';
-const METODOS_MUTAVEIS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
-function obterCookie(nome) {
-  const prefixo = `${encodeURIComponent(nome)}=`;
-  const cookie = document.cookie
-    .split('; ')
-    .find((item) => item.startsWith(prefixo));
-
-  return cookie ? decodeURIComponent(cookie.slice(prefixo.length)) : null;
-}
-
-function criarHeaders(options) {
-  const headers = new Headers({
+const http = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  withXSRFToken: true,
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+  headers: {
     'Content-Type': 'application/json',
-    ...(options.headers || {}),
-  });
-  const metodo = (options.method || 'GET').toUpperCase();
-  const csrfToken = obterCookie('XSRF-TOKEN');
-
-  if (METODOS_MUTAVEIS.has(metodo) && csrfToken) {
-    headers.set('X-XSRF-TOKEN', csrfToken);
-  }
-
-  return headers;
-}
+  },
+});
 
 function encerrarSessaoPorNaoAutorizado() {
   localStorage.removeItem('usuarioLogado');
   localStorage.removeItem('loggedIn');
   window.dispatchEvent(new Event(EVENTO_SESSAO_ENCERRADA));
-}
-
-async function extrairCorpo(response) {
-  const texto = await response.text();
-  if (!texto) return null;
-  try {
-    return JSON.parse(texto);
-  } catch {
-    return texto;
-  }
 }
 
 function extrairMensagemDeErro(corpo, status) {
@@ -54,54 +30,50 @@ function extrairMensagemDeErro(corpo, status) {
   return `Erro na requisição (status ${status})`;
 }
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    credentials: 'include',
-    ...options,
-    headers: criarHeaders(options),
-  });
+http.interceptors.response.use(
+  (response) => response,
+  (error) => {
+ 
+    if (axios.isCancel(error) || error.code === 'ERR_CANCELED') {
+      const canceladoError = new Error('Requisição cancelada.');
+      canceladoError.name = 'AbortError';
+      throw canceladoError;
+    }
 
-  if (response.status === 204) {
-    return null;
-  }
+    if (!error.response) {
+      throw new Error('Não foi possível conectar ao servidor.');
+    }
 
-  const corpo = await extrairCorpo(response);
-
-  if (!response.ok) {
-    if (response.status === 401) {
+    const { status, data } = error.response;
+    if (status === 401) {
       encerrarSessaoPorNaoAutorizado();
     }
-    throw new Error(extrairMensagemDeErro(corpo, response.status));
+    throw new Error(extrairMensagemDeErro(data, status));
   }
+);
 
-  return corpo;
+async function request(path, options = {}) {
+  const response = await http.request({ url: path, ...options });
+  // O backend retorna 204 (sem corpo) em vários DELETE/POST; normaliza para
+  // null, mantendo o mesmo contrato que o restante do app já espera.
+  if (response.status === 204 || response.data === '') {
+    return null;
+  }
+  return response.data;
 }
 
 async function requestBlob(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    credentials: 'include',
-    ...options,
-    headers: criarHeaders(options),
-  });
-
-  if (!response.ok) {
-    const corpo = await extrairCorpo(response);
-    if (response.status === 401) {
-      encerrarSessaoPorNaoAutorizado();
-    }
-    throw new Error(extrairMensagemDeErro(corpo, response.status));
-  }
-
-  return response.blob();
+  const response = await http.request({ url: path, responseType: 'blob', ...options });
+  return response.data;
 }
 
 export const apiClient = {
-  get: (path) => request(path, { method: 'GET' }),
-  post: (path, body) => request(path, { method: 'POST', body: JSON.stringify(body) }),
-  put: (path, body) => request(path, { method: 'PUT', body: JSON.stringify(body) }),
-  patch: (path, body) => request(path, { method: 'PATCH', body: JSON.stringify(body) }),
-  delete: (path) => request(path, { method: 'DELETE' }),
-  postBlob: (path, body) => requestBlob(path, { method: 'POST', body: JSON.stringify(body) }),
+  get: (path, options = {}) => request(path, { method: 'GET', ...options }),
+  post: (path, body, options = {}) => request(path, { method: 'POST', data: body, ...options }),
+  put: (path, body, options = {}) => request(path, { method: 'PUT', data: body, ...options }),
+  patch: (path, body, options = {}) => request(path, { method: 'PATCH', data: body, ...options }),
+  delete: (path, options = {}) => request(path, { method: 'DELETE', ...options }),
+  postBlob: (path, body, options = {}) => requestBlob(path, { method: 'POST', data: body, ...options }),
 };
 
 export async function inicializarCsrf() {
