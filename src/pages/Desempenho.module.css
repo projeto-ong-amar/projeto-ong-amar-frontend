@@ -1,12 +1,12 @@
 .divProximaDoacao {
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 10px;
   margin: var(--space-md);
   border-radius: var(--radius-sm);
   background-color: var(--white);
   height: 60px;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   color: var(--blue);
   font-weight: bold;

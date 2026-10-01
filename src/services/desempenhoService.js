@@ -11,3 +11,27 @@ export function getDadosGraficoPizza() {
 export function getDadosGraficoLinha() {
   return apiClient.get('/dashboard/estoque-fechamento-por-mes')
 }
+
+export function getKPIEstoque(dataProximaDoacao) {
+  return apiClient.get('/dashboard/kpi-estoque-atual', {
+    params: { dataProximaDoacao }
+  })
+}
+
+export function getKPIRiscoVencimento(dataProximaDoacao) {
+  return apiClient.get('/dashboard/kpi-risco-vencimento', {
+    params: { dataProximaDoacao }
+  })
+}
+
+export function getKPIDoacoesRecebidas(dataProximaDoacao) {
+  return apiClient.get('/dashboard/kpi-doacoes-recebidas', {
+    params: { dataProximaDoacao }
+  })
+}
+
+export function getKPIItensDistribuidos(dataProximaDoacao) {
+  return apiClient.get('/dashboard/kpi-itens-distribuidos', {
+    params: { dataProximaDoacao }
+  })
+}
