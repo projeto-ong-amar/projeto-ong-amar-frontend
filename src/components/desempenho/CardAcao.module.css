@@ -1,5 +1,17 @@
 @import './ConfigGlobalCards.css';
 
+.card {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  width: 100%;
+  transition: box-shadow 0.15s;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
 .text {
   color: var(--text-color);
   font-weight: bold;

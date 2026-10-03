@@ -1,0 +1,22 @@
+.botoes {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.botao {
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--blue);
+  color: var(--white);
+  font: inherit;
+  font-weight: 700;
+  padding: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.botao:hover {
+  background: var(--blue-dark);
+}

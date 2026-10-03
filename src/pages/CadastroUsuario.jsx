@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { cadastrarUsuario } from '../services/authService.js';
+import { listarUsuarios } from '../services/usuarioService.js';
 import styles from './CadastroUsuario.module.css';
 
 const formularioInicial = {
@@ -14,6 +15,37 @@ const formularioInicial = {
 const REGEX_SENHA = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 const AJUDA_SENHA = 'Mínimo de 8 caracteres, com letra maiúscula, minúscula, número e caractere especial (@$!%*?&).';
 
+function usuarioEstaAtivo(status) {
+  if (typeof status === 'boolean') return status;
+  return String(status ?? '').trim().toLowerCase() === 'ativo';
+}
+
+function formatarData(valor) {
+  if (!valor) return '-';
+  const data = new Date(valor);
+  return Number.isNaN(data.getTime()) ? '-' : new Intl.DateTimeFormat('pt-BR').format(data);
+}
+
+function obterUltimoUsuario(usuarios) {
+  if (!Array.isArray(usuarios) || usuarios.length === 0) return null;
+  const ultimo = usuarios.reduce((maisRecente, atual) => {
+    const dataAtual = new Date(atual.dataCadastro).getTime();
+    const dataRecente = new Date(maisRecente.dataCadastro).getTime();
+    if (!Number.isNaN(dataAtual) && !Number.isNaN(dataRecente) && dataAtual !== dataRecente) {
+      return dataAtual > dataRecente ? atual : maisRecente;
+    }
+    if (typeof atual.id === 'number' && typeof maisRecente.id === 'number') {
+      return atual.id >= maisRecente.id ? atual : maisRecente;
+    }
+    return atual;
+  });
+  return {
+    ...ultimo,
+    status: usuarioEstaAtivo(ultimo.status) ? 'Ativo' : 'Inativo',
+    dataCadastro: formatarData(ultimo.dataCadastro),
+  };
+}
+
 export function CadastroUsuario({ onNavigate }) {
   const [formulario, setFormulario] = useState(formularioInicial);
   const [enviando, setEnviando] = useState(false);
@@ -25,6 +57,20 @@ export function CadastroUsuario({ onNavigate }) {
   const [edicaoAberta, setEdicaoAberta] = useState(false);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioInicial);
   const [exclusaoAberta, setExclusaoAberta] = useState(false);
+
+  async function carregarUltimoUsuario() {
+    try {
+      const usuarios = await listarUsuarios();
+      setUltimoUsuario(obterUltimoUsuario(usuarios));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  useEffect(() => {
+    carregarUltimoUsuario();
+  }, []);
 
   function alterarCampo(campo) {
     return (evento) => {
@@ -58,10 +104,13 @@ export function CadastroUsuario({ onNavigate }) {
     try {
       await cadastrarUsuario(formulario);
       setSucesso('Usuário cadastrado com sucesso!');
-      setUltimoUsuario({
-        ...formulario,
-        dataCadastro: new Intl.DateTimeFormat('pt-BR').format(new Date()),
-      });
+      const recarregou = await carregarUltimoUsuario();
+      if (!recarregou) {
+        setUltimoUsuario({
+          ...formulario,
+          dataCadastro: new Intl.DateTimeFormat('pt-BR').format(new Date()),
+        });
+      }
       setFormulario(formularioInicial);
     } catch (error) {
       setErro(error.message || 'Não foi possível cadastrar o usuário.');
@@ -224,7 +273,7 @@ export function CadastroUsuario({ onNavigate }) {
                 </td>
               </tr>
             ) : (
-              <tr><td colSpan={6} className={styles.semRegistros}>Nenhum usuário cadastrado nesta sessão.</td></tr>
+              <tr><td colSpan={6} className={styles.semRegistros}>Nenhum usuário cadastrado.</td></tr>
             )}
           </tbody>
         </table>

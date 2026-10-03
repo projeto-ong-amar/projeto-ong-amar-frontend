@@ -7,14 +7,17 @@ import { GraficoPizzaItens } from '../components/desempenho/GraficoPizzaItens'
 import { GraficoLinhaMensal } from '../components/desempenho/GraficoLinhaMensal'
 import { CardDica } from '../components/desempenho/CardDica'
 import { CardAcao } from '../components/desempenho/CardAcao'
+import { ModalAlertas } from '../components/desempenho/ModalAlertas'
+import { ModalAcoesRapidas } from '../components/desempenho/ModalAcoesRapidas'
 import { getKPIDoacoesRecebidas, getKPIEstoque, getKPIItensDistribuidos, getKPIRiscoVencimento } from '../services/desempenhoService'
 
-export function Desempenho() {
+export function Desempenho({ onNavigate }) {
 
   const [kpiEstoque, setKpiEstoque] = useState(0)
   const [kpiRiscoVencimento, setKpiRiscoVencimento] = useState(0)
   const [kpiDoacoesRecebidas, setKpiDoacoesRecebidas] = useState(0)
   const [kpiItensDistribuidos, setKpiItensDistribuidos] = useState(0)
+  const [modalAberto, setModalAberto] = useState(null) // 'alertas' | 'acoes' | null
 
   async function getDadosKPIEstoque(dataProximaDoacao) {
       const resposta = await getKPIEstoque(dataProximaDoacao)
@@ -86,6 +89,7 @@ export function Desempenho() {
           dataLabel="itens"
           descricao="Saldo de itens no período de 30 dias até a data da próxima doação."
           titulo="Estoque Atual"
+          onClick={ () => onNavigate?.('estoque-atual') }
         />
         <CardsDesempenho 
           cor="var(--red)" 
@@ -94,6 +98,7 @@ export function Desempenho() {
           dataLabel="produtos"
           descricao="Número de lotes cuja validade cai nos 30 dias antes da próxima doação."
           titulo="Risco de Vencimento"
+          onClick={ () => onNavigate?.('risco-vencimento') }
         />
         <CardsDesempenho 
           cor="var(--green-icon)"
@@ -124,13 +129,25 @@ export function Desempenho() {
           text="Alertas importantes"
           textColor="var(--red)"
           icon="alertButton"
+          onClick={ () => setModalAberto('alertas') }
           />
           <CardAcao
           text="Ações rápidas"
           icon="thunder"
+          onClick={ () => setModalAberto('acoes') }
           />
         </div>
       </div> 
+
+      <ModalAlertas
+        aberto={ modalAberto === 'alertas' }
+        aoFechar={ () => setModalAberto(null) }
+      />
+      <ModalAcoesRapidas
+        aberto={ modalAberto === 'acoes' }
+        aoFechar={ () => setModalAberto(null) }
+        onNavigate={ onNavigate }
+      />
     </>
   )
 }

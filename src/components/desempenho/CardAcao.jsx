@@ -4,18 +4,18 @@ import thunder from '../../assets/icons/thunder.svg'
 
 const icons = { alertButton, thunder }
 
-export function CardAcao({ text, textColor, icon }) {
+export function CardAcao({ text, textColor, icon, onClick }) {
 
   const caminhoIcone = icons[icon]
 
   return (
     <>
-      <div className={ style.card } style={{ '--text-color': textColor }}>
+      <button type="button" className={ style.card } style={{ '--text-color': textColor }} onClick={ onClick }>
         <p className={ style.text }>
           <img src={ caminhoIcone } alt="" aria-hidden="true" />
           { text }
         </p>
-      </div>
+      </button>
     </>
   )
 }
