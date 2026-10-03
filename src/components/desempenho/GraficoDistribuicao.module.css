@@ -1,0 +1,6 @@
+@import './ConfigGlobalCards.css';
+
+.card {
+  background-color: var(--white);
+  gap: 40px;
+}

@@ -14,6 +14,12 @@
   min-width: 0;
 }
 
+.pageScroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
 /* Usado apenas no fallback "página ainda não implementada" */
 .content {
   padding: var(--space-xl) 36px;

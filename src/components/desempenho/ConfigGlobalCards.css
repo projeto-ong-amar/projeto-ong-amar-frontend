@@ -1,0 +1,16 @@
+.card {
+  background-color: var(--white);
+  border-radius: var(--radius);
+  min-width: 0;
+  box-sizing: border-box;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px
+}
+
+.cardTitle {
+  font-size: 20px;
+}

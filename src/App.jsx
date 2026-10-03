@@ -15,6 +15,9 @@ import HistoricoEntrada from './pages/HistoricoEntrada.jsx';
 import HistoricoSaida from './pages/HistoricoSaida.jsx';
 import HistoricoUsuario from './pages/HistoricoUsuario.jsx';
 import HistoricoProdutos from './pages/HistoricoProdutos.jsx';
+import { Desempenho } from './pages/Desempenho.jsx';
+import { EstoqueAtual } from './pages/EstoqueAtual.jsx';
+import { RiscoVencimento } from './pages/RiscoVencimento.jsx';
 
 const PAGES = {
   inicio: Inicio,
@@ -30,6 +33,9 @@ const PAGES = {
   'historico-saida': HistoricoSaida,
   'historico-usuario': HistoricoUsuario,
   'historico-produtos': HistoricoProdutos,
+  desempenho: Desempenho,
+  'estoque-atual': EstoqueAtual,
+  'risco-vencimento': RiscoVencimento
 };
 
 const SECTION_LABELS = {
@@ -46,6 +52,8 @@ const SECTION_LABELS = {
   'historico-saida': 'Gerenciar Saída / Histórico',
   'historico-produtos': 'Cadastro de Produtos / Histórico',
   'historico-usuario': 'Cadastro de Usuário / Histórico',
+  'estoque-atual': 'Desempenho / Estoque Atual',
+  'risco-vencimento': 'Desempenho / Risco de Vencimento',
 };
 
 
@@ -54,6 +62,8 @@ const HISTORICO_ORIGEM = {
   'historico-saida': 'gerenciar-saida',
   'historico-produtos': 'cadastro-produtos',
   'historico-usuario': 'cadastro-usuario',
+  'estoque-atual': 'desempenho',
+  'risco-vencimento': 'desempenho',
 };
 
 function App({ usuario, onSair }) {
@@ -84,11 +94,13 @@ function App({ usuario, onSair }) {
       <div className={styles.main}>
         <Topbar section={sectionLabel} onVoltar={handleVoltar} />
         {PageComponent ? (
-          <PageComponent 
-            onNavigate={setActivePage} 
-            onVoltar={handleVoltar}
-            aoVoltar={handleVoltar}
-          />
+          <main className={styles.pageScroll}>
+            <PageComponent 
+              onNavigate={setActivePage} 
+              onVoltar={handleVoltar}
+              aoVoltar={handleVoltar}
+            />
+          </main>
         ) : (
           <main className={styles.content}>
             <p>Página "{sectionLabel}" ainda não implementada.</p>

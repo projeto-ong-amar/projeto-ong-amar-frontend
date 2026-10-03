@@ -56,3 +56,49 @@ export async function atualizarPreferenciasNotificacao(preferencias) {
   localStorage.setItem(CHAVE_NOTIFICACOES, JSON.stringify(preferencias));
   return preferencias;
 }
+
+export const METRICAS_PADRAO = {
+  estoqueBaixo: 10,
+  riscoVencimentoDias: 30,
+  vencimentoProximoDias: 7,
+  semMovimentacaoDias: 60,
+  periodoIndicadoresDias: 30,
+};
+
+export const ALERTAS_PADRAO = {
+  vencimentoProximo: true,
+  estoqueBaixo: true,
+  semDoacoes: true,
+  semMovimentacao: true,
+};
+
+const CHAVE_METRICAS = 'ong_estoque_metricas';
+const CHAVE_ALERTAS = 'ong_estoque_alertas_dashboard';
+
+function lerLocal(chave, padrao) {
+  try {
+    const bruto = localStorage.getItem(chave);
+    return bruto ? { ...padrao, ...JSON.parse(bruto) } : { ...padrao };
+  } catch {
+    return { ...padrao };
+  }
+}
+
+// TODO: trocar o localStorage por chamadas ao backend quando os endpoints existirem.
+export async function obterMetricas() {
+  return lerLocal(CHAVE_METRICAS, METRICAS_PADRAO);
+}
+
+export async function atualizarMetricas(metricas) {
+  localStorage.setItem(CHAVE_METRICAS, JSON.stringify(metricas));
+  return metricas;
+}
+
+export async function obterAlertasDashboard() {
+  return lerLocal(CHAVE_ALERTAS, ALERTAS_PADRAO);
+}
+
+export async function atualizarAlertasDashboard(alertas) {
+  localStorage.setItem(CHAVE_ALERTAS, JSON.stringify(alertas));
+  return alertas;
+}

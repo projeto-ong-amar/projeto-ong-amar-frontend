@@ -1,0 +1,30 @@
+@import './ConfigGlobalCards.css';
+
+.card {
+  background-color: #0f5ae630;
+  align-items: baseline;
+  border: 1px solid #0F5BE6;
+  height: 70px;
+  font-size: 0.7rem;
+}
+
+.dicaTitle {
+  color: #0F5BE6;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.infoIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: #0F5BE6;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-style: normal;
+}
