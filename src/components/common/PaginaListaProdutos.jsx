@@ -23,13 +23,6 @@ function baixarCsv(nomeArquivo, colunas, itens) {
   URL.revokeObjectURL(url)
 }
 
-function nomeCategoria(item) {
-  return typeof item.categoria === 'object' && item.categoria !== null
-    ? item.categoria.nome
-    : item.categoria
-}
-
-
 export function PaginaListaProdutos({
   icone,
   corIcone,
@@ -69,7 +62,7 @@ export function PaginaListaProdutos({
   }, [carregar])
 
   const categorias = useMemo(
-    () => [...new Set(itens.map(nomeCategoria).filter(Boolean))].sort(),
+    () => [...new Set(itens.map(item => item.categoria).filter(Boolean))].sort(),
     [itens]
   )
 
@@ -77,7 +70,7 @@ export function PaginaListaProdutos({
     const termo = filtros.busca.trim().toLowerCase()
     return itens.filter(item =>
       (!termo || item.produto.toLowerCase().includes(termo)) &&
-      (!filtros.categoria || nomeCategoria(item) === filtros.categoria)
+      (!filtros.categoria || item.categoria === filtros.categoria)
     )
   }, [itens, filtros])
 

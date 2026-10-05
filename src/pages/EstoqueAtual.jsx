@@ -4,7 +4,7 @@ import box from '../assets/icons/box.svg'
 
 const COLUNAS = [
   { rotulo: 'Produto', valor: item => item.produto },
-  { rotulo: 'Categoria', valor: item => item.categoria?.nome ?? item.categoria },
+  { rotulo: 'Categoria', valor: item => item.categoria },
   { rotulo: 'Quantidade em Estoque', valor: item => item.quantidade, tipo: 'quantidade' },
 ]
 
