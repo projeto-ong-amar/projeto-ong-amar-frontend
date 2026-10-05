@@ -5,7 +5,7 @@ import alert from '../assets/icons/alert.svg'
 
 const COLUNAS = [
   { rotulo: 'Produto', valor: item => item.produto },
-  { rotulo: 'Categoria', valor: item => item.categoria },
+  { rotulo: 'Categoria', valor: item => item.categoria?.nome ?? item.categoria },
   { rotulo: 'Validade', valor: item => formatDate(item.validade + 'T00:00:00'), tipo: 'data' },
   { rotulo: 'Quantidade', valor: item => `${item.quantidade} unid`, tipo: 'quantidade' },
 ]
