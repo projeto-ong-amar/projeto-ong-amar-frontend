@@ -1,0 +1,59 @@
+/* =================================
+   MODO ALTO CONTRASTE
+   Mantém o visual original
+   ================================= */
+
+html.alto-contraste {
+    filter: invert(1) hue-rotate(180deg) contrast(1.2);
+}
+
+/* Preserva imagens e vídeos */
+html.alto-contraste img:not([alt=""]),
+html.alto-contraste video {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+/* Foco de teclado mais evidente */
+html.alto-contraste *:focus-visible {
+    outline: 3px solid #ffd600;
+    outline-offset: 2px;
+}
+
+
+/* =================================
+   MELHORIAS DE CONTRASTE
+   ================================= */
+
+/* Textos secundários */
+html.alto-contraste .text-muted,
+html.alto-contraste .text-secondary,
+html.alto-contraste .descricao,
+html.alto-contraste .subtitulo {
+    color: #b8b8b8 !important;
+}
+
+/* Placeholder */
+html.alto-contraste input::placeholder,
+html.alto-contraste textarea::placeholder {
+    color: #b8b8b8 !important;
+    opacity: 1;
+}
+
+/* Campos de entrada */
+html.alto-contraste input,
+html.alto-contraste textarea,
+html.alto-contraste select {
+    border: 1px solid #666 !important;
+}
+
+/* Cards */
+html.alto-contraste .card,
+html.alto-contraste .service-card {
+    border: 1px solid #333 !important;
+}
+
+html.alto-contraste input::placeholder,
+html.alto-contraste textarea::placeholder {
+    color: #B8B8B8 !important;
+    opacity: 1 !important;
+}

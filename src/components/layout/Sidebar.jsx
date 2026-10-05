@@ -1,4 +1,6 @@
 import logo from '../../assets/img/pca-1.png';
+import { useAltoContraste } from '../../hooks/useAltoContraste.js';
+import { IconeAltoContraste } from '../common/IconeAltoContraste.jsx';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
@@ -13,6 +15,7 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario }) {
+  const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
 
   // Aumenta o tamanho da fonte até o limite de 130%
   function increaseFontSize() {
@@ -75,6 +78,16 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario
             </button>
             <button className={styles.btnAcesso} type="button" onClick={decreaseFontSize} aria-label="Diminuir fonte">
               a-
+            </button>
+            <button
+              className={styles.btnAcesso}
+              type="button"
+              onClick={alternarAltoContraste}
+              aria-pressed={altoContraste}
+              aria-label={altoContraste ? 'Desativar alto contraste' : 'Ativar alto contraste'}
+              title="Alto contraste"
+            >
+              <IconeAltoContraste />
             </button>
           </div>
         </div>

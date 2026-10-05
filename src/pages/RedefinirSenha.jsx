@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
 import { redefinirSenha } from '../services/authService.js';
+import { useAltoContraste } from '../hooks/useAltoContraste.js';
+import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
 import styles from './RecuperarSenha.module.css';
 
 const REGRA_SENHA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/;
@@ -17,6 +19,8 @@ export function RedefinirSenha({ aoVoltar }) {
   ));
 
   const token = new URLSearchParams(window.location.search).get('token');
+
+  const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
 
   const [escala, setEscala] = useState(1);
 
@@ -133,6 +137,16 @@ export function RedefinirSenha({ aoVoltar }) {
         <div className={styles.pilulaAcessibilidade}>
           <button className={styles.botaoAcessibilidade} type="button" onClick={aumentarTamanhoFonte}>A+</button>
           <button className={styles.botaoAcessibilidade} type="button" onClick={diminuirTamanhoFonte}>a-</button>
+          <button
+            className={`${styles.botaoAcessibilidade} ${styles.iconeBotaoAcessibilidade}`}
+            type="button"
+            onClick={alternarAltoContraste}
+            aria-pressed={altoContraste}
+            aria-label={altoContraste ? 'Desativar alto contraste' : 'Ativar alto contraste'}
+            title="Alto contraste"
+          >
+            <IconeAltoContraste />
+          </button>
         </div>
       </div>
     </div>

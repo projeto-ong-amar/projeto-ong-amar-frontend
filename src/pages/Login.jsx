@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 
 import logo from '../assets/img/pca-1.png';
 import { login } from '../services/authService.js';
+import { useAltoContraste } from '../hooks/useAltoContraste.js';
+import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
 import styles from './Login.module.css';
 
 export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-  const [altoContraste, setAltoContraste] = useState(false);
+  const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
   const [erro, setErro] = useState('');
   const [enviando, setEnviando] = useState(false);
   
@@ -40,12 +42,8 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
     }
   }
 
-  function alternarAltoContraste() {
-    setAltoContraste((anterior) => !anterior);
-  }
-
   return (
-    <div className={`${styles.corpoLogin} ${altoContraste ? 'high-contrast' : ''}`}>
+    <div className={styles.corpoLogin}>
       <div className={styles.cartaoLogin}>
         <div className={styles.envoltorioLogo}>
           <img
@@ -139,6 +137,16 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
             aria-label="Diminuir tamanho da fonte"
           >
             a-
+          </button>
+          <button
+            className={`${styles.botaoAcessibilidade} ${styles.iconeBotaoAcessibilidade}`}
+            type="button"
+            onClick={alternarAltoContraste}
+            aria-pressed={altoContraste}
+            aria-label={altoContraste ? 'Desativar alto contraste' : 'Ativar alto contraste'}
+            title="Alto contraste"
+          >
+            <IconeAltoContraste />
           </button>
         </div>
       </div>
