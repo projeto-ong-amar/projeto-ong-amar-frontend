@@ -48,14 +48,14 @@ const SECTION_LABELS = {
   configuracoes: 'Configurações',
   'recuperar-senha': 'Recuperar Senha',
   'redefinir-senha': 'Redefinir Senha',
-  'historico-entrada': 'Gerenciar Entrada / Histórico',
-  'historico-saida': 'Gerenciar Saída / Histórico',
-  'historico-produtos': 'Cadastro de Produtos / Histórico',
-  'historico-usuario': 'Cadastro de Usuário / Histórico',
-  'estoque-atual': 'Desempenho / Estoque Atual',
-  'risco-vencimento': 'Desempenho / Risco de Vencimento',
+  'historico-entrada': 'Histórico',
+  'historico-saida': 'Histórico',
+  'historico-produtos': 'Histórico',
+  'historico-usuario': 'Histórico',
+  desempenho: 'Desempenho',
+  'estoque-atual': 'Estoque Atual',
+  'risco-vencimento': 'Risco de Vencimento',
 };
-
 
 const HISTORICO_ORIGEM = {
   'historico-entrada': 'gerenciar-entrada',
@@ -66,10 +66,32 @@ const HISTORICO_ORIGEM = {
   'risco-vencimento': 'desempenho',
 };
 
+const PAGINA_PAI = {
+  ...HISTORICO_ORIGEM,
+  'redefinir-senha': 'recuperar-senha',
+};
+
+function montarEtapas(pagina) {
+  const etapas = [];
+  let atual = pagina;
+
+  while (atual) {
+    etapas.unshift({ label: SECTION_LABELS[atual] ?? atual, pagina: atual });
+    atual = PAGINA_PAI[atual];
+  }
+
+  if (pagina !== 'inicio') {
+    etapas.unshift({ label: SECTION_LABELS.inicio, pagina: 'inicio' });
+  }
+
+  return etapas;
+}
+
 function App({ usuario, onSair }) {
   const [activePage, setActivePage] = useState('inicio');
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
+  const etapas = montarEtapas(activePage);
   const PageComponent = PAGES[activePage];
   const sidebarActivePage = HISTORICO_ORIGEM[activePage] ?? activePage;
 
@@ -92,7 +114,7 @@ function App({ usuario, onSair }) {
         onSair={onSair}
       />
       <div className={styles.main}>
-        <Topbar section={sectionLabel} onVoltar={handleVoltar} />
+        <Topbar etapas={etapas} onNavigate={setActivePage} onVoltar={handleVoltar} />
         {PageComponent ? (
           <main className={styles.pageScroll}>
             <PageComponent 

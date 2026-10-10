@@ -113,34 +113,6 @@
   padding-right: 42px;
 }
 
-.envoltorioSenha {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.envoltorioSenha input {
-  padding-right: 46px;
-}
-
-.botaoOlho {
-  position: absolute;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  background: none;
-  border: none;
-  color: var(--text-light);
-  cursor: pointer;
-}
-
-.botaoOlho img {
-  width: 18px;
-  height: 18px;
-}
-
 .botaoSalvar {
   display: flex;
   width: 100%;

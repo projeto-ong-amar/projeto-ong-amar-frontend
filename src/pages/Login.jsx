@@ -4,6 +4,7 @@ import logo from '../assets/img/pca-1.png';
 import { login } from '../services/authService.js';
 import { useAltoContraste } from '../hooks/useAltoContraste.js';
 import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
+import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import styles from './Login.module.css';
 
 export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
@@ -76,13 +77,11 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
             required
           />
 
-          <label className={`${styles.rotuloCampo} ${styles.espacado}`} htmlFor="senha">
-            Digite sua Senha
-          </label>
-
-          <input
-            type="password"
+          <InputPasswordToggle
             id="senha"
+            className={styles.campoSenha}
+            labelClassName={`${styles.rotuloCampo} ${styles.espacado}`}
+            label="Digite sua Senha"
             placeholder="1234"
             autoComplete="current-password"
             value={senha}

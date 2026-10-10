@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { cadastrarUsuario } from '../services/authService.js';
 import { listarUsuarios } from '../services/usuarioService.js';
+import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import styles from './CadastroUsuario.module.css';
 
 const formularioInicial = {
@@ -178,16 +179,31 @@ export function CadastroUsuario({ onNavigate }) {
             <input id="email-usuario" type="email" placeholder="Digite o e-mail (ex: pk@email.com)" value={formulario.email} onChange={alterarCampo('email')} maxLength={255} autoComplete="email" required />
           </div>
 
-          <div className={styles.campo}>
-            <label htmlFor="senha-usuario">3. Senha <span className={styles.obrigatorio}>*</span></label>
-            <input id="senha-usuario" type="password" placeholder="Digite a senha" value={formulario.senha} onChange={alterarCampo('senha')} minLength={8} maxLength={25} autoComplete="new-password" required />
+          <InputPasswordToggle
+            id="senha-usuario"
+            label={<>3. Senha <span className={styles.obrigatorio}>*</span></>}
+            placeholder="Digite a senha"
+            value={formulario.senha}
+            onChange={alterarCampo('senha')}
+            minLength={8}
+            maxLength={25}
+            autoComplete="new-password"
+            required
+          >
             <p className={styles.ajudaStatus}><img src="https://img.icons8.com/ios-filled/50/2563EB/info.png" alt="" />{AJUDA_SENHA}</p>
-          </div>
+          </InputPasswordToggle>
 
-          <div className={styles.campo}>
-            <label htmlFor="confirmar-senha-usuario">4. Confirmar Senha <span className={styles.obrigatorio}>*</span></label>
-            <input id="confirmar-senha-usuario" type="password" placeholder="Digite a senha novamente" value={formulario.confirmarSenha} onChange={alterarCampo('confirmarSenha')} minLength={8} maxLength={25} autoComplete="new-password" required />
-          </div>
+          <InputPasswordToggle
+            id="confirmar-senha-usuario"
+            label={<>4. Confirmar Senha <span className={styles.obrigatorio}>*</span></>}
+            placeholder="Digite a senha novamente"
+            value={formulario.confirmarSenha}
+            onChange={alterarCampo('confirmarSenha')}
+            minLength={8}
+            maxLength={25}
+            autoComplete="new-password"
+            required
+          />
 
           <div className={styles.campo}>
             <label htmlFor="tipo-usuario">5. Tipo de Usuário <span className={styles.obrigatorio}>*</span></label>

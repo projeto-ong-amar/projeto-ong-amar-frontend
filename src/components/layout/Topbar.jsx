@@ -1,13 +1,10 @@
+import { Breadcrumb } from '../common/Breadcrumb.jsx';
 import styles from './Topbar.module.css';
 
-export function Topbar({ section = 'Relatórios', onVoltar, onAjuda }) {
+export function Topbar({ etapas = [], onNavigate, onVoltar, onAjuda }) {
   return (
     <header className={styles.topbar}>
-      <div className={styles.topbarBreadcrumb}>
-        <span>Sistema de Gerenciamento de Estoque</span>
-        <span className={styles.sep}>/</span>
-        <span className={styles.current}>{section}</span>
-      </div>
+      <Breadcrumb etapas={etapas} aoNavegar={onNavigate} />
       <div className={styles.topbarActions}>
        
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -7,26 +7,7 @@
   padding: 0 32px;
   height: 60px;
   flex-shrink: 0;
-}
-
-.topbarBreadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--blue);
-}
-
-.topbarBreadcrumb .sep {
-  color: #9CA3AF;
-  font-weight: 400;
-}
-
-.topbarBreadcrumb .current {
-  color: #9CA3AF;
-  font-weight: 500;
-  font-size: 15px;
+  gap: 16px;
 }
 
 .topbarActions {

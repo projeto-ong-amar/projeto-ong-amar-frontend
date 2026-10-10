@@ -17,19 +17,19 @@ const NAV_ITEMS = [
 export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario }) {
   const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
 
-  // Aumenta o tamanho da fonte até o limite de 130%
+
   function increaseFontSize() {
     const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    // Limite máximo proporcional (130%)
+  
     if (currentSize < 22) {
       document.documentElement.style.fontSize = `${currentSize + 1}px`;
     }
   }
 
-  // Diminui o tamanho da fonte até o limite de 80%
+  
   function decreaseFontSize() {
     const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    // Limite mínimo proporcional (80%)
+    
     if (currentSize > 12) {
       document.documentElement.style.fontSize = `${currentSize - 1}px`;
     }
@@ -56,6 +56,7 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario
             className={`${styles.navItem} ${item.key === activePage ? styles.active : ''}`}
             href={`#${item.key}`}
             data-page={item.key}
+            aria-current={item.key === activePage ? 'page' : undefined}
             onClick={(e) => {
               e.preventDefault();
               onNavigate?.(item.key);

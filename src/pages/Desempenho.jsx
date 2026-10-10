@@ -17,7 +17,7 @@ export function Desempenho({ onNavigate }) {
   const [kpiRiscoVencimento, setKpiRiscoVencimento] = useState(0)
   const [kpiDoacoesRecebidas, setKpiDoacoesRecebidas] = useState(0)
   const [kpiItensDistribuidos, setKpiItensDistribuidos] = useState(0)
-  const [modalAberto, setModalAberto] = useState(null) // 'alertas' | 'acoes' | null
+  const [modalAberto, setModalAberto] = useState(null)
 
   async function getDadosKPIEstoque(dataProximaDoacao) {
       const resposta = await getKPIEstoque(dataProximaDoacao)

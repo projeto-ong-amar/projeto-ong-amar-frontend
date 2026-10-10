@@ -84,7 +84,6 @@ function lerLocal(chave, padrao) {
   }
 }
 
-// TODO: trocar o localStorage por chamadas ao backend quando os endpoints existirem.
 export async function obterMetricas() {
   return lerLocal(CHAVE_METRICAS, METRICAS_PADRAO);
 }

@@ -3,6 +3,7 @@ import logo from '../assets/img/pca-1.png';
 import { redefinirSenha } from '../services/authService.js';
 import { useAltoContraste } from '../hooks/useAltoContraste.js';
 import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
+import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import styles from './RecuperarSenha.module.css';
 
 const REGRA_SENHA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/;
@@ -91,12 +92,11 @@ export function RedefinirSenha({ aoVoltar }) {
           </div>
         ) : (
           <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
-            <label className={styles.rotuloCampo} htmlFor="nova-senha">
-              Digite sua nova senha
-            </label>
-            <input
-              type="password"
+            <InputPasswordToggle
               id="nova-senha"
+              className={styles.campoSenha}
+              labelClassName={styles.rotuloCampo}
+              label="Digite sua nova senha"
               autoComplete="new-password"
               value={senha}
               onChange={(evento) => {
@@ -107,12 +107,11 @@ export function RedefinirSenha({ aoVoltar }) {
               required
             />
 
-            <label className={`${styles.rotuloCampo} ${styles.espacado}`} htmlFor="confirmar-nova-senha">
-              Confirme sua nova senha
-            </label>
-            <input
-              type="password"
+            <InputPasswordToggle
               id="confirmar-nova-senha"
+              className={styles.campoSenha}
+              labelClassName={`${styles.rotuloCampo} ${styles.espacado}`}
+              label="Confirme sua nova senha"
               autoComplete="new-password"
               value={confirmacaoSenha}
               onChange={(evento) => {

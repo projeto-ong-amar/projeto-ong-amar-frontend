@@ -1,59 +1,191 @@
-/* =================================
-   MODO ALTO CONTRASTE
-   Mantém o visual original
-   ================================= */
-
 html.alto-contraste {
-    filter: invert(1) hue-rotate(180deg) contrast(1.2);
+  color-scheme: dark;
+  accent-color: #ffd600;
+  background: #000;
 }
 
-/* Preserva imagens e vídeos */
-html.alto-contraste img:not([alt=""]),
-html.alto-contraste video {
-    filter: invert(1) hue-rotate(180deg);
+html.alto-contraste body {
+  background: #000 !important;
+  color: #fff !important;
 }
 
-/* Foco de teclado mais evidente */
-html.alto-contraste *:focus-visible {
-    outline: 3px solid #ffd600;
-    outline-offset: 2px;
+html.alto-contraste #root,
+html.alto-contraste #root * {
+  background-color: #000 !important;
+  color: #fff !important;
+  border-color: #fff !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
-
-/* =================================
-   MELHORIAS DE CONTRASTE
-   ================================= */
-
-/* Textos secundários */
-html.alto-contraste .text-muted,
-html.alto-contraste .text-secondary,
-html.alto-contraste .descricao,
-html.alto-contraste .subtitulo {
-    color: #b8b8b8 !important;
+html.alto-contraste #root :focus-visible {
+  outline: 3px solid #ffd600 !important;
+  outline-offset: 2px !important;
 }
 
-/* Placeholder */
-html.alto-contraste input::placeholder,
-html.alto-contraste textarea::placeholder {
-    color: #b8b8b8 !important;
-    opacity: 1;
+html.alto-contraste #root a {
+  color: #ffd600 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 0.2em;
 }
 
-/* Campos de entrada */
-html.alto-contraste input,
-html.alto-contraste textarea,
-html.alto-contraste select {
-    border: 1px solid #666 !important;
+html.alto-contraste #root aside a {
+  color: #fff !important;
+  text-decoration: none !important;
 }
 
-/* Cards */
-html.alto-contraste .card,
-html.alto-contraste .service-card {
-    border: 1px solid #333 !important;
+html.alto-contraste #root :is(input, textarea, select) {
+  border: 2px solid #fff !important;
 }
 
-html.alto-contraste input::placeholder,
-html.alto-contraste textarea::placeholder {
-    color: #B8B8B8 !important;
-    opacity: 1 !important;
+html.alto-contraste #root :is(input, textarea)::placeholder {
+  color: #c8c8c8 !important;
+  opacity: 1 !important;
+}
+
+html.alto-contraste #root input:-webkit-autofill {
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 0 0 1000px #000 inset !important;
+}
+
+html.alto-contraste #root :is(input[type="checkbox"], input[type="radio"]) {
+  border: 0 !important;
+}
+
+html.alto-contraste #root button {
+  border: 2px solid #ffd600 !important;
+}
+
+html.alto-contraste #root button:disabled {
+  color: #bdbdbd !important;
+  border: 2px dashed #bdbdbd !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+html.alto-contraste #root :is(
+  button:not([role="switch"]):not(:disabled):is(:hover, :focus-visible),
+  a:is(:hover, :focus-visible),
+  :is(a, button)[aria-current="page"],
+  button[aria-pressed="true"]
+) {
+  background-color: #ffd600 !important;
+  color: #000 !important;
+}
+
+html.alto-contraste #root :is(
+  button:not([role="switch"]):not(:disabled):is(:hover, :focus-visible),
+  a:is(:hover, :focus-visible),
+  :is(a, button)[aria-current="page"],
+  button[aria-pressed="true"]
+) * {
+  background-color: transparent !important;
+  color: #000 !important;
+}
+
+html.alto-contraste #root img[alt=""] {
+  background-color: transparent !important;
+  filter: brightness(0) invert(1) !important;
+}
+
+html.alto-contraste #root img:not([alt=""]) {
+  background-color: #fff !important;
+  filter: none !important;
+}
+
+html.alto-contraste #root :is(
+  button:not([role="switch"]):not(:disabled):is(:hover, :focus-visible),
+  a:is(:hover, :focus-visible),
+  :is(a, button)[aria-current="page"],
+  button[aria-pressed="true"]
+) img[alt=""] {
+  filter: brightness(0) !important;
+}
+
+html.alto-contraste #root aside {
+  border-right: 2px solid #fff !important;
+}
+
+html.alto-contraste #root :is(
+  [class*="_card_"],
+  [class*="_reportCard_"],
+  [class*="_loadingCard_"],
+  [class*="_cartao"],
+  [class*="_envoltorioTabela_"],
+  [class*="_barraBuscaServico_"]
+) {
+  border: 1px solid #fff !important;
+}
+
+html.alto-contraste #root [class*="_divisor"] {
+  background-color: #fff !important;
+}
+
+html.alto-contraste #root :is([class*="_fundoModal_"], [class*="_fundo_"]) {
+  background-color: rgba(0, 0, 0, 0.88) !important;
+  border: 0 !important;
+}
+
+html.alto-contraste #root [role="alert"] {
+  border: 2px solid #ff8a80 !important;
+}
+
+html.alto-contraste #root [role="status"] {
+  border: 2px solid #69f0ae !important;
+}
+
+html.alto-contraste #root [role="switch"] {
+  border: 0 !important;
+  box-shadow: inset 0 0 0 2px #fff !important;
+}
+
+html.alto-contraste #root [role="switch"][aria-checked="true"] {
+  background-color: #ffd600 !important;
+  box-shadow: inset 0 0 0 2px #ffd600 !important;
+}
+
+html.alto-contraste #root [role="switch"] > span {
+  background-color: #fff !important;
+}
+
+html.alto-contraste #root [role="switch"][aria-checked="true"] > span {
+  background-color: #000 !important;
+}
+
+html.alto-contraste #root input[type="checkbox"] + span[aria-hidden="true"] {
+  box-shadow: inset 0 0 0 2px #fff !important;
+}
+
+html.alto-contraste #root input[type="checkbox"]:checked + span[aria-hidden="true"] {
+  background-color: #ffd600 !important;
+  box-shadow: inset 0 0 0 2px #ffd600 !important;
+}
+
+html.alto-contraste #root input[type="checkbox"] + span[aria-hidden="true"]::after {
+  background-color: #fff !important;
+}
+
+html.alto-contraste #root input[type="checkbox"]:checked + span[aria-hidden="true"]::after {
+  background-color: #000 !important;
+}
+
+html.alto-contraste #root input[type="checkbox"]:focus-visible + span[aria-hidden="true"] {
+  outline: 3px solid #ffd600 !important;
+  outline-offset: 2px !important;
+}
+
+html.alto-contraste #root svg text {
+  fill: #fff !important;
+}
+
+html.alto-contraste #root svg rect[fill="#ffffff"] {
+  fill: #000 !important;
+}
+
+html.alto-contraste #root svg :is(path, rect)[stroke="#1a56db"] {
+  stroke: #7fb2ff !important;
+}
+
+html.alto-contraste #root svg rect[fill="#1a56db"] {
+  fill: #7fb2ff !important;
 }
