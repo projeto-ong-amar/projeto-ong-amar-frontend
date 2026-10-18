@@ -69,7 +69,7 @@ O sistema conversa com uma **API REST em Spring Boot** (repositório separado) e
 
 - **Padrão "último registro + histórico":** as telas de cadastro mostram o último item lançado e levam ao histórico completo com paginação.
 - **Dashboard sem biblioteca de gráficos:** os gráficos de barras e a lista de estoque por tipo são feitos com CSS, o que deixa o bundle enxuto.
-- **Risco de vencimento:** o KPI usa a data da próxima doação como referência e abre um modal com os alimentos em risco.
+- **Risco de vencimento:** o KPI usa a data da próxima doação como referência e abre um modal com os alimentos em risco; o período de risco configurado é compartilhado com os alertas por e-mail.
 - **Sessão sincronizada entre abas:** sair em uma aba encerra a sessão nas demais.
 - **Validação de senha no cliente:** mínimo de 8 caracteres com maiúscula, minúscula, número e caractere especial (`@$!%*?&`).
 
@@ -234,6 +234,8 @@ Todos os endpoints são consumidos pela camada `src/services`.
 | `POST` | `/usuarios/login` | Login |
 | `GET` | `/usuarios/me` | Valida a sessão e obtém o usuário logado |
 | `POST` | `/usuarios/logout` | Encerra a sessão |
+| `GET` / `PUT` | `/configuracoes/preferencias-notificacao` | Lê e salva as preferências individuais de e-mail |
+| `GET` / `PUT` | `/configuracoes/metricas` | Lê e salva limites e períodos configuráveis do sistema |
 | `POST` | `/usuarios/recuperacao-senha` | Solicita recuperação de senha |
 | `POST` | `/usuarios/redefinir-senha` | Redefine a senha com token |
 | `POST` | `/usuarios/cadastrar` | Cadastra usuário |
@@ -364,7 +366,9 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 - **Listagem de usuários sem `id`:** `GET /usuarios` não retorna o `id`, então editar e excluir a partir do histórico de usuários ainda não é possível. As funções `atualizarUsuario` e `removerUsuario` já estão prontas em `usuarioService.js`.
 - **"Perda" na saída:** o backend não tem um campo próprio para isso. A marcação é guardada como prefixo no texto do motivo (`Perda: ...`), conforme `utils/motivoSaida.js`.
 - **Filtro de período em Relatórios:** o componente `PeriodFilter` existe, mas o período ainda não altera os relatórios gerados.
-- **Notificações por e-mail:** as preferências são salvas apenas no navegador (`localStorage`), pois não há rota no backend.
+- **Notificações por e-mail:** as preferências individuais são persistidas no backend. O SMTP Gmail para alertas é configurado exclusivamente no servidor; o envio ocorre em segundo plano após o backend confirmar a movimentação, e a senha de app nunca deve ser incluída no frontend.
+
+Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/projeto-ong-amar/projeto-ong-amar-backend/blob/main/docs/README_NOTIFICACOES_GMAIL.md), mantido no repositório do backend.
 - **Autoatualização de perfil:** a edição de perfil usa `PUT /usuarios/{id}`, que exige perfil administrador e reenvio da senha.
 - **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`).
 - **Sem testes automatizados** no momento.
@@ -377,7 +381,7 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 - [ ] Expor o `id` na listagem de usuários e habilitar editar/excluir no histórico
 - [ ] Migrar a navegação para React Router
 - [ ] Aplicar o filtro de período aos relatórios
-- [ ] Criar endpoint de preferências de notificação
+- [x] Persistir preferências individuais de notificação no backend
 - [ ] Testes unitários e de integração (Vitest + Testing Library)
 - [ ] Trocar ícones remotos por SVGs locais
 - [ ] Pipeline de CI com lint e build

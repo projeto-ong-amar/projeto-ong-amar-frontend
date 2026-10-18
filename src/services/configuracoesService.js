@@ -41,20 +41,12 @@ export function alterarSenha({ id, nome, email, nivelAcesso, status, novaSenha }
   });
 }
 
-const CHAVE_NOTIFICACOES = 'ong_estoque_preferencias_notificacao';
-
-export async function obterPreferenciasNotificacao() {
-  try {
-    const bruto = localStorage.getItem(CHAVE_NOTIFICACOES);
-    return bruto ? JSON.parse(bruto) : null;
-  } catch {
-    return null;
-  }
+export function obterPreferenciasNotificacao() {
+  return apiClient.get('/configuracoes/preferencias-notificacao');
 }
 
-export async function atualizarPreferenciasNotificacao(preferencias) {
-  localStorage.setItem(CHAVE_NOTIFICACOES, JSON.stringify(preferencias));
-  return preferencias;
+export function atualizarPreferenciasNotificacao(preferencias) {
+  return apiClient.put('/configuracoes/preferencias-notificacao', preferencias);
 }
 
 export const METRICAS_PADRAO = {
@@ -72,7 +64,6 @@ export const ALERTAS_PADRAO = {
   semMovimentacao: true,
 };
 
-const CHAVE_METRICAS = 'ong_estoque_metricas';
 const CHAVE_ALERTAS = 'ong_estoque_alertas_dashboard';
 
 function lerLocal(chave, padrao) {
@@ -84,14 +75,12 @@ function lerLocal(chave, padrao) {
   }
 }
 
-// TODO: trocar o localStorage por chamadas ao backend quando os endpoints existirem.
 export async function obterMetricas() {
-  return lerLocal(CHAVE_METRICAS, METRICAS_PADRAO);
+  return apiClient.get('/configuracoes/metricas');
 }
 
 export async function atualizarMetricas(metricas) {
-  localStorage.setItem(CHAVE_METRICAS, JSON.stringify(metricas));
-  return metricas;
+  return apiClient.put('/configuracoes/metricas', metricas);
 }
 
 export async function obterAlertasDashboard() {

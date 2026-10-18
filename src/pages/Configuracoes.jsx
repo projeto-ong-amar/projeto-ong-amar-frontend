@@ -130,7 +130,7 @@ export function Configuracoes() {
         });
       }
     } catch (error) {
-      
+      setErroPerfil(error.message || 'Não foi possível carregar o perfil.');
     }
 
     try {
@@ -145,12 +145,19 @@ export function Configuracoes() {
         });
       }
     } catch (error) {
+      setErroNotificacoes(error.message || 'Não foi possível carregar as notificações.');
     }
 
     try {
       setMetricas(await obterMetricas());
+    } catch (error) {
+      setErroMetricas(error.message || 'Não foi possível carregar as métricas.');
+    }
+
+    try {
       setAlertas(await obterAlertasDashboard());
     } catch (error) {
+      setErroAlertas(error.message || 'Não foi possível carregar os alertas.');
     }
   }
 
