@@ -6,16 +6,12 @@ export function listarProdutos() {
   return apiClient.get('/produtos');
 }
 
-export function listarCategorias() {
-  return apiClient.get('/categoria');
+export function cadastrarProduto({ nome, categoria, unidadeMedida }) {
+  return apiClient.post('/produtos', { nome, categoria, unidadeMedida });
 }
 
-export function cadastrarProduto({ nome, unidadeMedida, fkCategoria, dataCadastro }) {
-  return apiClient.post('/produtos', { nome, unidadeMedida, fkCategoria, dataCadastro });
-}
-
-export function atualizarProduto(id, { nome, unidadeMedida, fkCategoria, dataCadastro }) {
-  return apiClient.put(`/produtos/${id}`, { nome, unidadeMedida, fkCategoria, dataCadastro });
+export function atualizarProduto(id, { nome, categoria, unidadeMedida }) {
+  return apiClient.put(`/produtos/${id}`, { nome, categoria, unidadeMedida });
 }
 
 export function removerProduto(id) {

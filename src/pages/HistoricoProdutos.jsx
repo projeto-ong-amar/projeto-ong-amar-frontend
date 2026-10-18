@@ -2,14 +2,6 @@ import { useCallback } from 'react';
 import Historico from './Historico.jsx';
 import { listarProdutos, removerProduto } from '../services/produtoService';
 
-function paraBr(dataIso) {
-  if (!dataIso) return '';
-  const [data] = dataIso.split('T');
-  const [ano, mes, dia] = data.split('-');
-  if (!ano || !mes || !dia) return dataIso;
-  return `${dia}/${mes}/${ano}`;
-}
-
 export function HistoricoProdutos({ onNavigate }) {
  
   const carregarPagina = useCallback(async (pagina, tamanho) => {
@@ -35,8 +27,7 @@ export function HistoricoProdutos({ onNavigate }) {
       colunas={[
         { chave: 'nome', rotulo: 'Produto', render: (item) => item.nome },
         { chave: 'unidade', rotulo: 'Unidade de Medida', render: (item) => item.unidadeMedida || '-' },
-        { chave: 'categoria', rotulo: 'Categoria', render: (item) => item.categoria?.nome || '-' },
-        { chave: 'data', rotulo: 'Data de Cadastro', render: (item) => paraBr(item.dataCadastro) },
+        { chave: 'categoria', rotulo: 'Categoria', render: (item) => item.categoria || '-' },
       ]}
     />
   );

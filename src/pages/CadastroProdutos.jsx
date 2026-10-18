@@ -1,23 +1,9 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './CadastroProdutos.module.css';
-import { listarProdutos, listarCategorias, cadastrarProduto, atualizarProduto, removerProduto } from '../services/produtoService';
+import { listarProdutos, cadastrarProduto, atualizarProduto, removerProduto } from '../services/produtoService';
 
-function hoje() {
-  const data = new Date();
-  const ano = data.getFullYear();
-  const mes = String(data.getMonth() + 1).padStart(2, '0');
-  const dia = String(data.getDate()).padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
-
-function paraBr(dataIso) {
-  if (!dataIso) return '';
-  const [ano, mes, dia] = dataIso.split('-');
-  if (!ano || !mes || !dia) return dataIso;
-  return `${dia}/${mes}/${ano}`;
-}
-
-const formularioVazio = { nome: '', fkCategoria: '', unidadeMedida: '', dataCadastro: hoje() };
+const categoriasDisponiveis = ['ALIMENTOS', 'PRODUTOS DE HIGIENE'];
+const formularioVazio = { nome: '', categoria: '', unidadeMedida: '' };
 
 function obterUltimoProduto(lista) {
   if (!lista.length) return null;
@@ -25,7 +11,6 @@ function obterUltimoProduto(lista) {
 }
 
 export function CadastroProdutos({ onNavigate }) {
-  const [categorias, setCategorias] = useState([]);
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
@@ -38,8 +23,6 @@ export function CadastroProdutos({ onNavigate }) {
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
   const [linhaExclusao, setLinhaExclusao] = useState(null);
 
-  const inputDataCadastroRef = useRef(null);
-  const inputEditDataCadastroRef = useRef(null);
   const ultimoProduto = obterUltimoProduto(produtos);
 
   useEffect(() => {
@@ -50,17 +33,8 @@ export function CadastroProdutos({ onNavigate }) {
     setCarregando(true);
     setErro('');
     try {
-      const [resultadoCategorias, resultadoProdutos] = await Promise.allSettled([
-        listarCategorias(),
-        listarProdutos(),
-      ]);
-
-      setCategorias(resultadoCategorias.status === 'fulfilled' ? (resultadoCategorias.value || []) : []);
-      setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
-
-      if (resultadoCategorias.status === 'rejected') {
-        setErro(resultadoCategorias.reason?.message || 'Não foi possível carregar as categorias.');
-      }
+      const resultadoProdutos = await listarProdutos();
+      setProdutos(resultadoProdutos || []);
     } catch (e) {
       setErro(e.message || 'Não foi possível carregar os dados.');
     } finally {
@@ -85,9 +59,8 @@ export function CadastroProdutos({ onNavigate }) {
     try {
       await cadastrarProduto({
         nome: formulario.nome,
+        categoria: formulario.categoria,
         unidadeMedida: formulario.unidadeMedida,
-        fkCategoria: Number(formulario.fkCategoria),
-        dataCadastro: formulario.dataCadastro || null,
       });
       setSucesso('Produto cadastrado com sucesso!');
       setFormulario(formularioVazio);
@@ -102,9 +75,8 @@ export function CadastroProdutos({ onNavigate }) {
   function abrirEdicao(item) {
     setFormularioEdicao({
       nome: item.nome,
-      fkCategoria: String(item.categoria?.id ?? ''),
+      categoria: item.categoria || '',
       unidadeMedida: item.unidadeMedida,
-      dataCadastro: item.dataCadastro ? item.dataCadastro.split('T')[0] : hoje(),
     });
     setLinhaEdicao(item);
     setMenuAberto(null);
@@ -123,9 +95,8 @@ export function CadastroProdutos({ onNavigate }) {
     try {
       await atualizarProduto(linhaEdicao.id, {
         nome: formularioEdicao.nome,
+        categoria: formularioEdicao.categoria,
         unidadeMedida: formularioEdicao.unidadeMedida,
-        fkCategoria: Number(formularioEdicao.fkCategoria),
-        dataCadastro: formularioEdicao.dataCadastro || null,
       });
       setSucesso('Produto atualizado com sucesso!');
       setLinhaEdicao(null);
@@ -190,13 +161,13 @@ export function CadastroProdutos({ onNavigate }) {
             </label>
             <select
               id="categoria-produto"
-              value={formulario.fkCategoria}
-              onChange={lidarComMudanca('fkCategoria')}
+              value={formulario.categoria}
+              onChange={lidarComMudanca('categoria')}
               required
             >
               <option value="">Selecione a categoria</option>
-              {categorias.map((categoria) => (
-                <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+              {categoriasDisponiveis.map((categoria) => (
+                <option key={categoria} value={categoria}>{categoria}</option>
               ))}
             </select>
           </div>
@@ -216,29 +187,6 @@ export function CadastroProdutos({ onNavigate }) {
             />
           </div>
 
-          <div className={styles.campo}>
-            <label htmlFor="data-cadastro">
-              4. Data de Cadastro <span className={styles.obrigatorio}>*</span>
-            </label>
-            <div className={styles.envoltorioData}>
-              <input
-                ref={inputDataCadastroRef}
-                id="data-cadastro"
-                type="date"
-                value={formulario.dataCadastro}
-                onChange={lidarComMudanca('dataCadastro')}
-                required
-              />
-              <button
-                type="button"
-                className={styles.botaoCalendario}
-                aria-label="Selecionar data"
-                onClick={() => inputDataCadastroRef.current?.showPicker()}
-              >
-                <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
-              </button>
-            </div>
-          </div>
         </div>
 
         <div className={styles.linhaAcoes}>
@@ -288,23 +236,21 @@ export function CadastroProdutos({ onNavigate }) {
               <th>Produto</th>
               <th>Unidade de Medida</th>
               <th>Categoria</th>
-              <th>Data de Cadastro</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
             {carregando && (
-              <tr><td colSpan={5}>Carregando...</td></tr>
+              <tr><td colSpan={4}>Carregando...</td></tr>
             )}
             {!carregando && !ultimoProduto && (
-              <tr><td colSpan={5}>Nenhum produto cadastrado.</td></tr>
+              <tr><td colSpan={4}>Nenhum produto cadastrado.</td></tr>
             )}
             {!carregando && [ultimoProduto].filter(Boolean).map((item, indice) => (
               <tr key={item.id ?? indice}>
                 <td>{item.nome}</td>
                 <td>{item.unidadeMedida}</td>
-                <td>{item.categoria?.nome}</td>
-                <td>{paraBr(item.dataCadastro)}</td>
+                <td>{item.categoria}</td>
                 <td className={styles.celulaAcoes}>
                   <div className={styles.envoltorioAcoes}>
                     <button
@@ -395,13 +341,13 @@ export function CadastroProdutos({ onNavigate }) {
                   </label>
                   <select
                     id="edit-categoria-produto"
-                    value={formularioEdicao.fkCategoria}
-                    onChange={lidarComMudancaEdicao('fkCategoria')}
+                    value={formularioEdicao.categoria}
+                    onChange={lidarComMudancaEdicao('categoria')}
                     required
                   >
                     <option value="">Selecione a categoria</option>
-                    {categorias.map((categoria) => (
-                      <option key={categoria.id} value={categoria.id}>{categoria.nome}</option>
+                    {categoriasDisponiveis.map((categoria) => (
+                      <option key={categoria} value={categoria}>{categoria}</option>
                     ))}
                   </select>
                 </div>
@@ -421,29 +367,6 @@ export function CadastroProdutos({ onNavigate }) {
                   />
                 </div>
 
-                <div className={styles.campo}>
-                  <label htmlFor="edit-data-cadastro">
-                    4. Data de Cadastro <span className={styles.obrigatorio}>*</span>
-                  </label>
-                  <div className={styles.envoltorioData}>
-                    <input
-                      ref={inputEditDataCadastroRef}
-                      id="edit-data-cadastro"
-                      type="date"
-                      value={formularioEdicao.dataCadastro}
-                      onChange={lidarComMudancaEdicao('dataCadastro')}
-                      required
-                    />
-                    <button
-                      type="button"
-                      className={styles.botaoCalendario}
-                      aria-label="Selecionar data"
-                      onClick={() => inputEditDataCadastroRef.current?.showPicker()}
-                    >
-                      <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
-                    </button>
-                  </div>
-                </div>
               </div>
 
               <div className={styles.linhaAcoes}>
