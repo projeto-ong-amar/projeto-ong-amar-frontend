@@ -1,6 +1,7 @@
 import logo from '../../assets/img/pca-1.png';
 import { useAltoContraste } from '../../hooks/useAltoContraste.js';
 import { IconeAltoContraste } from '../common/IconeAltoContraste.jsx';
+import { podeAcessarPagina } from '../../utils/permissoes.js';
 import styles from './Sidebar.module.css';
 
 const NAV_ITEMS = [
@@ -50,7 +51,7 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario
       <div className={styles.sidebarLabel}>Sistema de Estoque</div>
 
       <nav className={styles.nav}>
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS.filter((item) => podeAcessarPagina(usuario, item.key)).map((item) => (
           <a
             key={item.key}
             className={`${styles.navItem} ${item.key === activePage ? styles.active : ''}`}

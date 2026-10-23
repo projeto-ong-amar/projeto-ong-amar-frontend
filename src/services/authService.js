@@ -8,6 +8,7 @@ function normalizarUsuario(usuario) {
     id: usuario.id ?? usuario.userId,
     nome: usuario.nome,
     email: usuario.email,
+    tipoUsuario: usuario.tipoUsuario,
   };
 }
 

@@ -13,6 +13,7 @@ import {
   METRICAS_PADRAO,
   ALERTAS_PADRAO,
 } from '../services/configuracoesService';
+import { podeConfigurarMetricas } from '../utils/permissoes.js';
 
 const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo', senhaAtual: '' };
 const senhaVazia = { senhaAtual: '', novaSenha: '', confirmarNovaSenha: '' };
@@ -87,11 +88,13 @@ function CampoMetrica({ id, icone, tom, titulo, descricao, valor, unidade, aoMud
   );
 }
 
-export function Configuracoes() {
+export function Configuracoes({ usuario }) {
+  const mostrarMetricas = podeConfigurarMetricas(usuario);
+  const abasVisiveis = mostrarMetricas ? ABAS : ABAS.filter((item) => item.id !== 'metricas');
   const [perfil, setPerfil] = useState(perfilVazio);
   const [senha, setSenha] = useState(senhaVazia);
   const [notificacoes, setNotificacoes] = useState(notificacoesVazias);
-  const [aba, setAba] = useState('metricas');
+  const [aba, setAba] = useState(mostrarMetricas ? 'metricas' : 'notificacoes');
   const [metricas, setMetricas] = useState(METRICAS_PADRAO);
   const [alertas, setAlertas] = useState(ALERTAS_PADRAO);
 
@@ -268,7 +271,7 @@ export function Configuracoes() {
           </div>
         </div>
         <div className={styles.abas} role="tablist" aria-label="Seções de configuração">
-          {ABAS.map((item) => (
+          {abasVisiveis.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -286,7 +289,7 @@ export function Configuracoes() {
         </div>
       </section>
 
-      {aba === 'metricas' && (
+      {mostrarMetricas && aba === 'metricas' && (
         <div role="tabpanel" id="painel-metricas" aria-labelledby="aba-metricas">
           <section className={styles.cartao}>
             <div className={styles.cabecalhoCartao}>

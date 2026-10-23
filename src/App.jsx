@@ -18,6 +18,7 @@ import HistoricoProdutos from './pages/HistoricoProdutos.jsx';
 import { Desempenho } from './pages/Desempenho.jsx';
 import { EstoqueAtual } from './pages/EstoqueAtual.jsx';
 import { RiscoVencimento } from './pages/RiscoVencimento.jsx';
+import { podeAcessarPagina } from './utils/permissoes.js';
 
 const PAGES = {
   inicio: Inicio,
@@ -92,7 +93,8 @@ function App({ usuario, onSair }) {
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
   const etapas = montarEtapas(activePage);
-  const PageComponent = PAGES[activePage];
+  const paginaPermitida = podeAcessarPagina(usuario, activePage);
+  const PageComponent = paginaPermitida ? PAGES[activePage] : null;
   const sidebarActivePage = HISTORICO_ORIGEM[activePage] ?? activePage;
 
   const handleVoltar = () => {
@@ -118,6 +120,7 @@ function App({ usuario, onSair }) {
         {PageComponent ? (
           <main className={styles.pageScroll}>
             <PageComponent 
+              usuario={usuario}
               onNavigate={setActivePage} 
               onVoltar={handleVoltar}
               aoVoltar={handleVoltar}
@@ -125,7 +128,11 @@ function App({ usuario, onSair }) {
           </main>
         ) : (
           <main className={styles.content}>
-            <p>Página "{sectionLabel}" ainda não implementada.</p>
+            {paginaPermitida ? (
+              <p>Página "{sectionLabel}" ainda não implementada.</p>
+            ) : (
+              <p role="alert">Você não tem permissão para acessar a página "{sectionLabel}".</p>
+            )}
           </main>
         )}
       </div>

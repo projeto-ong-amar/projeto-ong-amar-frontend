@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './Inicio.module.css';
+import { podeAcessarPagina } from '../utils/permissoes.js';
 
 const SERVICOS = [
   {
@@ -55,17 +56,18 @@ function IconeBusca(propriedades) {
   );
 }
 
-export function Inicio({ onNavigate }) {
+export function Inicio({ onNavigate, usuario }) {
   const [busca, setBusca] = useState('');
 
   const termo = busca.trim().toLowerCase();
+  const servicosPermitidos = SERVICOS.filter((servico) => podeAcessarPagina(usuario, servico.chave));
   const servicosFiltrados = termo
-    ? SERVICOS.filter(
+    ? servicosPermitidos.filter(
         (servico) =>
           servico.rotulo.toLowerCase().includes(termo) ||
           servico.titulo.toLowerCase().includes(termo)
       )
-    : SERVICOS;
+    : servicosPermitidos;
 
   return (
     <main className={styles.conteudo}>

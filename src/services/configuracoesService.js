@@ -4,7 +4,7 @@ import { apiClient } from './apiClient.js';
 export async function obterPerfil() {
   const sessao = await apiClient.get('/usuarios/me');
 
-  let nivelAcesso = '';
+  let nivelAcesso = sessao.tipoUsuario ?? '';
   let status = 'Ativo';
   try {
     const usuarios = await apiClient.get('/usuarios');
