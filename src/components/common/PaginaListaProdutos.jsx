@@ -23,7 +23,6 @@ function baixarCsv(nomeArquivo, colunas, itens) {
   URL.revokeObjectURL(url)
 }
 
-
 export function PaginaListaProdutos({
   icone,
   corIcone,

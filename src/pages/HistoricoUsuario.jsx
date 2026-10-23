@@ -21,7 +21,6 @@ export function HistoricoUsuario() {
   const [salvando, setSalvando] = useState(false);
   const [erroEdicao, setErroEdicao] = useState('');
 
-  // Quando "versao" muda, a função muda de referência e o Historico busca de novo.
   const carregarPagina = useCallback(async (pagina, tamanho) => {
     const todos = (await listarUsuarios()) || [];
     const totalPaginas = Math.max(1, Math.ceil(todos.length / tamanho));
@@ -54,7 +53,7 @@ export function HistoricoUsuario() {
     setSalvando(true);
     setErroEdicao('');
     try {
-      // TODO: await atualizarUsuario(usuarioEditando.id, formularioEdicao);
+      
       setUsuarioEditando(null);
       setVersao((v) => v + 1);
     } catch (e) {
@@ -65,7 +64,7 @@ export function HistoricoUsuario() {
   }
 
   async function excluir(usuario) {
-    // TODO: await excluirUsuario(usuario.id);
+   
   }
 
   return (

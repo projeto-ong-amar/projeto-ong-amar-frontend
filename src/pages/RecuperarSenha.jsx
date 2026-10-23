@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
 import { solicitarRecuperacaoSenha } from '../services/authService.js';
+import { useAltoContraste } from '../hooks/useAltoContraste.js';
+import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
 import styles from './RecuperarSenha.module.css';
 
 export function RecuperarSenha({ onNavigate, onVoltar }) {
@@ -8,6 +10,8 @@ export function RecuperarSenha({ onNavigate, onVoltar }) {
   const [enviado, setEnviado] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
+
+  const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
 
   const [escala, setEscala] = useState(1);
 
@@ -117,6 +121,16 @@ export function RecuperarSenha({ onNavigate, onVoltar }) {
           </button>
           <button className={styles.botaoAcessibilidade} type="button" onClick={diminuirTamanhoFonte}>
             a-
+          </button>
+          <button
+            className={`${styles.botaoAcessibilidade} ${styles.iconeBotaoAcessibilidade}`}
+            type="button"
+            onClick={alternarAltoContraste}
+            aria-pressed={altoContraste}
+            aria-label={altoContraste ? 'Desativar alto contraste' : 'Ativar alto contraste'}
+            title="Alto contraste"
+          >
+            <IconeAltoContraste />
           </button>
         </div>
       </div>

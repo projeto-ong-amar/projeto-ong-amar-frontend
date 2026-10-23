@@ -10,6 +10,7 @@ import {
 } from '../services/entradaService';
 
 const MOTIVO_PADRAO = 'Entrada registrada no sistema';
+const ORDENACAO_RECENTE = ['dataHora,desc', 'id,desc'];
 
 function fkUsuarioAtual() {
   return getUsuarioLogado()?.id ?? null;
@@ -22,6 +23,29 @@ function paraBr(dataIso) {
   const [ano, mes, dia] = dataIso.split('-');
   if (!ano || !mes || !dia) return dataIso;
   return `${dia}/${mes}/${ano}`;
+}
+
+function compararEntradasRecentes(entradaA, entradaB) {
+  const dataA = Date.parse(entradaA.dataHora);
+  const dataB = Date.parse(entradaB.dataHora);
+
+  if (Number.isFinite(dataA) && Number.isFinite(dataB) && dataA !== dataB) {
+    return dataB - dataA;
+  }
+  return Number(entradaB.id) - Number(entradaA.id);
+}
+
+async function buscarEntradaMaisRecente() {
+  const paginaInicial = await listarHistoricoEntrada(0, 10, ORDENACAO_RECENTE);
+  const entradasIniciais = paginaInicial?.content || [];
+  const totalEntradas = paginaInicial?.totalElements ?? entradasIniciais.length;
+  const paginaCompleta = totalEntradas > entradasIniciais.length
+    ? await listarHistoricoEntrada(0, totalEntradas, ORDENACAO_RECENTE)
+    : paginaInicial;
+
+  return [...(paginaCompleta?.content || [])]
+    .sort(compararEntradasRecentes)
+    .slice(0, 1);
 }
 
 export function GerenciarEntrada({ onNavigate }) {
@@ -53,14 +77,13 @@ export function GerenciarEntrada({ onNavigate }) {
     try {
       const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
         listarProdutos(),
-        listarHistoricoEntrada(0, 1),
+        buscarEntradaMaisRecente(),
       ]);
 
       setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
 
       if (resultadoHistorico.status === 'fulfilled') {
-        const pagina = resultadoHistorico.value;
-        setHistorico(pagina?.content || []);
+        setHistorico(resultadoHistorico.value || []);
       } else {
         setHistorico([]);
       }

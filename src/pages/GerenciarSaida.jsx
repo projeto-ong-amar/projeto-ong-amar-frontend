@@ -23,6 +23,29 @@ function paraBr(dataIso) {
   return `${dia}/${mes}/${ano}`;
 }
 
+function compararSaidasRecentes(saidaA, saidaB) {
+  const dataA = Date.parse(saidaA.dataHora);
+  const dataB = Date.parse(saidaB.dataHora);
+
+  if (Number.isFinite(dataA) && Number.isFinite(dataB) && dataA !== dataB) {
+    return dataB - dataA;
+  }
+  return Number(saidaB.id) - Number(saidaA.id);
+}
+
+async function buscarSaidaMaisRecente() {
+  const paginaInicial = await listarHistoricoSaida(0, 10);
+  const saidasIniciais = paginaInicial?.content || [];
+  const totalSaidas = paginaInicial?.totalElements ?? saidasIniciais.length;
+  const paginaCompleta = totalSaidas > saidasIniciais.length
+    ? await listarHistoricoSaida(0, totalSaidas)
+    : paginaInicial;
+
+  return [...(paginaCompleta?.content || [])]
+    .sort(compararSaidasRecentes)
+    .slice(0, 1);
+}
+
 export function GerenciarSaida({ onNavigate }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
@@ -50,14 +73,13 @@ export function GerenciarSaida({ onNavigate }) {
     try {
       const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
         listarProdutos(),
-        listarHistoricoSaida(0, 1),
+        buscarSaidaMaisRecente(),
       ]);
 
       setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
 
       if (resultadoHistorico.status === 'fulfilled') {
-        const pagina = resultadoHistorico.value;
-        setHistorico(pagina?.content || []);
+        setHistorico(resultadoHistorico.value || []);
       } else {
         setHistorico([]);
       }
