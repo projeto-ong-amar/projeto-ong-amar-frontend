@@ -42,7 +42,7 @@ jobs:
 
       # VITE_API_URL é embutida no build, por isso a imagem é gerada por ambiente.
       - name: Construir e publicar imagem
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
