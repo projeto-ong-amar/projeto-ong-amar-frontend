@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import logo from '../assets/img/pca-1.png';
 import { redefinirSenha } from '../services/authService.js';
+import { useAltoContraste } from '../hooks/useAltoContraste.js';
+import { IconeAltoContraste } from '../components/common/IconeAltoContraste.jsx';
+import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import styles from './RecuperarSenha.module.css';
 
 const REGRA_SENHA = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/;
@@ -17,6 +20,8 @@ export function RedefinirSenha({ aoVoltar }) {
   ));
 
   const token = new URLSearchParams(window.location.search).get('token');
+
+  const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
 
   const [escala, setEscala] = useState(1);
 
@@ -87,12 +92,11 @@ export function RedefinirSenha({ aoVoltar }) {
           </div>
         ) : (
           <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
-            <label className={styles.rotuloCampo} htmlFor="nova-senha">
-              Digite sua nova senha
-            </label>
-            <input
-              type="password"
+            <InputPasswordToggle
               id="nova-senha"
+              className={styles.campoSenha}
+              labelClassName={styles.rotuloCampo}
+              label="Digite sua nova senha"
               autoComplete="new-password"
               value={senha}
               onChange={(evento) => {
@@ -103,12 +107,11 @@ export function RedefinirSenha({ aoVoltar }) {
               required
             />
 
-            <label className={`${styles.rotuloCampo} ${styles.espacado}`} htmlFor="confirmar-nova-senha">
-              Confirme sua nova senha
-            </label>
-            <input
-              type="password"
+            <InputPasswordToggle
               id="confirmar-nova-senha"
+              className={styles.campoSenha}
+              labelClassName={`${styles.rotuloCampo} ${styles.espacado}`}
+              label="Confirme sua nova senha"
               autoComplete="new-password"
               value={confirmacaoSenha}
               onChange={(evento) => {
@@ -133,6 +136,16 @@ export function RedefinirSenha({ aoVoltar }) {
         <div className={styles.pilulaAcessibilidade}>
           <button className={styles.botaoAcessibilidade} type="button" onClick={aumentarTamanhoFonte}>A+</button>
           <button className={styles.botaoAcessibilidade} type="button" onClick={diminuirTamanhoFonte}>a-</button>
+          <button
+            className={`${styles.botaoAcessibilidade} ${styles.iconeBotaoAcessibilidade}`}
+            type="button"
+            onClick={alternarAltoContraste}
+            aria-pressed={altoContraste}
+            aria-label={altoContraste ? 'Desativar alto contraste' : 'Ativar alto contraste'}
+            title="Alto contraste"
+          >
+            <IconeAltoContraste />
+          </button>
         </div>
       </div>
     </div>

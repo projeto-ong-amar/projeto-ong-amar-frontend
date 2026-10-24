@@ -54,8 +54,7 @@ http.interceptors.response.use(
 
 async function request(path, options = {}) {
   const response = await http.request({ url: path, ...options });
-  // O backend retorna 204 (sem corpo) em vários DELETE/POST; normaliza para
-  // null, mantendo o mesmo contrato que o restante do app já espera.
+
   if (response.status === 204 || response.data === '') {
     return null;
   }

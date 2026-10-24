@@ -69,7 +69,8 @@
 }
 
 .formularioLogin input[type='email'],
-.formularioLogin input[type='password'] {
+.formularioLogin input[type='password'],
+.formularioLogin input[type='text'] {
   width: 100%;
   padding: 1.125rem 1.25rem;
   background: #dde0e8;
@@ -80,6 +81,11 @@
   color: #374151;
   outline: none;
   transition: background 0.2s, box-shadow 0.2s;
+}
+
+.campoSenha {
+  display: flex;
+  flex-direction: column;
 }
 
 .rotuloCampo.espacado {

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 const options = {
   bars: "vertical",
   legend: { position: "top" },
-  colors: ["#06cb31", "#ff1100"]
+  colors: ["#0D9488", "#D97706"]
 };
 
 export function GraficoDistribuicao() {

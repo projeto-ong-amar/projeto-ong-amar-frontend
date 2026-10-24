@@ -80,6 +80,11 @@
   transition: background 0.2s, box-shadow 0.2s;
 }
 
+.campoSenha {
+  display: flex;
+  flex-direction: column;
+}
+
 .formularioLogin input::placeholder { color: #9ca3af; }
 
 .formularioLogin input:focus {

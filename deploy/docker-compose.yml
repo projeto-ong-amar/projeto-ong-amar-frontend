@@ -1,0 +1,49 @@
+# Stack do servidor (mesma arquitetura do pca-setup/stack): MySQL + Spring Boot + nginx,
+# tudo no MESMO origin (o nginx do frontend faz proxy de /api/* para o backend).
+# Isso é obrigatório: o cookie authToken é SameSite=Strict.
+#
+# Copie para $DEPLOY_PATH e gere o .env com:  pca-setup hosting --skip-up --domain <dominio>
+# (o CD acrescenta/atualiza BACKEND_IMAGE_TAG e FRONTEND_IMAGE_TAG no .env a cada deploy).
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: projeto_amar
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  backend:
+    image: ghcr.io/projeto-ong-amar/projeto-ong-amar-backend:${BACKEND_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:mysql://db:3306/projeto_amar?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+      SECURITY_CORS_ALLOWED_ORIGINS: ${FRONTEND_ORIGIN}
+      SECURITY_COOKIE_SECURE: ${COOKIE_SECURE}
+      SECURITY_TRANSPORT_REQUIRE_HTTPS: ${REQUIRE_HTTPS}
+
+  frontend:
+    image: ghcr.io/projeto-ong-amar/projeto-ong-amar-frontend:${FRONTEND_IMAGE_TAG:-latest}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+
+volumes:
+  dbdata:

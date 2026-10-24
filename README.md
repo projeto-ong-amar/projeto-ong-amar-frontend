@@ -29,8 +29,10 @@
 - [Variáveis de ambiente](#variáveis-de-ambiente)
 - [Scripts disponíveis](#scripts-disponíveis)
 - [Integração com o backend](#integração-com-o-backend)
+- [Níveis de acesso](#níveis-de-acesso)
 - [Autenticação e segurança](#autenticação-e-segurança)
 - [Navegação](#navegação)
+- [CI/CD e ambientes](#cicd-e-ambientes)
 - [Padrões de código](#padrões-de-código)
 - [Limitações conhecidas](#limitações-conhecidas)
 - [Roadmap](#roadmap)
@@ -57,12 +59,12 @@ O sistema conversa com uma **API REST em Spring Boot** (repositório separado) e
 | **Início** | Painel com atalhos para os serviços principais e **busca por serviço**. |
 | **Gerenciar Entrada** | Registra entradas de produtos (quantidade, data de entrada e validade), mostra a **última entrada** e permite editar e excluir. |
 | **Gerenciar Saída** | Registra saídas com marcação de **Perda**, mostra a **última saída** e permite editar e excluir. |
-| **Cadastro de Produtos** | Cadastra produtos com categoria e unidade de medida, com edição e exclusão. |
-| **Cadastro de Usuário** | Cria usuários (Voluntário ou Administrador) com validação de senha forte e status ativo/inativo. |
+| **Cadastro de Produtos** | Cadastra produtos com categoria e unidade de medida, com edição e exclusão. *(somente administrador)* |
+| **Cadastro de Usuário** | Cria usuários (Voluntário ou Administrador) com validação de senha forte e status ativo/inativo. *(somente administrador)* |
 | **Históricos** | Listagens paginadas de entradas, saídas, produtos e usuários, com menu de ações por linha. |
-| **Relatórios** | Gera relatórios em **PDF criados por IA** (entradas, saídas, desempenho e produtos cadastrados), com opção de cancelar a geração. |
-| **Desempenho (dashboard)** | KPIs de estoque atual, risco de vencimento, doações recebidas e itens distribuídos, mais gráficos mensais e estoque por tipo. |
-| **Configurações** | Edição de perfil, troca de senha e preferências de notificação por e-mail. |
+| **Relatórios** | Gera relatórios em **PDF criados por IA** (entradas, saídas, desempenho e produtos cadastrados), com opção de cancelar a geração. *(somente administrador)* |
+| **Desempenho (dashboard)** | KPIs de estoque atual, risco de vencimento, doações recebidas e itens distribuídos, mais gráficos mensais e estoque por tipo. *(somente administrador)* |
+| **Configurações** | Métricas do dashboard *(somente administrador)*, alertas e notificações por e-mail e troca de senha. |
 | **Chatbot** | Assistente Botpress embutido para tirar dúvidas de uso. |
 
 ### Destaques
@@ -70,6 +72,7 @@ O sistema conversa com uma **API REST em Spring Boot** (repositório separado) e
 - **Padrão "último registro + histórico":** as telas de cadastro mostram o último item lançado e levam ao histórico completo com paginação.
 - **Dashboard sem biblioteca de gráficos:** os gráficos de barras e a lista de estoque por tipo são feitos com CSS, o que deixa o bundle enxuto.
 - **Risco de vencimento:** o KPI usa a data da próxima doação como referência e abre um modal com os alimentos em risco; o período de risco configurado é compartilhado com os alertas por e-mail.
+- **Níveis de acesso:** administrador acessa tudo; o voluntário só vê as telas operacionais. O menu, os atalhos da tela inicial e a navegação se ajustam ao perfil, e o backend reforça as regras com `403`.
 - **Sessão sincronizada entre abas:** sair em uma aba encerra a sessão nas demais.
 - **Validação de senha no cliente:** mínimo de 8 caracteres com maiúscula, minúscula, número e caractere especial (`@$!%*?&`).
 
@@ -134,7 +137,7 @@ projeto-ong-amar-frontend/
 ├── src/
 │   ├── assets/img/            # Logo da ONG
 │   ├── components/
-│   │   ├── common/            # Paginacao
+│   │   ├── common/            # Paginacao, Breadcrumb, InputPasswordToggle
 │   │   ├── layout/            # Sidebar e Topbar
 │   │   └── reports/           # PeriodFilter e ReportCard
 │   ├── hooks/                 # useReports
@@ -150,15 +153,19 @@ projeto-ong-amar-frontend/
 │   │   ├── usuarioService.js
 │   │   ├── produtoService.js
 │   │   ├── entradaService.js / saidaService.js / movimentacaoService.js
-│   │   ├── dashboardService.js
+│   │   ├── desempenhoService.js
 │   │   ├── reportsService.js
 │   │   └── configuracoesService.js
 │   ├── styles/                # variables.css e global.css
-│   ├── utils/                 # formatDate.js e motivoSaida.js
+│   ├── utils/                 # permissoes.js (níveis de acesso), formatDate.js, motivoSaida.js
 │   ├── App.jsx                # Layout e roteamento por estado
 │   └── main.jsx               # Ponto de entrada
 ├── .env.example
+├── .github/workflows/     # CI e CD (ci.yml, cd.yml, deploy.yml)
 ├── .oxlintrc.json
+├── deploy/                # docker-compose.yml usado no servidor
+├── Dockerfile             # Build do Vite + Nginx
+├── nginx.conf             # Fallback das rotas do SPA
 ├── index.html                 # VLibras e Botpress são carregados aqui
 ├── package.json
 └── vite.config.js
@@ -291,14 +298,39 @@ O front envia uma `pergunta` em texto e recebe o PDF como `blob` para download.
 
 ---
 
+## Níveis de acesso
+
+O sistema tem dois perfis, definidos no cadastro do usuário e devolvidos pelo backend em `POST /usuarios/login` e `GET /usuarios/me` (campo `tipoUsuario`).
+
+| Funcionalidade | Administrador | Voluntário |
+| --- | :---: | :---: |
+| Início | ✅ | ✅ |
+| Gerenciar Entrada e Saída (e históricos) | ✅ | ✅ |
+| Configurações: alertas, notificações e senha | ✅ | ✅ |
+| Cadastro de Produtos (e histórico) | ✅ | ❌ |
+| Relatórios | ✅ | ❌ |
+| Desempenho, Estoque Atual e Risco de Vencimento | ✅ | ❌ |
+| Configurações: métricas do dashboard | ✅ | ❌ |
+| Cadastro de Usuário (e histórico) | ✅ | ❌ |
+
+**Como funciona no frontend**
+
+- As regras ficam centralizadas em `src/utils/permissoes.js` (`podeAcessarPagina`, `podeConfigurarMetricas`).
+- `Sidebar` e `Inicio` escondem o que o perfil não pode acessar; `App.jsx` bloqueia a navegação direta e exibe "Você não tem permissão para acessar a página…".
+- Em `Configuracoes`, o voluntário não vê a aba "Métricas de Estoque" e abre direto em "Notificações e Alertas".
+
+> **Importante:** esconder telas é apenas conforto de uso. A proteção real está no backend, que responde `403` para qualquer chamada fora do perfil (relatórios, dashboard, cadastro de produtos e de usuários, salvar métricas).
+
+---
+
 ## Autenticação e segurança
 
 - **Sessão por cookie HttpOnly:** o token de sessão (`authToken`) fica em cookie e não é acessível por JavaScript. O Axios usa `withCredentials: true`.
 - **Proteção CSRF:** após o login, o app chama `GET /csrf`. O Axios lê o cookie `XSRF-TOKEN` e envia o header `X-XSRF-TOKEN` em toda requisição mutável (POST, PUT, PATCH, DELETE).
 - **Logout automático:** qualquer resposta `401` limpa os dados locais e dispara o evento `sessao-encerrada`, devolvendo o usuário ao login.
 - **Sincronização entre abas:** o evento `storage` encerra a sessão em todas as abas ao sair de uma.
-- **Dados locais mínimos:** apenas `id`, `nome` e `email` do usuário ficam no `localStorage`, para exibição.
-- **Perfis:** o backend distingue `ADMINISTRADOR` e `VOLUNTARIO`. Endpoints como listagem e edição de usuários exigem perfil administrador e respondem `403` para voluntários.
+- **Dados locais mínimos:** apenas `id`, `nome`, `email` e `tipoUsuario` ficam no `localStorage`, para exibição e para ajustar o menu ao perfil.
+- **Perfis:** o backend distingue `ADMINISTRADOR` e `VOLUNTARIO` e valida o perfil a cada requisição. Veja [Níveis de acesso](#níveis-de-acesso).
 
 > **Importante:** nunca versione o arquivo `.env` com valores reais. O `.gitignore` já o ignora.
 
@@ -327,6 +359,7 @@ Nas telas de histórico, o botão **Voltar** retorna à tela de origem e o item 
 1. Crie `src/pages/MinhaPagina.jsx` (e o `.module.css` correspondente).
 2. Registre em `PAGES` e em `SECTION_LABELS`, dentro de `src/App.jsx`.
 3. Se deve aparecer no menu, adicione um item em `NAV_ITEMS`, em `Sidebar.jsx`.
+4. Se a tela for restrita ao administrador, inclua a chave em `PAGINAS_SOMENTE_ADMIN`, em `src/utils/permissoes.js`. Menu, atalhos e navegação passam a respeitar a regra automaticamente.
 
 ### Histórico genérico
 
@@ -341,6 +374,38 @@ Nas telas de histórico, o botão **Voltar** retorna à tela de origem e o item 
   aoExcluir={excluir}         // opcional: habilita a ação de excluir
   colunas={[{ chave: 'nome', rotulo: 'Nome', render: (item) => item.nome }]}
 />
+```
+
+---
+
+## CI/CD e ambientes
+
+O fluxo de branches e ambientes é:
+
+```text
+feature/* ──PR──> develop ──PR──> main
+                     │              │
+                     ▼              ▼
+              desenvolvimento   homologação ──(aprovação)──> produção
+```
+
+| Evento | O que acontece |
+| --- | --- |
+| PR para `develop` ou `main` | CI: `npm ci`, `npm run lint` e `npm run build`. PRs para `main` só aceitam origem `develop` ou `hotfix/*` |
+| Merge em `develop` | CI e deploy automático em **desenvolvimento** |
+| Merge em `main` | CI, deploy em **homologação** e, após aprovação manual, em **produção** |
+| *Run workflow* manual | Promove ou faz rollback de qualquer branch, tag ou SHA para o ambiente escolhido |
+
+- Os workflows estão em `.github/workflows/` (`ci.yml`, `cd.yml` e o reutilizável `deploy.yml`).
+- A imagem Docker (Node para o build + Nginx) usa `VITE_API_URL=/api`: o Nginx serve o SPA e faz proxy de `/api/*` para o backend **no mesmo domínio**, necessário porque o cookie de sessão é `SameSite=Strict`. É a mesma arquitetura do `pca-setup`.
+- Configuração de Environments, secrets e servidor: [docs/CICD.md](docs/CICD.md).
+
+O `nginx.conf` da raiz também é o arquivo que o `frontend.Dockerfile` do `pca-setup` espera encontrar no repositório. Para subir tudo junto (MySQL + backend + frontend), use o `pca-setup hosting` ou o `deploy/docker-compose.yml`.
+
+Para apenas construir a imagem:
+
+```bash
+docker build -t amar-frontend .
 ```
 
 ---
@@ -369,7 +434,7 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 - **Notificações por e-mail:** as preferências individuais são persistidas no backend. O SMTP Gmail para alertas é configurado exclusivamente no servidor; o envio ocorre em segundo plano após o backend confirmar a movimentação, e a senha de app nunca deve ser incluída no frontend.
 
 Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/projeto-ong-amar/projeto-ong-amar-backend/blob/main/docs/README_NOTIFICACOES_GMAIL.md), mantido no repositório do backend.
-- **Autoatualização de perfil:** a edição de perfil usa `PUT /usuarios/{id}`, que exige perfil administrador e reenvio da senha.
+- **Troca de senha do voluntário:** a troca de senha usa `PUT /usuarios/{id}`, que exige perfil administrador, então o voluntário recebe `403`. A correção prevista é um endpoint próprio (`PUT /usuarios/me/senha`).
 - **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`).
 - **Sem testes automatizados** no momento.
 - **Ícones remotos:** os ícones vêm do Icons8 e exigem internet.
@@ -384,17 +449,20 @@ Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/proje
 - [x] Persistir preferências individuais de notificação no backend
 - [ ] Testes unitários e de integração (Vitest + Testing Library)
 - [ ] Trocar ícones remotos por SVGs locais
-- [ ] Pipeline de CI com lint e build
+- [x] Pipeline de CI com lint e build
+- [x] Entrega contínua com ambientes de desenvolvimento, homologação e produção
+- [x] Níveis de acesso (administrador e voluntário)
+- [ ] Endpoint para o próprio usuário trocar a senha
 
 ---
 
 ## Como contribuir
 
-1. Faça um fork do projeto.
-2. Crie uma branch: `git checkout -b feat/minha-funcionalidade`.
-3. Faça commits pequenos e descritivos, por exemplo `feat: adiciona filtro por período`.
-4. Rode `npm run lint` e `npm run build`.
-5. Envie a branch e abra um Pull Request descrevendo o que mudou e como testar.
+1. Atualize a `develop` e crie sua branch a partir dela: `git checkout -b feat/minha-funcionalidade`.
+2. Faça commits pequenos e descritivos, por exemplo `feat: adiciona filtro por período`.
+3. Rode `npm run lint` e `npm run build`.
+4. Abra um Pull Request **para a `develop`** descrevendo o que mudou e como testar. O CI precisa passar.
+5. A promoção para homologação e produção é feita por PR de `develop` para `main`.
 
 ---
 

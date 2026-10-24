@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styles from './Configuracoes.module.css';
+import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import {
   obterPerfil,
   alterarSenha,
@@ -12,6 +13,7 @@ import {
   METRICAS_PADRAO,
   ALERTAS_PADRAO,
 } from '../services/configuracoesService';
+import { podeConfigurarMetricas } from '../utils/permissoes.js';
 
 const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo', senhaAtual: '' };
 const senhaVazia = { senhaAtual: '', novaSenha: '', confirmarNovaSenha: '' };
@@ -86,17 +88,16 @@ function CampoMetrica({ id, icone, tom, titulo, descricao, valor, unidade, aoMud
   );
 }
 
-export function Configuracoes() {
+export function Configuracoes({ usuario }) {
+  const mostrarMetricas = podeConfigurarMetricas(usuario);
+  const abasVisiveis = mostrarMetricas ? ABAS : ABAS.filter((item) => item.id !== 'metricas');
   const [perfil, setPerfil] = useState(perfilVazio);
   const [senha, setSenha] = useState(senhaVazia);
   const [notificacoes, setNotificacoes] = useState(notificacoesVazias);
-  const [aba, setAba] = useState('metricas');
+  const [aba, setAba] = useState(mostrarMetricas ? 'metricas' : 'notificacoes');
   const [metricas, setMetricas] = useState(METRICAS_PADRAO);
   const [alertas, setAlertas] = useState(ALERTAS_PADRAO);
 
-  const [mostrarSenhaAtual, setMostrarSenhaAtual] = useState(false);
-  const [mostrarNovaSenha, setMostrarNovaSenha] = useState(false);
-  const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
   const [enviandoSenha, setEnviandoSenha] = useState(false);
   const [enviandoNotificacoes, setEnviandoNotificacoes] = useState(false);
@@ -270,7 +271,7 @@ export function Configuracoes() {
           </div>
         </div>
         <div className={styles.abas} role="tablist" aria-label="Seções de configuração">
-          {ABAS.map((item) => (
+          {abasVisiveis.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -288,7 +289,7 @@ export function Configuracoes() {
         </div>
       </section>
 
-      {aba === 'metricas' && (
+      {mostrarMetricas && aba === 'metricas' && (
         <div role="tabpanel" id="painel-metricas" aria-labelledby="aba-metricas">
           <section className={styles.cartao}>
             <div className={styles.cabecalhoCartao}>
@@ -481,63 +482,42 @@ export function Configuracoes() {
 
           <form onSubmit={salvarSenha}>
             <div className={styles.gradeSenha}>
-            <div className={styles.campo}>
-              <label htmlFor="senha-atual">Senha Atual</label>
-              <div className={styles.envoltorioSenha}>
-                <input
-                  id="senha-atual"
-                  type={mostrarSenhaAtual ? 'text' : 'password'}
-                  placeholder="Digite sua senha atual"
-                  value={senha.senhaAtual}
-                  onChange={alterarCampoSenha('senhaAtual')}
-                  autoComplete="current-password"
-                  required
-                />
-                <button type="button" className={styles.botaoOlho} aria-label="Mostrar senha atual" onClick={() => setMostrarSenhaAtual((v) => !v)}>
-                  <img src={mostrarSenhaAtual ? 'https://img.icons8.com/ios-filled/50/9CA3AF/invisible--v1.png' : 'https://img.icons8.com/ios-filled/50/9CA3AF/visible--v1.png'} alt="" />
-                </button>
-              </div>
-            </div>
+            <InputPasswordToggle
+              id="senha-atual"
+              className={styles.campo}
+              label="Senha Atual"
+              placeholder="Digite sua senha atual"
+              value={senha.senhaAtual}
+              onChange={alterarCampoSenha('senhaAtual')}
+              autoComplete="current-password"
+              required
+            />
 
-            <div className={styles.campo}>
-              <label htmlFor="nova-senha">Nova Senha</label>
-              <div className={styles.envoltorioSenha}>
-                <input
-                  id="nova-senha"
-                  type={mostrarNovaSenha ? 'text' : 'password'}
-                  placeholder="Digite sua nova senha"
-                  value={senha.novaSenha}
-                  onChange={alterarCampoSenha('novaSenha')}
-                  minLength={8}
-                  maxLength={25}
-                  autoComplete="new-password"
-                  required
-                />
-                <button type="button" className={styles.botaoOlho} aria-label="Mostrar nova senha" onClick={() => setMostrarNovaSenha((v) => !v)}>
-                  <img src={mostrarNovaSenha ? 'https://img.icons8.com/ios-filled/50/9CA3AF/invisible--v1.png' : 'https://img.icons8.com/ios-filled/50/9CA3AF/visible--v1.png'} alt="" />
-                </button>
-              </div>
-            </div>
+            <InputPasswordToggle
+              id="nova-senha"
+              className={styles.campo}
+              label="Nova Senha"
+              placeholder="Digite sua nova senha"
+              value={senha.novaSenha}
+              onChange={alterarCampoSenha('novaSenha')}
+              minLength={8}
+              maxLength={25}
+              autoComplete="new-password"
+              required
+            />
 
-            <div className={styles.campo}>
-              <label htmlFor="confirmar-nova-senha">Confirmar Nova Senha</label>
-              <div className={styles.envoltorioSenha}>
-                <input
-                  id="confirmar-nova-senha"
-                  type={mostrarConfirmarSenha ? 'text' : 'password'}
-                  placeholder="Confirme a nova senha"
-                  value={senha.confirmarNovaSenha}
-                  onChange={alterarCampoSenha('confirmarNovaSenha')}
-                  minLength={8}
-                  maxLength={25}
-                  autoComplete="new-password"
-                  required
-                />
-                <button type="button" className={styles.botaoOlho} aria-label="Mostrar confirmação de senha" onClick={() => setMostrarConfirmarSenha((v) => !v)}>
-                  <img src={mostrarConfirmarSenha ? 'https://img.icons8.com/ios-filled/50/9CA3AF/invisible--v1.png' : 'https://img.icons8.com/ios-filled/50/9CA3AF/visible--v1.png'} alt="" />
-                </button>
-              </div>
-            </div>
+            <InputPasswordToggle
+              id="confirmar-nova-senha"
+              className={styles.campo}
+              label="Confirmar Nova Senha"
+              placeholder="Confirme a nova senha"
+              value={senha.confirmarNovaSenha}
+              onChange={alterarCampoSenha('confirmarNovaSenha')}
+              minLength={8}
+              maxLength={25}
+              autoComplete="new-password"
+              required
+            />
 
             </div>
             <p className={styles.dicaSenha}>A nova senha deve ter entre 8 e 25 caracteres.</p>

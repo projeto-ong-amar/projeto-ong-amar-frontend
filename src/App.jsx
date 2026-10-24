@@ -18,6 +18,7 @@ import HistoricoProdutos from './pages/HistoricoProdutos.jsx';
 import { Desempenho } from './pages/Desempenho.jsx';
 import { EstoqueAtual } from './pages/EstoqueAtual.jsx';
 import { RiscoVencimento } from './pages/RiscoVencimento.jsx';
+import { podeAcessarPagina } from './utils/permissoes.js';
 
 const PAGES = {
   inicio: Inicio,
@@ -48,14 +49,14 @@ const SECTION_LABELS = {
   configuracoes: 'Configurações',
   'recuperar-senha': 'Recuperar Senha',
   'redefinir-senha': 'Redefinir Senha',
-  'historico-entrada': 'Gerenciar Entrada / Histórico',
-  'historico-saida': 'Gerenciar Saída / Histórico',
-  'historico-produtos': 'Cadastro de Produtos / Histórico',
-  'historico-usuario': 'Cadastro de Usuário / Histórico',
-  'estoque-atual': 'Desempenho / Estoque Atual',
-  'risco-vencimento': 'Desempenho / Risco de Vencimento',
+  'historico-entrada': 'Histórico',
+  'historico-saida': 'Histórico',
+  'historico-produtos': 'Histórico',
+  'historico-usuario': 'Histórico',
+  desempenho: 'Desempenho',
+  'estoque-atual': 'Estoque Atual',
+  'risco-vencimento': 'Risco de Vencimento',
 };
-
 
 const HISTORICO_ORIGEM = {
   'historico-entrada': 'gerenciar-entrada',
@@ -66,11 +67,34 @@ const HISTORICO_ORIGEM = {
   'risco-vencimento': 'desempenho',
 };
 
+const PAGINA_PAI = {
+  ...HISTORICO_ORIGEM,
+  'redefinir-senha': 'recuperar-senha',
+};
+
+function montarEtapas(pagina) {
+  const etapas = [];
+  let atual = pagina;
+
+  while (atual) {
+    etapas.unshift({ label: SECTION_LABELS[atual] ?? atual, pagina: atual });
+    atual = PAGINA_PAI[atual];
+  }
+
+  if (pagina !== 'inicio') {
+    etapas.unshift({ label: SECTION_LABELS.inicio, pagina: 'inicio' });
+  }
+
+  return etapas;
+}
+
 function App({ usuario, onSair }) {
   const [activePage, setActivePage] = useState('inicio');
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
-  const PageComponent = PAGES[activePage];
+  const etapas = montarEtapas(activePage);
+  const paginaPermitida = podeAcessarPagina(usuario, activePage);
+  const PageComponent = paginaPermitida ? PAGES[activePage] : null;
   const sidebarActivePage = HISTORICO_ORIGEM[activePage] ?? activePage;
 
   const handleVoltar = () => {
@@ -92,10 +116,11 @@ function App({ usuario, onSair }) {
         onSair={onSair}
       />
       <div className={styles.main}>
-        <Topbar section={sectionLabel} onVoltar={handleVoltar} />
+        <Topbar etapas={etapas} onNavigate={setActivePage} onVoltar={handleVoltar} />
         {PageComponent ? (
           <main className={styles.pageScroll}>
             <PageComponent 
+              usuario={usuario}
               onNavigate={setActivePage} 
               onVoltar={handleVoltar}
               aoVoltar={handleVoltar}
@@ -103,7 +128,11 @@ function App({ usuario, onSair }) {
           </main>
         ) : (
           <main className={styles.content}>
-            <p>Página "{sectionLabel}" ainda não implementada.</p>
+            {paginaPermitida ? (
+              <p>Página "{sectionLabel}" ainda não implementada.</p>
+            ) : (
+              <p role="alert">Você não tem permissão para acessar a página "{sectionLabel}".</p>
+            )}
           </main>
         )}
       </div>

@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles/variables.css'
 import './styles/global.css'
+import './styles/alto-contraste.css'
 import App from './App.jsx'
 import Login from './pages/Login.jsx'
 import RecuperarSenha from './pages/RecuperarSenha.jsx'
@@ -11,6 +12,7 @@ import {
   limparSessaoLocal,
   logout,
 } from './services/authService.js'
+import { iniciarAltoContraste } from './utils/altoContraste.js'
 
 function Root() {
   const [usuario, setUsuario] = useState(null)
@@ -77,6 +79,8 @@ function Root() {
     />
   )
 }
+
+iniciarAltoContraste()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
