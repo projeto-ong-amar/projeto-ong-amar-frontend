@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [main]
   workflow_call:
 
 permissions:
@@ -13,20 +13,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verificar-origem:
-    name: Verificar origem do PR
-    if: github.event_name == 'pull_request' && github.base_ref == 'main'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Só develop ou hotfix/* podem entrar na main
-        env:
-          HEAD_REF: ${{ github.head_ref }}
-        run: |
-          if [[ "$HEAD_REF" != "develop" && "$HEAD_REF" != hotfix/* ]]; then
-            echo "::error::PRs para a main devem vir de 'develop' ou 'hotfix/*' (origem atual: $HEAD_REF)."
-            exit 1
-          fi
-
   build:
     name: Lint e build
     runs-on: ubuntu-latest

@@ -1,0 +1,31 @@
+name: Abrir PR automático
+
+on:
+  push:
+    branches-ignore: [main, "dependabot/**"]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  abrir-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Abrir PR para main se ainda não existir
+        env:
+          GH_TOKEN: ${{ secrets.PR_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+          HEAD: ${{ github.ref_name }}
+        run: |
+          ABERTOS=$(gh pr list --head "$HEAD" --base main --state open --json number --jq length)
+          if [ "$ABERTOS" != "0" ]; then
+            echo "Já existe PR aberto de $HEAD para main."
+            exit 0
+          fi
+
+          gh pr create \
+            --head "$HEAD" --base main \
+            --title "$HEAD" \
+            --body "PR aberto automaticamente a partir do push em \`$HEAD\`." \
+            || echo "Sem diferenças entre $HEAD e main, nada a abrir."

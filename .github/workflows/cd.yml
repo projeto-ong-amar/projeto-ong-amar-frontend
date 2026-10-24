@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [develop, main]
+    branches: [main]
   workflow_dispatch:
     inputs:
       ambiente:
@@ -11,33 +11,22 @@ on:
         required: true
         options: [desenvolvimento, homologacao, producao]
       ref:
-        description: "Branch, tag ou SHA a publicar (para promover ou fazer rollback)"
+        description: "Branch, tag ou SHA a publicar (para testar, promover ou fazer rollback)"
         type: string
         required: true
         default: main
 
 permissions:
-   contents: read
-   packages: write
+  contents: read
+  packages: write
 
 jobs:
   ci:
     if: github.event_name == 'push'
     uses: ./.github/workflows/ci.yml
 
-  # develop -> desenvolvimento (automático)
-  desenvolvimento:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-    needs: ci
-    uses: ./.github/workflows/deploy.yml
-    with:
-      ambiente: desenvolvimento
-      ref: ${{ github.sha }}
-    secrets: inherit
-
-  # main -> homologação (automático) -> produção (exige aprovação no Environment)
   homologacao:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     needs: ci
     uses: ./.github/workflows/deploy.yml
     with:
@@ -46,7 +35,7 @@ jobs:
     secrets: inherit
 
   producao:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push'
     needs: homologacao
     uses: ./.github/workflows/deploy.yml
     with:
