@@ -10,7 +10,6 @@ import {
 } from '../services/entradaService';
 
 const MOTIVO_PADRAO = 'Entrada registrada no sistema';
-const ORDENACAO_RECENTE = ['dataHora,desc', 'id,desc'];
 
 function fkUsuarioAtual() {
   return getUsuarioLogado()?.id ?? null;
@@ -25,27 +24,16 @@ function paraBr(dataIso) {
   return `${dia}/${mes}/${ano}`;
 }
 
-function compararEntradasRecentes(entradaA, entradaB) {
-  const dataA = Date.parse(entradaA.dataHora);
-  const dataB = Date.parse(entradaB.dataHora);
-
-  if (Number.isFinite(dataA) && Number.isFinite(dataB) && dataA !== dataB) {
-    return dataB - dataA;
-  }
-  return Number(entradaB.id) - Number(entradaA.id);
+function dataLocalHojeIso() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
 }
 
-async function buscarEntradaMaisRecente() {
-  const paginaInicial = await listarHistoricoEntrada(0, 10, ORDENACAO_RECENTE);
-  const entradasIniciais = paginaInicial?.content || [];
-  const totalEntradas = paginaInicial?.totalElements ?? entradasIniciais.length;
-  const paginaCompleta = totalEntradas > entradasIniciais.length
-    ? await listarHistoricoEntrada(0, totalEntradas, ORDENACAO_RECENTE)
-    : paginaInicial;
-
-  return [...(paginaCompleta?.content || [])]
-    .sort(compararEntradasRecentes)
-    .slice(0, 1);
+function validadeNoPassado(dataValidade) {
+  return Boolean(dataValidade) && dataValidade < dataLocalHojeIso();
 }
 
 export function GerenciarEntrada({ onNavigate }) {
@@ -77,13 +65,14 @@ export function GerenciarEntrada({ onNavigate }) {
     try {
       const [resultadoProdutos, resultadoHistorico] = await Promise.allSettled([
         listarProdutos(),
-        buscarEntradaMaisRecente(),
+        listarHistoricoEntrada(0, 1),
       ]);
 
       setProdutos(resultadoProdutos.status === 'fulfilled' ? (resultadoProdutos.value || []) : []);
 
       if (resultadoHistorico.status === 'fulfilled') {
-        setHistorico(resultadoHistorico.value || []);
+        const pagina = resultadoHistorico.value;
+        setHistorico(pagina?.content || []);
       } else {
         setHistorico([]);
       }
@@ -110,6 +99,11 @@ export function GerenciarEntrada({ onNavigate }) {
 
     if (!formulario.produto) {
       setErro('Por favor, selecione um produto.');
+      return;
+    }
+
+    if (validadeNoPassado(formulario.dataValidade)) {
+      setErro('A data de validade não pode ser anterior a hoje.');
       return;
     }
 
@@ -153,6 +147,12 @@ export function GerenciarEntrada({ onNavigate }) {
     evento.preventDefault();
     setErro('');
     setSucesso('');
+
+    if (validadeNoPassado(formularioEdicao.dataValidade)) {
+      setErro('A data de validade não pode ser anterior a hoje.');
+      return;
+    }
+
     setEnviando(true);
     try {
       await atualizarEntrada(linhaEdicao.id, {
@@ -266,6 +266,7 @@ export function GerenciarEntrada({ onNavigate }) {
                 ref={inputDataValidadeRef}
                 id="data-validade"
                 type="date"
+                min={dataLocalHojeIso()}
                 value={formulario.dataValidade}
                 onChange={lidarComMudanca('dataValidade')}
                 required
@@ -481,6 +482,7 @@ export function GerenciarEntrada({ onNavigate }) {
                       ref={inputEditDataValidadeRef}
                       id="edit-data-validade"
                       type="date"
+                      min={dataLocalHojeIso()}
                       value={formularioEdicao.dataValidade}
                       onChange={lidarComMudancaEdicao('dataValidade')}
                       required
