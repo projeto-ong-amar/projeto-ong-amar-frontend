@@ -13,7 +13,7 @@ import {
   METRICAS_PADRAO,
   ALERTAS_PADRAO,
 } from '../services/configuracoesService';
-import { podeConfigurarMetricas } from '../utils/permissoes.js';
+import { podeConfigurarMetricas, podeVerNotificacoes } from '../utils/permissoes.js';
 
 const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo', senhaAtual: '' };
 const senhaVazia = { senhaAtual: '', novaSenha: '', confirmarNovaSenha: '' };
@@ -90,14 +90,21 @@ function CampoMetrica({ id, icone, tom, titulo, descricao, valor, unidade, aoMud
 
 export function Configuracoes({ usuario }) {
   const mostrarMetricas = podeConfigurarMetricas(usuario);
-  const abasVisiveis = mostrarMetricas ? ABAS : ABAS.filter((item) => item.id !== 'metricas');
+  const mostrarNotificacoes = podeVerNotificacoes(usuario);
+  const abasVisiveis = ABAS.filter((item) => {
+    if (item.id === 'metricas') return mostrarMetricas;
+    if (item.id === 'notificacoes') return mostrarNotificacoes;
+    return true;
+  });
   const [perfil, setPerfil] = useState(perfilVazio);
   const [senha, setSenha] = useState(senhaVazia);
   const [notificacoes, setNotificacoes] = useState(notificacoesVazias);
-  const [aba, setAba] = useState(mostrarMetricas ? 'metricas' : 'notificacoes');
+  const [aba, setAba] = useState(abasVisiveis[0].id);
   const [metricas, setMetricas] = useState(METRICAS_PADRAO);
   const [alertas, setAlertas] = useState(ALERTAS_PADRAO);
 
+  // O e-mail das notificações é sempre o da conta do administrador (somente leitura).
+  const emailAdministrador = perfil.email || usuario?.email || '';
 
   const [enviandoSenha, setEnviandoSenha] = useState(false);
   const [enviandoNotificacoes, setEnviandoNotificacoes] = useState(false);
@@ -134,6 +141,9 @@ export function Configuracoes({ usuario }) {
       setErroPerfil(error.message || 'Não foi possível carregar o perfil.');
     }
 
+    // Voluntário só altera a senha: não carrega preferências, métricas nem alertas.
+    if (!mostrarNotificacoes) return;
+
     try {
       const preferencias = await obterPreferenciasNotificacao();
       if (preferencias) {
@@ -142,7 +152,6 @@ export function Configuracoes({ usuario }) {
           riscoVencimento: preferencias.riscoVencimento ?? true,
           novasEntradas: preferencias.novasEntradas ?? true,
           novasSaidas: preferencias.novasSaidas ?? true,
-          emailNotificacao: preferencias.emailNotificacao ?? '',
         });
       }
     } catch (error) {
@@ -251,7 +260,7 @@ export function Configuracoes({ usuario }) {
     setSucessoNotificacoes('');
     setEnviandoNotificacoes(true);
     try {
-      await atualizarPreferenciasNotificacao(notificacoes);
+      await atualizarPreferenciasNotificacao({ ...notificacoes, emailNotificacao: emailAdministrador });
       setSucessoNotificacoes('Notificações salvas com sucesso!');
     } catch (error) {
       setErroNotificacoes(error.message || 'Não foi possível salvar as notificações.');
@@ -343,7 +352,7 @@ export function Configuracoes({ usuario }) {
         </div>
       )}
 
-      {aba === 'notificacoes' && (
+      {mostrarNotificacoes && aba === 'notificacoes' && (
         <div role="tabpanel" id="painel-notificacoes" aria-labelledby="aba-notificacoes">
           <div className={`${styles.grade} ${styles.gradeIgual}`}>
             <form onSubmit={salvarAlertas} style={{ display: 'contents' }}>
@@ -441,10 +450,13 @@ export function Configuracoes({ usuario }) {
                   <input
                     id="email-notificacao"
                     type="email"
-                    placeholder="Digite o e-mail para receber notificações"
-                    value={notificacoes.emailNotificacao}
-                    onChange={(evento) => setNotificacoes((anterior) => ({ ...anterior, emailNotificacao: evento.target.value }))}
+                    value={emailAdministrador}
+                    readOnly
+                    aria-describedby="ajuda-email-notificacao"
                   />
+                  <small id="ajuda-email-notificacao" className={styles.dicaCampo}>
+                    Usamos o e-mail da conta do administrador. Ele só muda quando o e-mail da conta for alterado.
+                  </small>
                 </div>
 
                 {erroNotificacoes && <div className={styles.mensagemErro} role="alert">{erroNotificacoes}</div>}

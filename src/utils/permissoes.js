@@ -24,3 +24,7 @@ export function podeAcessarPagina(usuario, pagina) {
 export function podeConfigurarMetricas(usuario) {
   return ehAdministrador(usuario);
 }
+
+export function podeVerNotificacoes(usuario) {
+  return ehAdministrador(usuario);
+}
