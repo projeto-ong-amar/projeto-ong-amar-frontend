@@ -103,6 +103,21 @@
   background: #fff;
 }
 
+.campo input[readonly] {
+  background: #f3f4f6;
+  cursor: default;
+}
+
+.campo input[readonly]:focus {
+  border-color: var(--border);
+  background: #f3f4f6;
+}
+
+.dicaCampo {
+  font-size: 0.8125rem;
+  color: #6b7280;
+}
+
 .campo select {
   appearance: none;
   cursor: pointer;
