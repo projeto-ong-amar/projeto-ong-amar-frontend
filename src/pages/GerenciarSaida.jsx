@@ -8,13 +8,90 @@ import {
   atualizarSaida,
   removerSaida,
 } from '../services/saidaService';
-import { formatarMotivoSaida, interpretarMotivoSaida, rotuloMotivoSaida } from '../utils/motivoSaida';
+import {
+  formatarMotivoSaida,
+  interpretarMotivoSaida,
+  rotuloMotivoSaida,
+  MOTIVOS_SAIDA,
+  MOTIVO_OUTROS,
+  motivoEhPerda,
+  resolverMotivo,
+  separarMotivo,
+} from '../utils/motivoSaida';
 
 function fkUsuarioAtual() {
   return getUsuarioLogado()?.id ?? null;
 }
 
-const formularioVazio = { produto: '', quantidade: '', dataSaida: '', motivo: '', perda: false };
+const formularioVazio = {
+  produto: '',
+  quantidade: '',
+  dataSaida: '',
+  motivoSelecionado: '',
+  motivoOutro: '',
+  perda: false,
+};
+
+function CampoMotivoSaida({ idPrefixo, formulario, setFormulario }) {
+  function lidarComMotivo(evento) {
+    const novo = evento.target.value;
+    setFormulario((anterior) => {
+      const proximo = { ...anterior, motivoSelecionado: novo };
+      if (novo !== MOTIVO_OUTROS) proximo.motivoOutro = '';
+      if (motivoEhPerda(novo)) {
+        proximo.perda = true;
+      } else if (motivoEhPerda(anterior.motivoSelecionado) && novo !== MOTIVO_OUTROS) {
+        proximo.perda = false;
+      }
+      return proximo;
+    });
+  }
+
+  return (
+    <div className={styles.campo}>
+      <label htmlFor={`${idPrefixo}motivo`}>
+        4. Motivo <span className={styles.obrigatorio}>*</span>
+      </label>
+      <select
+        id={`${idPrefixo}motivo`}
+        value={formulario.motivoSelecionado}
+        onChange={lidarComMotivo}
+        required
+      >
+        <option value="">Selecione um motivo</option>
+        {MOTIVOS_SAIDA.map((item) => (
+          <option key={item.valor} value={item.valor}>{item.valor}</option>
+        ))}
+        <option value={MOTIVO_OUTROS}>{MOTIVO_OUTROS}</option>
+      </select>
+      {formulario.motivoSelecionado === MOTIVO_OUTROS && (
+        <input
+          id={`${idPrefixo}motivo-outro`}
+          type="text"
+          style={{ marginTop: 8 }}
+          placeholder="Digite o motivo..."
+          value={formulario.motivoOutro}
+          onChange={(evento) => setFormulario((anterior) => ({ ...anterior, motivoOutro: evento.target.value }))}
+          minLength={3}
+          maxLength={240}
+          required
+        />
+      )}
+      <label className={styles.linhaInterruptor}>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={formulario.perda}
+          className={`${styles.interruptor} ${formulario.perda ? styles.interruptorAtivo : ''}`}
+          onClick={() => setFormulario((anterior) => ({ ...anterior, perda: !anterior.perda }))}
+        >
+          <span className={styles.interruptorBolinha} />
+        </button>
+        Perda
+      </label>
+    </div>
+  );
+}
 
 function paraBr(dataIso) {
   if (!dataIso) return '';
@@ -94,10 +171,6 @@ export function GerenciarSaida({ onNavigate }) {
     return (evento) => setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
   }
 
-  function alternarPerda() {
-    setFormulario((anterior) => ({ ...anterior, perda: !anterior.perda }));
-  }
-
   function lidarComCancelar() {
     setFormulario(formularioVazio);
     setErro('');
@@ -118,7 +191,7 @@ export function GerenciarSaida({ onNavigate }) {
       await registrarSaida({
         quantidade: Number(formulario.quantidade),
         dataSaida: formulario.dataSaida,
-        motivo: formatarMotivoSaida(formulario),
+        motivo: formatarMotivoSaida({ motivo: resolverMotivo(formulario), perda: formulario.perda }),
         fkProduto: Number(formulario.produto),
         fkUsuario: fkUsuarioAtual(),
       });
@@ -138,7 +211,7 @@ export function GerenciarSaida({ onNavigate }) {
       produto: String(item.produtoId ?? ''),
       quantidade: String(item.quantidade ?? ''),
       dataSaida: item.dataHora ? item.dataHora.split('T')[0] : '',
-      motivo,
+      ...separarMotivo(motivo),
       perda,
     });
     setLinhaEdicao(item);
@@ -150,10 +223,6 @@ export function GerenciarSaida({ onNavigate }) {
     return (evento) => setFormularioEdicao((anterior) => ({ ...anterior, [campo]: evento.target.value }));
   }
 
-  function alternarPerdaEdicao() {
-    setFormularioEdicao((anterior) => ({ ...anterior, perda: !anterior.perda }));
-  }
-
   async function lidarComAlterar(evento) {
     evento.preventDefault();
     setErro('');
@@ -163,7 +232,7 @@ export function GerenciarSaida({ onNavigate }) {
       await atualizarSaida(linhaEdicao.id, {
         quantidade: Number(formularioEdicao.quantidade),
         dataSaida: formularioEdicao.dataSaida,
-        motivo: formatarMotivoSaida(formularioEdicao),
+        motivo: formatarMotivoSaida({ motivo: resolverMotivo(formularioEdicao), perda: formularioEdicao.perda }),
         fkProduto: Number(formularioEdicao.produto),
         fkUsuario: fkUsuarioAtual(),
       });
@@ -261,31 +330,11 @@ export function GerenciarSaida({ onNavigate }) {
             </div>
           </div>
 
-          <div className={styles.campo}>
-            <label htmlFor="motivo">
-              4. Motivo <span className={styles.obrigatorio}>*</span>
-            </label>
-            <input
-              id="motivo"
-              type="text"
-              placeholder="Digite o motivo..."
-              value={formulario.motivo}
-              onChange={lidarComMudanca('motivo')}
-              required
-            />
-            <label className={styles.linhaInterruptor}>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={formulario.perda}
-                className={`${styles.interruptor} ${formulario.perda ? styles.interruptorAtivo : ''}`}
-                onClick={alternarPerda}
-              >
-                <span className={styles.interruptorBolinha} />
-              </button>
-              Perda
-            </label>
-          </div>
+          <CampoMotivoSaida
+            idPrefixo=""
+            formulario={formulario}
+            setFormulario={setFormulario}
+          />
         </div>
 
         <div className={styles.linhaAcoes}>
@@ -485,31 +534,11 @@ export function GerenciarSaida({ onNavigate }) {
                   </div>
                 </div>
 
-                <div className={styles.campo}>
-                  <label htmlFor="edit-motivo">
-                    4. Motivo <span className={styles.obrigatorio}>*</span>
-                  </label>
-                  <input
-                    id="edit-motivo"
-                    type="text"
-                    placeholder="Digite o motivo..."
-                    value={formularioEdicao.motivo}
-                    onChange={lidarComMudancaEdicao('motivo')}
-                    required
-                  />
-                  <label className={styles.linhaInterruptor}>
-                    <button
-                      type="button"
-                      role="switch"
-                      aria-checked={formularioEdicao.perda}
-                      className={`${styles.interruptor} ${formularioEdicao.perda ? styles.interruptorAtivo : ''}`}
-                      onClick={alternarPerdaEdicao}
-                    >
-                      <span className={styles.interruptorBolinha} />
-                    </button>
-                    Perda
-                  </label>
-                </div>
+                <CampoMotivoSaida
+                  idPrefixo="edit-"
+                  formulario={formularioEdicao}
+                  setFormulario={setFormularioEdicao}
+                />
               </div>
 
               <div className={styles.linhaAcoes}>
