@@ -357,7 +357,7 @@ export function GerenciarEntrada({ onNavigate }) {
                 </td>
                 <td className={styles.quantidadePositiva}>+{item.quantidade}</td>
                 <td>
-                  {produtos.find((p) => p.id === item.produtoId)?.categoria?.nome || '-'}
+                  {produtos.find((p) => p.id === item.produtoId)?.categoria || '-'}
                 </td>
                 <td className={styles.celulaAcoes}>
                   <div className={styles.envoltorioAcoes}>
