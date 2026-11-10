@@ -54,12 +54,13 @@
 
 .gradeFormulario {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 24px 32px;
     margin-bottom: 28px;
 }
 
 .campo {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -651,4 +652,21 @@
 
 .dica strong {
     color: var(--text-dark);
+}
+
+
+.gradeModal { column-gap: 16px; }
+
+.campoPequeno { grid-column: span 1; }
+.campoInteiro { grid-column: 1 / -1; }
+
+@media (max-width: 900px) {
+    .gradeFormulario {
+        grid-template-columns: 1fr;
+    }
+
+    .campoPequeno,
+    .campoInteiro {
+        grid-column: 1 / -1;
+    }
 }

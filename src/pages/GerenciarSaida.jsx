@@ -208,7 +208,7 @@ export function GerenciarSaida({ onNavigate }) {
 
       <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoGrande}`}>
             <label htmlFor="produto">
               1. Selecionar Produto <span className={styles.obrigatorio}>*</span>
             </label>
@@ -222,7 +222,7 @@ export function GerenciarSaida({ onNavigate }) {
             </select>
           </div>
 
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoPequeno}`}>
             <label htmlFor="quantidade">
               2. Quantidade <span className={styles.obrigatorio}>*</span>
             </label>
@@ -230,40 +230,16 @@ export function GerenciarSaida({ onNavigate }) {
               id="quantidade"
               type="number"
               min="1"
-              placeholder="Digite a quantidade (ex:10)"
+              placeholder="Ex: 10"
               value={formulario.quantidade}
               onChange={lidarComMudanca('quantidade')}
               required
             />
           </div>
 
-          <div className={styles.campo}>
-            <label htmlFor="data-saida">
-              3. Data de Saída <span className={styles.obrigatorio}>*</span>
-            </label>
-            <div className={styles.envoltorioData}>
-              <input
-                ref={inputDataSaidaRef}
-                id="data-saida"
-                type="date"
-                value={formulario.dataSaida}
-                onChange={lidarComMudanca('dataSaida')}
-                required
-              />
-              <button
-                type="button"
-                className={styles.botaoCalendario}
-                aria-label="Selecionar data"
-                onClick={() => inputDataSaidaRef.current?.showPicker()}
-              >
-                <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
-              </button>
-            </div>
-          </div>
-
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoGrande}`}>
             <label htmlFor="motivo">
-              4. Motivo <span className={styles.obrigatorio}>*</span>
+              3. Motivo <span className={styles.obrigatorio}>*</span>
             </label>
             <input
               id="motivo"
@@ -285,6 +261,30 @@ export function GerenciarSaida({ onNavigate }) {
               </button>
               Perda
             </label>
+          </div>
+
+          <div className={`${styles.campo} ${styles.campoPequeno}`}>
+            <label htmlFor="data-saida">
+              4. Data de Saída <span className={styles.obrigatorio}>*</span>
+            </label>
+            <div className={styles.envoltorioData}>
+              <input
+                ref={inputDataSaidaRef}
+                id="data-saida"
+                type="date"
+                value={formulario.dataSaida}
+                onChange={lidarComMudanca('dataSaida')}
+                required
+              />
+              <button
+                type="button"
+                className={styles.botaoCalendario}
+                aria-label="Selecionar data"
+                onClick={() => inputDataSaidaRef.current?.showPicker()}
+              >
+                <img src="https://img.icons8.com/ios/50/B45309/calendar--v1.png" alt="" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -432,7 +432,7 @@ export function GerenciarSaida({ onNavigate }) {
 
             <form onSubmit={lidarComAlterar}>
               <div className={styles.gradeFormulario}>
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoGrande}`}>
                   <label htmlFor="edit-produto">
                     1. Selecionar Produto <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -446,7 +446,7 @@ export function GerenciarSaida({ onNavigate }) {
                   </select>
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoPequeno}`}>
                   <label htmlFor="edit-quantidade">
                     2. Quantidade <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -454,14 +454,14 @@ export function GerenciarSaida({ onNavigate }) {
                     id="edit-quantidade"
                     type="number"
                     min="1"
-                    placeholder="Digite a quantidade (ex:10)"
+                    placeholder="Ex: 10"
                     value={formularioEdicao.quantidade}
                     onChange={lidarComMudancaEdicao('quantidade')}
                     required
                   />
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoMetade}`}>
                   <label htmlFor="edit-data-saida">
                     3. Data de Saída <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -485,7 +485,7 @@ export function GerenciarSaida({ onNavigate }) {
                   </div>
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoInteiro}`}>
                   <label htmlFor="edit-motivo">
                     4. Motivo <span className={styles.obrigatorio}>*</span>
                   </label>

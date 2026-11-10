@@ -52,12 +52,13 @@
 
 .gradeFormulario {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px 32px;
     margin-bottom: 28px;
 }
 
 .campo {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -670,4 +671,24 @@
 
 .envoltorioData input[type="date"] {
   appearance: none;
+}
+
+.campoGrande { grid-column: span 3; }
+.campoPequeno { grid-column: span 1; }
+.campoMetade { grid-column: span 2; }
+.campoInteiro { grid-column: 1 / -1; }
+.campoDataDireita { grid-column: 3 / span 1; }
+
+@media (max-width: 900px) {
+    .gradeFormulario {
+        grid-template-columns: 1fr;
+    }
+
+    .campoGrande,
+    .campoPequeno,
+    .campoMetade,
+    .campoInteiro,
+    .campoDataDireita {
+        grid-column: 1 / -1;
+    }
 }
