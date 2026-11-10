@@ -50,6 +50,7 @@ export async function validarSessao() {
 export function limparSessaoLocal() {
   localStorage.removeItem(CHAVE_USUARIO);
   localStorage.removeItem('loggedIn');
+  sessionStorage.removeItem('dataProximaDoacao');
 }
 
 export function getUsuarioLogado() {

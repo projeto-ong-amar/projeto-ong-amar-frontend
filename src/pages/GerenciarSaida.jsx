@@ -363,7 +363,7 @@ export function GerenciarSaida({ onNavigate }) {
                 </td>
                 <td className={styles.quantidadeNegativa}>-{item.quantidade}</td>
                 <td>
-                  {produtos.find((p) => p.id === item.produtoId)?.categoria?.nome || '-'}
+                  {produtos.find((p) => p.id === item.produtoId)?.categoria || '-'}
                 </td>
                 <td>{rotuloMotivoSaida(item.motivo)}</td>
                 <td className={styles.celulaAcoes}>

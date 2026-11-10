@@ -11,8 +11,17 @@ import { ModalAlertas } from '../components/desempenho/ModalAlertas'
 import { ModalAcoesRapidas } from '../components/desempenho/ModalAcoesRapidas'
 import { getKPIDoacoesRecebidas, getKPIEstoque, getKPIItensDistribuidos, getKPIRiscoVencimento } from '../services/desempenhoService'
 
+const CHAVE_DATA_PROXIMA_DOACAO = 'dataProximaDoacao'
+
+function lerDataProximaDoacaoSalva() {
+  const salva = sessionStorage.getItem(CHAVE_DATA_PROXIMA_DOACAO)
+  const hoje = new Date().toISOString().split('T')[0]
+  return salva && salva >= hoje ? salva : ''
+}
+
 export function Desempenho({ onNavigate }) {
 
+  const [dataProximaDoacao, setDataProximaDoacao] = useState(lerDataProximaDoacaoSalva)
   const [kpiEstoque, setKpiEstoque] = useState(0)
   const [kpiRiscoVencimento, setKpiRiscoVencimento] = useState(0)
   const [kpiDoacoesRecebidas, setKpiDoacoesRecebidas] = useState(0)
@@ -46,8 +55,23 @@ export function Desempenho({ onNavigate }) {
     getDadosKpiItensDistribuidos(dataProximaDoacao)
   }
 
+  function alterarDataProximaDoacao(data) {
+    setDataProximaDoacao(data)
+
+    if (data) {
+      sessionStorage.setItem(CHAVE_DATA_PROXIMA_DOACAO, data)
+      getDadosKPIs(data)
+    } else {
+      sessionStorage.removeItem(CHAVE_DATA_PROXIMA_DOACAO)
+    }
+  }
+
   useEffect(() => {
     todaysDate('dateInput')
+
+    if (dataProximaDoacao) {
+      getDadosKPIs(dataProximaDoacao)
+    }
   }, [])
 
   return (
@@ -67,7 +91,8 @@ export function Desempenho({ onNavigate }) {
             id="dateInput"
             type="date"
             className={ style.inputDate }
-            onChange={ event => getDadosKPIs(event.target.value) }
+            value={ dataProximaDoacao }
+            onChange={ event => alterarDataProximaDoacao(event.target.value) }
           />
         </span>
         <span
@@ -96,7 +121,7 @@ export function Desempenho({ onNavigate }) {
           icone="alert"
           data={ kpiRiscoVencimento }
           dataLabel="produtos"
-          descricao="Número de lotes cuja validade cai nos 30 dias antes da próxima doação."
+          descricao="Número de lotes que vencem dentro do período de risco configurado."
           titulo="Risco de Vencimento"
           onClick={ () => onNavigate?.('risco-vencimento') }
         />

@@ -29,7 +29,7 @@ export function HistoricoSaida({ onNavigate }) {
   }
 
   function categoriaProduto(item) {
-    return produtos.find((p) => p.id === item.produtoId)?.categoria?.nome || '-';
+    return produtos.find((p) => p.id === item.produtoId)?.categoria || '-';
   }
 
   const carregarPagina = useCallback(async (pagina, tamanho) => {
