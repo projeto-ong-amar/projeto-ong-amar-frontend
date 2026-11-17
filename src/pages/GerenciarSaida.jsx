@@ -14,7 +14,6 @@ import {
   rotuloMotivoSaida,
   MOTIVOS_SAIDA,
   MOTIVO_OUTROS,
-  motivoEhPerda,
   resolverMotivo,
   separarMotivo,
 } from '../utils/motivoSaida';
@@ -38,11 +37,6 @@ function CampoMotivoSaida({ idPrefixo, formulario, setFormulario, className = ''
     setFormulario((anterior) => {
       const proximo = { ...anterior, motivoSelecionado: novo };
       if (novo !== MOTIVO_OUTROS) proximo.motivoOutro = '';
-      if (motivoEhPerda(novo)) {
-        proximo.perda = true;
-      } else if (motivoEhPerda(anterior.motivoSelecionado) && novo !== MOTIVO_OUTROS) {
-        proximo.perda = false;
-      }
       return proximo;
     });
   }
@@ -50,13 +44,15 @@ function CampoMotivoSaida({ idPrefixo, formulario, setFormulario, className = ''
   return (
     <div className={`${styles.campo} ${className}`}>
       <label htmlFor={`${idPrefixo}motivo`}>
-        {numero}. Motivo <span className={styles.obrigatorio}>*</span>
+        {numero}. Motivo {!formulario.perda && <span className={styles.obrigatorio}>*</span>}
       </label>
       <select
         id={`${idPrefixo}motivo`}
         value={formulario.motivoSelecionado}
         onChange={lidarComMotivo}
-        required
+        disabled={formulario.perda}
+        required={!formulario.perda}
+        aria-describedby={formulario.perda ? `${idPrefixo}motivo-ajuda` : undefined}
       >
         <option value="">Selecione um motivo</option>
         {MOTIVOS_SAIDA.map((item) => (
@@ -64,7 +60,21 @@ function CampoMotivoSaida({ idPrefixo, formulario, setFormulario, className = ''
         ))}
         <option value={MOTIVO_OUTROS}>{MOTIVO_OUTROS}</option>
       </select>
-      {formulario.motivoSelecionado === MOTIVO_OUTROS && (
+      {formulario.perda && <small id={`${idPrefixo}motivo-ajuda`}>Perda já define o motivo da saída.</small>}
+      {formulario.perda && (
+        <>
+          <label htmlFor={`${idPrefixo}motivo-perda`}>Motivo da perda (opcional)</label>
+          <input
+            id={`${idPrefixo}motivo-perda`}
+            type="text"
+            placeholder="Descreva o motivo da perda..."
+            value={formulario.motivoOutro}
+            onChange={(evento) => setFormulario((anterior) => ({ ...anterior, motivoOutro: evento.target.value }))}
+            maxLength={233}
+          />
+        </>
+      )}
+      {!formulario.perda && formulario.motivoSelecionado === MOTIVO_OUTROS && (
         <input
           id={`${idPrefixo}motivo-outro`}
           type="text"
@@ -83,7 +93,12 @@ function CampoMotivoSaida({ idPrefixo, formulario, setFormulario, className = ''
           role="switch"
           aria-checked={formulario.perda}
           className={`${styles.interruptor} ${formulario.perda ? styles.interruptorAtivo : ''}`}
-          onClick={() => setFormulario((anterior) => ({ ...anterior, perda: !anterior.perda }))}
+          onClick={() => setFormulario((anterior) => ({
+            ...anterior,
+            perda: !anterior.perda,
+            motivoSelecionado: '',
+            motivoOutro: '',
+          }))}
         >
           <span className={styles.interruptorBolinha} />
         </button>
@@ -211,7 +226,9 @@ export function GerenciarSaida({ onNavigate }) {
       produto: String(item.produtoId ?? ''),
       quantidade: String(item.quantidade ?? ''),
       dataSaida: item.dataHora ? item.dataHora.split('T')[0] : '',
-      ...separarMotivo(motivo),
+      ...(perda
+        ? { motivoSelecionado: '', motivoOutro: motivo }
+        : separarMotivo(motivo)),
       perda,
     });
     setLinhaEdicao(item);
