@@ -429,7 +429,7 @@ As cores e espaçamentos ficam em variáveis CSS (`--blue`, `--yellow`, `--radiu
 Pontos que dependem de evolução no backend ou de acabamento no front:
 
 - **Listagem de usuários sem `id`:** `GET /usuarios` não retorna o `id`, então editar e excluir a partir do histórico de usuários ainda não é possível. As funções `atualizarUsuario` e `removerUsuario` já estão prontas em `usuarioService.js`.
-- **"Perda" na saída:** o backend não tem um campo próprio para isso. A marcação é guardada como prefixo no texto do motivo (`Perda: ...`), conforme `utils/motivoSaida.js`.
+- **"Perda" na saída:** o backend não tem um campo próprio para isso. A marcação é guardada como prefixo no texto do motivo (`Perda: ...`), conforme `utils/motivoSaida.js`. O motivo é escolhido em uma **lista fixa** (definida nesse arquivo) com a opção **"Outros"** para texto livre; ao selecionar "Produto vencido" ou "Produto danificado", a chave **Perda** é ativada automaticamente (e pode ser alterada manualmente).
 - **Filtro de período em Relatórios:** o componente `PeriodFilter` existe, mas o período ainda não altera os relatórios gerados.
 - **Notificações por e-mail:** as preferências individuais são persistidas no backend. O SMTP Gmail para alertas é configurado exclusivamente no servidor; o envio ocorre em segundo plano após o backend confirmar a movimentação, e a senha de app nunca deve ser incluída no frontend.
 
