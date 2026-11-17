@@ -204,7 +204,7 @@ export function GerenciarEntrada({ onNavigate }) {
 
       <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoInteiro}`}>
             <label htmlFor="produto">
               1. Selecionar Produto <span className={styles.obrigatorio}>*</span>
             </label>
@@ -218,7 +218,7 @@ export function GerenciarEntrada({ onNavigate }) {
             </select>
           </div>
 
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoPequeno}`}>
             <label htmlFor="quantidade">
               2. Quantidade <span className={styles.obrigatorio}>*</span>
             </label>
@@ -226,14 +226,14 @@ export function GerenciarEntrada({ onNavigate }) {
               id="quantidade"
               type="number"
               min="1"
-              placeholder="Digite a quantidade (ex:10)"
+              placeholder="Ex: 10"
               value={formulario.quantidade}
               onChange={lidarComMudanca('quantidade')}
               required
             />
           </div>
 
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoPequeno}`}>
             <label htmlFor="data-entrada">
               3. Data de Entrada <span className={styles.obrigatorio}>*</span>
             </label>
@@ -257,7 +257,7 @@ export function GerenciarEntrada({ onNavigate }) {
             </div>
           </div>
 
-          <div className={styles.campo}>
+          <div className={`${styles.campo} ${styles.campoPequeno}`}>
             <label htmlFor="data-validade">
               4. Data de Validade <span className={styles.obrigatorio}>*</span>
             </label>
@@ -419,8 +419,8 @@ export function GerenciarEntrada({ onNavigate }) {
             <div className={styles.divisorModal} />
 
             <form onSubmit={lidarComAlterar}>
-              <div className={styles.gradeFormulario}>
-                <div className={styles.campo}>
+              <div className={`${styles.gradeFormulario} ${styles.gradeModal}`}>
+                <div className={`${styles.campo} ${styles.campoInteiro}`}>
                   <label htmlFor="edit-produto">
                     1. Selecionar Produto <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -434,7 +434,7 @@ export function GerenciarEntrada({ onNavigate }) {
                   </select>
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoPequeno}`}>
                   <label htmlFor="edit-quantidade">
                     2. Quantidade <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -442,14 +442,14 @@ export function GerenciarEntrada({ onNavigate }) {
                     id="edit-quantidade"
                     type="number"
                     min="1"
-                    placeholder="Digite a quantidade (ex:10)"
+                    placeholder="Ex: 10"
                     value={formularioEdicao.quantidade}
                     onChange={lidarComMudancaEdicao('quantidade')}
                     required
                   />
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoPequeno}`}>
                   <label htmlFor="edit-data-entrada">
                     3. Data de Entrada <span className={styles.obrigatorio}>*</span>
                   </label>
@@ -473,7 +473,7 @@ export function GerenciarEntrada({ onNavigate }) {
                   </div>
                 </div>
 
-                <div className={styles.campo}>
+                <div className={`${styles.campo} ${styles.campoPequeno}`}>
                   <label htmlFor="edit-data-validade">
                     4. Data de Validade <span className={styles.obrigatorio}>*</span>
                   </label>
