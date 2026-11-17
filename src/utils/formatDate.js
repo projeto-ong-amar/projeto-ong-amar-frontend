@@ -1,4 +1,3 @@
-
 export function formatDate(date, options = {}) {
   const d = typeof date === 'string' ? new Date(date) : date;
   return d.toLocaleDateString('pt-BR', {
@@ -7,15 +6,39 @@ export function formatDate(date, options = {}) {
   });
 }
 
+function toISODate(date) {
+  const ano = date.getFullYear();
+  const mes = String(date.getMonth() + 1).padStart(2, '0');
+  const dia = String(date.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
 export function getPeriodRange(period) {
-  const end   = new Date();
-  const start = new Date();
-  switch (period) {
-    case 'hoje':     break;
-    case '7dias':    start.setDate(end.getDate() - 7);  break;
-    case '30dias':   start.setDate(end.getDate() - 30); break;
-    case 'este-mes': start.setDate(1);                  break;
-    default:         start.setDate(end.getDate() - 30);
+  if (!period || period === '30dias') return null;
+
+  if (typeof period === 'object') {
+    if (period.tipo !== 'personalizado' || !period.dataInicio || !period.dataFim) return null;
+    return { dataInicio: period.dataInicio, dataFim: period.dataFim };
   }
-  return { start, end };
+
+  const end = new Date();
+  const start = new Date();
+
+  switch (period) {
+    case 'hoje':
+      break;
+    case 'semana':
+      start.setDate(end.getDate() - ((end.getDay() + 6) % 7));
+      break;
+    case 'mes':
+      start.setDate(1);
+      break;
+    case 'ano':
+      start.setMonth(0, 1);
+      break;
+    default:
+      return null;
+  }
+
+  return { dataInicio: toISODate(start), dataFim: toISODate(end) };
 }

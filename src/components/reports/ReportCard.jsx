@@ -17,7 +17,7 @@ const CORES_POR_ICON_CLASS = {
 
 const ICONE_PADRAO = 'https://img.icons8.com/ios/50/6B7280/file.png';
 
-export function ReportCard({ report, onBaixar, downloading }) {
+export function ReportCard({ report, onBaixar, onVisualizar, downloading, visualizando }) {
   const visual = REPORT_VISUALS[report.id];
   const nomeClasseCor = visual?.corClasse || CORES_POR_ICON_CLASS[report.iconClass] || 'iconBlue';
   const icone = visual?.icone || ICONE_PADRAO;
@@ -36,9 +36,22 @@ export function ReportCard({ report, onBaixar, downloading }) {
       <div className={styles.reportActions}>
         <button
           type="button"
+          className={styles.btnVisualizar}
+          onClick={() => onVisualizar(report.id)}
+          disabled={visualizando || downloading}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z" />
+            <circle cx="12" cy="12" r="2.5" />
+          </svg>
+          {visualizando ? 'Carregando...' : 'Ver na tela'}
+        </button>
+
+        <button
+          type="button"
           className={styles.btnBaixar}
           onClick={() => onBaixar(report.id)}
-          disabled={downloading}
+          disabled={downloading || visualizando}
         >
           <span className={styles.btnBaixarInner}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

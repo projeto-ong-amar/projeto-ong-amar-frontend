@@ -31,33 +31,52 @@ export async function fetchReports() {
 
 const REPORT_AI_CONFIG = {
   entrada: {
+    previewEndpoint: '/assistente/relatorio/entradas/preview',
     endpoint: '/assistente/relatorio/entradas/pdf',
     texto: 'Gere um relatório das entradas destacando picos e produtos mais recebidos.',
     filename: 'relatorio-entradas.pdf',
   },
   saida: {
+    previewEndpoint: '/assistente/relatorio/saidas/preview',
     endpoint: '/assistente/relatorio/saidas/pdf',
     texto: 'Quero um relatório das saídas com foco em itens que mais saíram e possíveis riscos de falta.',
     filename: 'relatorio-saidas.pdf',
   },
   desempenho: {
+    previewEndpoint: '/assistente/relatorio/desempenho-geral/preview',
     endpoint: '/assistente/relatorio/desempenho-geral/pdf',
     texto: 'Faça uma análise geral do desempenho do estoque e recomende ações prioritárias.',
     filename: 'relatorio-desempenho.pdf',
   },
   produtos: {
+    previewEndpoint: '/assistente/relatorio/produtos-cadastrados/preview',
     endpoint: '/assistente/relatorio/produtos-cadastrados/pdf',
     texto: 'Mostre o histórico de produtos cadastrados e destaque categorias com mais cadastros.',
     filename: 'relatorio-produtos-cadastrados.pdf',
   },
 };
 
-
-export async function baixarRelatorioIA(reportId, signal) {
+function obterConfig(reportId) {
   const config = REPORT_AI_CONFIG[reportId];
   if (!config) throw new Error(`Relatório desconhecido: ${reportId}`);
+  return config;
+}
 
-  
-  const blob = await apiClient.postBlob(config.endpoint, { pergunta: config.texto }, { signal });
+function montarCorpo(config, periodRange) {
+  return {
+    pergunta: config.texto,
+    ...(periodRange ?? {}),
+  };
+}
+
+export async function buscarRelatorioIA(reportId, periodRange, signal) {
+  const config = obterConfig(reportId);
+  return apiClient.post(config.previewEndpoint, montarCorpo(config, periodRange), { signal });
+}
+
+export async function baixarRelatorioIA(reportId, periodRange, signal) {
+  const config = obterConfig(reportId);
+
+  const blob = await apiClient.postBlob(config.endpoint, montarCorpo(config, periodRange), { signal });
   return { blob, filename: config.filename };
 }

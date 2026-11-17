@@ -16,7 +16,7 @@ export function PeriodFilter({ active, onChange }) {
   const inputInicioRef = useRef(null);
   const inputFimRef = useRef(null);
 
-  const emPersonalizado = active === 'personalizado';
+  const emPersonalizado = typeof active === 'object' && active?.tipo === 'personalizado';
 
   function selecionarPreset(id) {
     setPersonalizadoAberto(false);

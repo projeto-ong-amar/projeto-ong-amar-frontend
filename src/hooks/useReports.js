@@ -10,11 +10,11 @@ export function useReports() {
 
   useEffect(() => {
     setLoading(true);
-    fetchReports(period)
+    fetchReports()
       .then(data => setReports(data))
       .catch(err  => setError(err.message))
       .finally(()  => setLoading(false));
-  }, [period]);
+  }, []);
 
   return { reports, loading, error, period, setPeriod };
 }
