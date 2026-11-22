@@ -49,7 +49,7 @@ export function HistoricoSaida({ onNavigate }) {
       mensagemExclusao="Saída removida com sucesso!"
       mensagemVazio="Nenhuma saída registrada."
       carregarPagina={carregarPagina}
-      aoEditar={() => onNavigate?.('gerenciar-saida')}
+      aoEditar={(item) => onNavigate?.('gerenciar-saida', { editItem: item })}
       aoExcluir={(item) => removerSaida(item.id)}
       colunas={[
         { chave: 'data', rotulo: 'Data', render: (item) => paraBr(item.dataHora) },

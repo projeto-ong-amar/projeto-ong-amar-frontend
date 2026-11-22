@@ -90,6 +90,7 @@ function montarEtapas(pagina) {
 
 function App({ usuario, onSair }) {
   const [activePage, setActivePage] = useState('inicio');
+  const [pageParams, setPageParams] = useState({});
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
   const etapas = montarEtapas(activePage);
@@ -97,7 +98,13 @@ function App({ usuario, onSair }) {
   const PageComponent = paginaPermitida ? PAGES[activePage] : null;
   const sidebarActivePage = HISTORICO_ORIGEM[activePage] ?? activePage;
 
+  const handleNavigate = (page, params = {}) => {
+    setActivePage(page);
+    setPageParams(params);
+  };
+
   const handleVoltar = () => {
+    setPageParams({});
     if (activePage === 'redefinir-senha') {
       setActivePage('recuperar-senha');
     } else if (HISTORICO_ORIGEM[activePage]) {
@@ -111,19 +118,20 @@ function App({ usuario, onSair }) {
     <div className={styles.layout}>
       <Sidebar
         activePage={sidebarActivePage}
-        onNavigate={setActivePage}
+        onNavigate={handleNavigate}
         usuario={usuario}
         onSair={onSair}
       />
       <div className={styles.main}>
-        <Topbar etapas={etapas} onNavigate={setActivePage} onVoltar={handleVoltar} />
+        <Topbar etapas={etapas} onNavigate={handleNavigate} onVoltar={handleVoltar} />
         {PageComponent ? (
           <main className={styles.pageScroll}>
             <PageComponent 
               usuario={usuario}
-              onNavigate={setActivePage} 
+              onNavigate={handleNavigate}
               onVoltar={handleVoltar}
               aoVoltar={handleVoltar}
+              pageParams={pageParams}
             />
           </main>
         ) : (

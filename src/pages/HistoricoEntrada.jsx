@@ -48,7 +48,7 @@ export function HistoricoEntrada({ onNavigate }) {
       mensagemExclusao="Entrada removida com sucesso!"
       mensagemVazio="Nenhuma entrada registrada."
       carregarPagina={carregarPagina}
-      aoEditar={() => onNavigate?.('gerenciar-entrada')}
+      aoEditar={(item) => onNavigate?.('gerenciar-entrada', { editItem: item })}
       aoExcluir={(item) => removerEntrada(item.id)}
       colunas={[
         { chave: 'data', rotulo: 'Data', render: (item) => paraBr(item.dataHora) },
