@@ -24,15 +24,35 @@ function usuarioEstaAtivo(status) {
 
 function formatarData(valor) {
   if (!valor) return '-';
+  if (typeof valor === 'string') {
+    const texto = valor.trim();
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) return texto;
+    if (/^\d{2}-\d{2}-\d{4}$/.test(texto)) {
+      const [dia, mes, ano] = texto.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+  }
   const data = new Date(valor);
   return Number.isNaN(data.getTime()) ? '-' : new Intl.DateTimeFormat('pt-BR').format(data);
+}
+
+function obterDataCadastro(usuario) {
+  return (
+    usuario?.dataCadastro
+    || usuario?.dataCriacao
+    || usuario?.createdAt
+    || usuario?.data_cadastro
+    || usuario?.data_criacao
+    || usuario?.created_at
+    || null
+  );
 }
 
 function obterUltimoUsuario(usuarios) {
   if (!Array.isArray(usuarios) || usuarios.length === 0) return null;
   const ultimo = usuarios.reduce((maisRecente, atual) => {
-    const dataAtual = new Date(atual.dataCadastro).getTime();
-    const dataRecente = new Date(maisRecente.dataCadastro).getTime();
+    const dataAtual = new Date(obterDataCadastro(atual)).getTime();
+    const dataRecente = new Date(obterDataCadastro(maisRecente)).getTime();
     if (!Number.isNaN(dataAtual) && !Number.isNaN(dataRecente) && dataAtual !== dataRecente) {
       return dataAtual > dataRecente ? atual : maisRecente;
     }
@@ -44,7 +64,7 @@ function obterUltimoUsuario(usuarios) {
   return {
     ...ultimo,
     status: usuarioEstaAtivo(ultimo.status) ? 'Ativo' : 'Inativo',
-    dataCadastro: formatarData(ultimo.dataCadastro),
+    dataCadastro: formatarData(obterDataCadastro(ultimo)),
   };
 }
 
