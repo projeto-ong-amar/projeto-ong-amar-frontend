@@ -52,17 +52,6 @@ export const ALERTAS_PADRAO = {
   semMovimentacao: true,
 };
 
-const CHAVE_ALERTAS = 'ong_estoque_alertas_dashboard';
-
-function lerLocal(chave, padrao) {
-  try {
-    const bruto = localStorage.getItem(chave);
-    return bruto ? { ...padrao, ...JSON.parse(bruto) } : { ...padrao };
-  } catch {
-    return { ...padrao };
-  }
-}
-
 export async function obterMetricas() {
   return apiClient.get('/configuracoes/metricas');
 }
@@ -72,10 +61,9 @@ export async function atualizarMetricas(metricas) {
 }
 
 export async function obterAlertasDashboard() {
-  return lerLocal(CHAVE_ALERTAS, ALERTAS_PADRAO);
+  return apiClient.get('/configuracoes/alertas-dashboard');
 }
 
 export async function atualizarAlertasDashboard(alertas) {
-  localStorage.setItem(CHAVE_ALERTAS, JSON.stringify(alertas));
-  return alertas;
+  return apiClient.put('/configuracoes/alertas-dashboard', alertas);
 }
