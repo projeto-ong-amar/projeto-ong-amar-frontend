@@ -21,24 +21,19 @@ export async function obterPerfil() {
 }
 
 
-export function atualizarPerfil({ id, nome, email, nivelAcesso, status, senhaAtual }) {
+// A senha não é alterada por aqui: o backend rejeita o campo `senha` neste PUT.
+export function atualizarPerfil({ id, nome, email, nivelAcesso, status }) {
   return apiClient.put(`/usuarios/${id}`, {
     nome,
     email,
-    senha: senhaAtual,
     tipoUsuario: nivelAcesso || 'VOLUNTARIO',
     status: status || 'Ativo',
   });
 }
 
-export function alterarSenha({ id, nome, email, nivelAcesso, status, novaSenha }) {
-  return apiClient.put(`/usuarios/${id}`, {
-    nome,
-    email,
-    senha: novaSenha,
-    tipoUsuario: nivelAcesso || 'VOLUNTARIO',
-    status: status || 'Ativo',
-  });
+// Sucesso (204) invalida todas as sessões da conta: é preciso entrar novamente.
+export function alterarSenha({ senhaAtual, novaSenha }) {
+  return apiClient.patch('/usuarios/me/senha', { senhaAtual, novaSenha });
 }
 
 export function obterPreferenciasNotificacao() {
