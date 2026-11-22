@@ -20,6 +20,7 @@ export function HistoricoProdutos({ onNavigate }) {
       titulo="Histórico de Produtos"
       subtitulo="Todos os produtos cadastrados no estoque."
       entidadeNome="produto"
+      mensagemExclusao="Produto removido com sucesso!"
       mensagemVazio="Nenhum produto cadastrado."
       carregarPagina={carregarPagina}
       aoEditar={() => onNavigate?.('cadastro-produtos')}

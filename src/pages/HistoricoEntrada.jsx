@@ -45,6 +45,7 @@ export function HistoricoEntrada({ onNavigate }) {
       titulo="Histórico de Entrada"
       subtitulo="Todas as entradas registradas no estoque."
       entidadeNome="entrada"
+      mensagemExclusao="Entrada removida com sucesso!"
       mensagemVazio="Nenhuma entrada registrada."
       carregarPagina={carregarPagina}
       aoEditar={() => onNavigate?.('gerenciar-entrada')}

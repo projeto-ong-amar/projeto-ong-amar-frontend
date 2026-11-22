@@ -24,6 +24,8 @@ export function CadastroProdutos({ onNavigate }) {
   const [linhaEdicao, setLinhaEdicao] = useState(null);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
   const [linhaExclusao, setLinhaExclusao] = useState(null);
+  const [erroExclusao, setErroExclusao] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
 
   const ultimoProduto = obterUltimoProduto(produtos);
 
@@ -111,16 +113,20 @@ export function CadastroProdutos({ onNavigate }) {
   }
 
   async function confirmarExclusao() {
+    if (!linhaExclusao || excluindo) return;
     setErro('');
     setSucesso('');
+    setErroExclusao('');
+    setExcluindo(true);
     try {
       await removerProduto(linhaExclusao.id);
       setSucesso('Produto removido com sucesso!');
       setLinhaExclusao(null);
       await carregarDados();
     } catch (e) {
-      setErro(e.message || 'Não foi possível remover o produto.');
-      setLinhaExclusao(null);
+      setErroExclusao(e.message || 'Não foi possível remover o produto.');
+    } finally {
+      setExcluindo(false);
     }
   }
 
@@ -137,7 +143,7 @@ export function CadastroProdutos({ onNavigate }) {
       </div>
 
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
-      {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
+      {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
 
       <Formulario className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
@@ -278,6 +284,8 @@ export function CadastroProdutos({ onNavigate }) {
                             aria-label="Excluir"
                             onClick={() => {
                               setLinhaExclusao(item);
+                              setErroExclusao('');
+                              setSucesso('');
                               setMenuAberto(null);
                             }}
                           >
@@ -398,8 +406,8 @@ export function CadastroProdutos({ onNavigate }) {
       )}
 
       {linhaExclusao && (
-        <div className={styles.fundoModal} onClick={() => setLinhaExclusao(null)}>
-          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
+        <div className={styles.fundoModal} onClick={() => !excluindo && setLinhaExclusao(null)}>
+          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} role="dialog" aria-modal="true" aria-label="Excluir Produto" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
                 <img src="https://img.icons8.com/ios-filled/50/DC2626/trash--v1.png" alt="" />
@@ -407,7 +415,7 @@ export function CadastroProdutos({ onNavigate }) {
               <div className={styles.textoCabecalhoModal}>
                 <h2>Excluir Produto</h2>
               </div>
-              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
               </button>
             </div>
@@ -419,19 +427,21 @@ export function CadastroProdutos({ onNavigate }) {
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 
+            {erroExclusao && <div className={styles.mensagemErro} role="alert">{erroExclusao}</div>}
+
             <div className={styles.linhaAcoes}>
-              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
                 </span>
                 Cancelar
               </button>
 
-              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao}>
+              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/trash--v1.png" alt="" />
                 </span>
-                Excluir Produto
+                {excluindo ? 'Excluindo...' : 'Excluir Produto'}
               </button>
             </div>
           </div>
