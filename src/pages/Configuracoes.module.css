@@ -479,3 +479,9 @@
   font-size: 0.8125rem;
   color: var(--text-light);
 }
+
+/* Estas grades são declaradas após o breakpoint de tablet. */
+@media (max-width: 767px) {
+  .gradeMetricas, .gradeSenha { grid-template-columns: minmax(0, 1fr); }
+  .cartaoMetrica, .cartaoMetrica:nth-child(n + 4) { grid-column: auto; }
+}

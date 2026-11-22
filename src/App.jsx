@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Sidebar } from './components/layout/Sidebar.jsx';
 import { Topbar } from './components/layout/Topbar.jsx';
 import { Inicio } from './pages/Inicio.jsx';
@@ -91,6 +91,33 @@ function montarEtapas(pagina) {
 function App({ usuario, onSair }) {
   const [activePage, setActivePage] = useState('inicio');
   const [pageParams, setPageParams] = useState({});
+  const [menuAberto, setMenuAberto] = useState(false);
+  const [celular, setCelular] = useState(() => window.matchMedia?.('(max-width: 767px)').matches ?? false);
+  const menuButtonRef = useRef(null);
+  const devolverFoco = useRef(false);
+
+  useEffect(() => {
+    if (!menuAberto && devolverFoco.current) {
+      menuButtonRef.current?.focus();
+      devolverFoco.current = false;
+    }
+  }, [menuAberto]);
+
+  useEffect(() => {
+    const media = window.matchMedia?.('(max-width: 767px)');
+    if (!media) return;
+    const atualizar = () => {
+      setCelular(media.matches);
+      setMenuAberto(false);
+    };
+    media.addEventListener('change', atualizar);
+    return () => media.removeEventListener('change', atualizar);
+  }, []);
+
+  const fecharMenu = () => {
+    devolverFoco.current = true;
+    setMenuAberto(false);
+  };
 
   const sectionLabel = SECTION_LABELS[activePage] ?? activePage;
   const etapas = montarEtapas(activePage);
@@ -99,6 +126,7 @@ function App({ usuario, onSair }) {
   const sidebarActivePage = HISTORICO_ORIGEM[activePage] ?? activePage;
 
   const handleNavigate = (page, params = {}) => {
+    if (menuAberto) fecharMenu();
     setActivePage(page);
     setPageParams(params);
   };
@@ -121,9 +149,16 @@ function App({ usuario, onSair }) {
         onNavigate={handleNavigate}
         usuario={usuario}
         onSair={onSair}
+        celular={celular}
+        aberto={menuAberto}
+        onFechar={fecharMenu}
       />
-      <div className={styles.main}>
-        <Topbar etapas={etapas} onNavigate={handleNavigate} onVoltar={handleVoltar} />
+      {celular && menuAberto && (
+        <button className={styles.menuBackdrop} aria-label="Fechar menu de navegação" onClick={fecharMenu} tabIndex={-1} />
+      )}
+      <div className={styles.main} inert={celular && menuAberto}>
+        <Topbar etapas={etapas} onNavigate={handleNavigate} onVoltar={handleVoltar}
+          menuAberto={menuAberto} onMenu={() => setMenuAberto(true)} menuButtonRef={menuButtonRef} />
         {PageComponent ? (
           <div className={styles.pageScroll}>
             <PageComponent 

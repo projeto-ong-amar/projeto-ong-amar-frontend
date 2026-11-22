@@ -150,3 +150,16 @@
     flex-basis: auto;
   }
 }
+
+@media (max-width: 767px) {
+  .divProximaDoacao { flex-direction: column; height: auto; padding: 16px; }
+  .dateInputSpan { flex-wrap: wrap; gap: 8px; }
+  .divGraficosBarraEPizza { grid-template-columns: minmax(0, 1fr); }
+  .tooltipWrapper::after {
+    left: auto;
+    right: 0;
+    transform: none;
+    width: min(260px, 75vw);
+    white-space: normal;
+  }
+}

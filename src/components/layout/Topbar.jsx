@@ -1,9 +1,16 @@
 import { Breadcrumb } from '../common/Breadcrumb.jsx';
 import styles from './Topbar.module.css';
 
-export function Topbar({ etapas = [], onNavigate, onVoltar, onAjuda }) {
+export function Topbar({ etapas = [], onNavigate, onVoltar, onAjuda, menuAberto = false, onMenu, menuButtonRef }) {
   return (
     <header className={styles.topbar}>
+      <button type="button" ref={menuButtonRef} className={styles.menuButton}
+        aria-label="Abrir menu de navegação" aria-controls="menu-navegacao"
+        aria-expanded={menuAberto} onClick={onMenu}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" />
+        </svg>
+      </button>
       <Breadcrumb etapas={etapas} aoNavegar={onNavigate} />
       <div className={styles.topbarActions}>
        

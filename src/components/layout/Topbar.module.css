@@ -16,6 +16,43 @@
   gap: 10px;
 }
 
+.topbarActions > svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.menuButton {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .topbar {
+    padding: 8px 12px;
+    gap: 8px;
+    height: auto;
+    min-height: 60px;
+  }
+
+  .menuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--blue);
+    background: #fff;
+    cursor: pointer;
+  }
+
+  .menuButton svg { width: 24px; height: 24px; }
+  .topbarActions > svg { display: none; }
+  .topbar .btnVoltar { padding: 10px; gap: 4px; }
+}
+
 .btnVoltar {
   display: flex;
   align-items: center;
