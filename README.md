@@ -240,6 +240,27 @@ da sessão ao recarregar a página (F5).
 O transporte HTTP é simulado; esses testes não substituem validações de
 permissão, CSRF e persistência no backend.
 
+### Feedback de exclusão (BUG-13)
+
+Nas tabelas do último registro e nos históricos de produtos, entradas e saídas:
+
+- Erros de exclusão aparecem dentro da confirmação, mantendo o registro e
+  permitindo nova tentativa. O erro de estoque inclui o saldo retornado pela API.
+- Enquanto a exclusão está pendente, os botões e o fechamento ficam bloqueados.
+- Após o sucesso, a confirmação fecha, a lista é recarregada e uma mensagem
+  acessível confirma a remoção. Não há alteração do contrato da API.
+
+`npm test -- tests/exclusao.test.jsx` cobre esses seis fluxos com 18 testes.
+Na validação da BUG-13, `npm test` teve 116 aprovações e quatro falhas de
+`tests/sessao.test.jsx`: manutenção da sessão, reidratação sem dados locais,
+uso dos dados do servidor e espera pela verificação. As mesmas quatro falhas
+foram reproduzidas em worktree isolado da base `bb5a206` (98 aprovações),
+sem esta correção. O serviço inicializa CSRF fora do mock de `apiClient.get`
+usado nesses testes; o resultado não comprova uma falha de sessão em produção.
+Build aprovado; lint aprovado com os mesmos cinco avisos da base.
+`npm ci`/`npm audit` também apontaram três vulnerabilidades altas preexistentes
+(`follow-redirects`, `source-map-js` e `vite`), fora do escopo desta correção.
+
 ---
 
 ## Integração com o backend
