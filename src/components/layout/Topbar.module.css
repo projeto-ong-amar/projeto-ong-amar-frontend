@@ -16,12 +16,6 @@
   gap: 10px;
 }
 
-.topbarActions > svg {
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-}
-
 .menuButton {
   display: none;
 }
@@ -49,7 +43,6 @@
   }
 
   .menuButton svg { width: 24px; height: 24px; }
-  .topbarActions > svg { display: none; }
   .topbar .btnVoltar { padding: 10px; gap: 4px; }
 }
 
