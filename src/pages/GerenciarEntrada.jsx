@@ -38,6 +38,10 @@ function validadeNoPassado(dataValidade) {
   return Boolean(dataValidade) && dataValidade < dataLocalHojeIso();
 }
 
+function dataNoFuturo(dataIso) {
+  return Boolean(dataIso) && dataIso > dataLocalHojeIso();
+}
+
 export function GerenciarEntrada({ onNavigate }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
@@ -104,8 +108,18 @@ export function GerenciarEntrada({ onNavigate }) {
       return;
     }
 
+    if (formulario.dataValidade && formulario.dataEntrada && formulario.dataValidade < formulario.dataEntrada) {
+      setErro('A data de validade não pode ser anterior à data de entrada.');
+      return;
+    }
+
     if (validadeNoPassado(formulario.dataValidade)) {
       setErro('A data de validade não pode ser anterior a hoje.');
+      return;
+    }
+
+    if (dataNoFuturo(formulario.dataEntrada)) {
+      setErro('A data de entrada não pode ser futura.');
       return;
     }
 
@@ -150,8 +164,18 @@ export function GerenciarEntrada({ onNavigate }) {
     setErro('');
     setSucesso('');
 
+    if (formularioEdicao.dataValidade && formularioEdicao.dataEntrada && formularioEdicao.dataValidade < formularioEdicao.dataEntrada) {
+      setErro('A data de validade não pode ser anterior à data de entrada.');
+      return;
+    }
+
     if (validadeNoPassado(formularioEdicao.dataValidade)) {
       setErro('A data de validade não pode ser anterior a hoje.');
+      return;
+    }
+
+    if (dataNoFuturo(formularioEdicao.dataEntrada)) {
+      setErro('A data de entrada não pode ser futura.');
       return;
     }
 
@@ -246,6 +270,7 @@ export function GerenciarEntrada({ onNavigate }) {
                 ref={inputDataEntradaRef}
                 id="data-entrada"
                 type="date"
+                max={dataLocalHojeIso()}
                 value={formulario.dataEntrada}
                 onChange={lidarComMudanca('dataEntrada')}
                 required
@@ -464,6 +489,7 @@ export function GerenciarEntrada({ onNavigate }) {
                       ref={inputEditDataEntradaRef}
                       id="edit-data-entrada"
                       type="date"
+                      max={dataLocalHojeIso()}
                       value={formularioEdicao.dataEntrada}
                       onChange={lidarComMudancaEdicao('dataEntrada')}
                       required

@@ -117,6 +117,18 @@ function paraBr(dataIso) {
   return `${dia}/${mes}/${ano}`;
 }
 
+function dataLocalHojeIso() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+function dataNoFuturo(dataIso) {
+  return Boolean(dataIso) && dataIso > dataLocalHojeIso();
+}
+
 function compararSaidasRecentes(saidaA, saidaB) {
   const dataA = Date.parse(saidaA.dataHora);
   const dataB = Date.parse(saidaB.dataHora);
@@ -203,6 +215,11 @@ export function GerenciarSaida({ onNavigate }) {
       return;
     }
 
+    if (dataNoFuturo(formulario.dataSaida)) {
+      setErro('A data de saída não pode ser futura.');
+      return;
+    }
+
     setEnviando(true);
     try {
       await registrarSaida({
@@ -246,6 +263,12 @@ export function GerenciarSaida({ onNavigate }) {
     evento.preventDefault();
     setErro('');
     setSucesso('');
+
+    if (dataNoFuturo(formularioEdicao.dataSaida)) {
+      setErro('A data de saída não pode ser futura.');
+      return;
+    }
+
     setEnviando(true);
     try {
       await atualizarSaida(linhaEdicao.id, {
@@ -344,6 +367,7 @@ export function GerenciarSaida({ onNavigate }) {
                 ref={inputDataSaidaRef}
                 id="data-saida"
                 type="date"
+                max={dataLocalHojeIso()}
                 value={formulario.dataSaida}
                 onChange={lidarComMudanca('dataSaida')}
                 required
@@ -545,6 +569,7 @@ export function GerenciarSaida({ onNavigate }) {
                       ref={inputEditDataSaidaRef}
                       id="edit-data-saida"
                       type="date"
+                      max={dataLocalHojeIso()}
                       value={formularioEdicao.dataSaida}
                       onChange={lidarComMudancaEdicao('dataSaida')}
                       required
