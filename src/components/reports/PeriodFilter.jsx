@@ -12,14 +12,24 @@ export function PeriodFilter({ active, onChange }) {
   const [personalizadoAberto, setPersonalizadoAberto] = useState(false);
   const [dataInicio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
+  const [erroPeriodo, setErroPeriodo] = useState('');
 
   const inputInicioRef = useRef(null);
   const inputFimRef = useRef(null);
 
   const emPersonalizado = typeof active === 'object' && active?.tipo === 'personalizado';
 
+  function dataLocalHojeIso() {
+    const hoje = new Date();
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    return `${ano}-${mes}-${dia}`;
+  }
+
   function selecionarPreset(id) {
     setPersonalizadoAberto(false);
+    setErroPeriodo('');
     onChange(id);
   }
 
@@ -29,6 +39,11 @@ export function PeriodFilter({ active, onChange }) {
 
   function aplicarPersonalizado() {
     if (!dataInicio || !dataFim) return;
+    if (dataInicio > dataFim) {
+      setErroPeriodo('O período personalizado é inválido: "De" não pode ser maior que "Até".');
+      return;
+    }
+    setErroPeriodo('');
     onChange({ tipo: 'personalizado', dataInicio, dataFim });
   }
 
@@ -88,7 +103,11 @@ export function PeriodFilter({ active, onChange }) {
                 id="periodo-data-inicio"
                 type="date"
                 value={dataInicio}
-                onChange={(evento) => setDataInicio(evento.target.value)}
+                max={dataLocalHojeIso()}
+                onChange={(evento) => {
+                  setDataInicio(evento.target.value);
+                  setErroPeriodo('');
+                }}
               />
               <button
                 type="button"
@@ -109,8 +128,12 @@ export function PeriodFilter({ active, onChange }) {
                 id="periodo-data-fim"
                 type="date"
                 value={dataFim}
+                max={dataLocalHojeIso()}
                 min={dataInicio || undefined}
-                onChange={(evento) => setDataFim(evento.target.value)}
+                onChange={(evento) => {
+                  setDataFim(evento.target.value);
+                  setErroPeriodo('');
+                }}
               />
               <button
                 type="button"
@@ -131,6 +154,7 @@ export function PeriodFilter({ active, onChange }) {
           >
             Aplicar
           </button>
+          {erroPeriodo && <p className={styles.periodErro} role="alert">{erroPeriodo}</p>}
         </div>
       )}
     </div>
