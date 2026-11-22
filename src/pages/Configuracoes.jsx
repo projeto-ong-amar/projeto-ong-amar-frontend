@@ -104,6 +104,7 @@ export function Configuracoes({ usuario }) {
   const [aba, setAba] = useState(abasVisiveis[0].id);
   const [metricas, setMetricas] = useState(METRICAS_PADRAO);
   const [alertas, setAlertas] = useState(ALERTAS_PADRAO);
+  const [alertasCarregados, setAlertasCarregados] = useState(false);
 
   // O e-mail das notificações é sempre o da conta do administrador (somente leitura).
   const emailAdministrador = perfil.email || usuario?.email || '';
@@ -168,6 +169,7 @@ export function Configuracoes({ usuario }) {
 
     try {
       setAlertas(await obterAlertasDashboard());
+      setAlertasCarregados(true);
     } catch (error) {
       setErroAlertas(error.message || 'Não foi possível carregar os alertas.');
     }
@@ -258,7 +260,7 @@ export function Configuracoes({ usuario }) {
     setSucessoAlertas('');
     setEnviandoAlertas(true);
     try {
-      await atualizarAlertasDashboard(alertas);
+      setAlertas(await atualizarAlertasDashboard(alertas));
       setSucessoAlertas('Alertas salvos com sucesso!');
     } catch (error) {
       setErroAlertas(error.message || 'Não foi possível salvar os alertas.');
@@ -374,7 +376,7 @@ export function Configuracoes({ usuario }) {
                   <div className={styles.iconeCartao}><Icone nome="warn" /></div>
                   <div>
                     <h2>Alertas do Dashboard</h2>
-                    <p>Escolha quais alertas aparecem no dashboard.</p>
+                    <p>Escolha quais alertas aparecem no dashboard para todos os administradores.</p>
                   </div>
                 </div>
 
@@ -383,7 +385,7 @@ export function Configuracoes({ usuario }) {
                 <div className={styles.listaToggles}>
                   <LinhaToggle
                     titulo="Vencimento próximo"
-                    descricao={`Produtos que vencem em ${metricas.vencimentoProximoDias || METRICAS_PADRAO.vencimentoProximoDias} dias`}
+                    descricao={`Lotes em estoque que vencem em até ${metricas.vencimentoProximoDias || METRICAS_PADRAO.vencimentoProximoDias} dias`}
                     ativo={alertas.vencimentoProximo}
                     aoAlternar={() => alternarAlerta('vencimentoProximo')}
                   />
@@ -411,7 +413,7 @@ export function Configuracoes({ usuario }) {
                 {sucessoAlertas && <div className={styles.mensagemSucesso} role="status">{sucessoAlertas}</div>}
 
                 <div style={{ marginTop: 'auto', paddingTop: 20 }}>
-                  <button type="submit" className={`${styles.botaoSalvar} ${styles.botaoAuto}`} disabled={enviandoAlertas}>
+                  <button type="submit" className={`${styles.botaoSalvar} ${styles.botaoAuto}`} disabled={enviandoAlertas || !alertasCarregados}>
                     <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
                     {enviandoAlertas ? 'Salvando...' : 'Salvar Alertas'}
                   </button>

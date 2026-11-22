@@ -1,5 +1,9 @@
 import { apiClient } from "./apiClient";
 
+export function getAlertasDashboard() {
+  return apiClient.get('/dashboard/alertas');
+}
+
 export function getDadosGraficoBarra() {
   return apiClient.get('/dashboard/movimentacoes-por-mes')
 }
