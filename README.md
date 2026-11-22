@@ -276,7 +276,7 @@ Todos os endpoints são consumidos pela camada `src/services`.
 
 | Método | Rota | Uso |
 | --- | --- | --- |
-| `GET` | `/movimentacao/entrada/historico?page=&size=` | Histórico paginado de entradas |
+| `GET` | `/movimentacao/entrada/historico?page=&size=` | Histórico paginado de entradas (inclui `dataValidade`, usada no modal de edição) |
 | `POST` | `/movimentacao/entrada` | Registra entrada |
 | `PUT` / `DELETE` | `/movimentacao/entrada/{id}` | Atualiza / remove entrada |
 | `GET` | `/movimentacao/saida/historico?page=&size=` | Histórico paginado de saídas |
@@ -366,7 +366,7 @@ A aplicação não usa React Router. A página ativa é um estado em `App.jsx` (
 | `configuracoes` | Configurações |
 | `recuperar-senha` / `redefinir-senha` | Recuperação de senha |
 
-Nas telas de histórico, o botão **Voltar** retorna à tela de origem e o item correspondente do menu lateral continua destacado.
+Nas telas de histórico, o botão **Voltar** retorna à tela de origem e o item correspondente do menu lateral continua destacado. Em **Histórico de Entrada** e **Histórico de Saída**, a ação **Editar** envia o registro selecionado para a tela de origem, que abre o modal já preenchido (inclusive a data de validade, quando a API do histórico a retorna).
 
 ### Adicionando uma nova página
 
