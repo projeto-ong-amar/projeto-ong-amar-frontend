@@ -19,6 +19,7 @@ export function CardsDesempenho({ cor, titulo, data, dataLabel, descricao, icone
       onKeyDown={ onClick ? evento => (evento.key === 'Enter' || evento.key === ' ') && onClick() : undefined }
       role={ onClick ? 'button' : undefined }
       tabIndex={ onClick ? 0 : undefined }
+      aria-label={ onClick ? `Abrir ${titulo}` : undefined }
     >
       { onClick && (
         <svg className={ style.iconeAbrir } viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

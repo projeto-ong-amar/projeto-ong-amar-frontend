@@ -4,21 +4,13 @@ import { validarTexto } from '../utils/validacao.js';
 
 export async function obterPerfil() {
   const sessao = await apiClient.get('/usuarios/me');
-
-  let nivelAcesso = sessao.tipoUsuario ?? '';
-  let status = 'Ativo';
-  try {
-    const usuarios = await apiClient.get('/usuarios');
-    const encontrado = usuarios?.find((u) => u.email === sessao.email);
-    if (encontrado) {
-      nivelAcesso = encontrado.tipoUsuario;
-      status = encontrado.status;
-    }
-  } catch {
-  
-  }
-
-  return { id: sessao.id, nome: sessao.nome, email: sessao.email, nivelAcesso, status };
+  return {
+    id: sessao.id,
+    nome: sessao.nome,
+    email: sessao.email,
+    nivelAcesso: sessao.tipoUsuario ?? '',
+    status: sessao.status ?? 'Ativo',
+  };
 }
 
 

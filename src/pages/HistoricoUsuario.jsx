@@ -86,9 +86,9 @@ export function HistoricoUsuario() {
         aoEditar={abrirEdicao}
         aoExcluir={excluir}
         colunas={[
-          { chave: 'data', rotulo: 'Data', render: (item) => formatarData(item.dataCadastro) },
-          { chave: 'nome', rotulo: 'Nome', render: (item) => item.nome },
-          { chave: 'email', rotulo: 'E-mail', render: (item) => item.email },
+          { chave: 'data', rotulo: 'Data', render: (item) => formatarData(item.dataCadastro || item.dataCriacao || item.createdAt) },
+          { chave: 'nome', rotulo: 'Nome', className: styles.colunaTextoLongo, render: (item) => item.nome },
+          { chave: 'email', rotulo: 'E-mail', className: styles.colunaTextoLongo, render: (item) => item.email },
           {
             chave: 'tipo',
             rotulo: 'Tipo de usuário',
@@ -111,7 +111,7 @@ export function HistoricoUsuario() {
 
       {usuarioEditando && formularioEdicao && (
         <div className={styles.fundoModal} onClick={fecharEdicao}>
-          <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
+          <div className={styles.cartaoModal} role="dialog" aria-modal="true" aria-label="Editar Usuário" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
                 <img src="https://img.icons8.com/ios-filled/50/CA8A04/edit--v1.png" alt="" />
