@@ -49,3 +49,9 @@
   font-size: 15px;
   font-weight: 500;
 }
+
+@media (max-width: 767px) {
+  .lista { flex-wrap: wrap; white-space: normal; font-size: 0.8125rem; }
+  .item { min-width: 0; overflow-wrap: anywhere; }
+  .atual { font-size: 0.8125rem; }
+}

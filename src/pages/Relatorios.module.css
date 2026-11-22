@@ -715,3 +715,11 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+@media (max-width: 767px) {
+  .content { padding: 20px 14px; }
+  .pageHeader h1 { font-size: 1.25rem; }
+  .reportCard { flex-wrap: wrap; padding: 16px; gap: 12px; }
+  .reportActions { width: 100%; margin: 0; flex-wrap: wrap; }
+  .reportInfo { flex-basis: calc(100% - 80px); }
+}

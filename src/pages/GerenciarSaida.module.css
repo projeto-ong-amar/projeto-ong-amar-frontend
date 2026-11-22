@@ -335,6 +335,7 @@
 }
 
 .envoltorioTabela {
+    overflow-x: auto;
     background: #fff;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
@@ -491,6 +492,8 @@
 }
 
 .cartaoModal {
+    max-height: 90dvh;
+    overflow-y: auto;
     background: #fff;
     border-radius: 18px;
     padding: 28px;
@@ -691,4 +694,12 @@
     .campoDataDireita {
         grid-column: 1 / -1;
     }
+}
+
+@media (max-width: 767px) {
+    .conteudo { padding: 20px 14px; }
+    .cartaoFormulario, .cartaoModal { padding: 20px 16px; }
+    .linhaAcoes { flex-direction: column; }
+    .cabecalhoHistorico { flex-wrap: wrap; gap: 12px; }
+    .cabecalhoPagina h1 { font-size: 1.25rem; }
 }

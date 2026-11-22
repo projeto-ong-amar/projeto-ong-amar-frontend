@@ -177,3 +177,12 @@
   color: var(--text-light);
   padding: 40px 0;
 }
+
+@media (max-width: 767px) {
+  .conteudo { padding: 20px 14px; }
+  .barraBuscaServico { flex-direction: column; align-items: stretch; gap: 12px; }
+  .gradeServicos { grid-template-columns: 1fr; gap: 16px; }
+  .cartaoServico { padding: 24px 16px; gap: 10px; }
+  .tituloServico { font-size: 1rem; }
+  .descricaoServico { font-size: 0.875rem; }
+}

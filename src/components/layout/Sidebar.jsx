@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import logo from '../../assets/img/pca-1.png';
 import { useAltoContraste } from '../../hooks/useAltoContraste.js';
 import { IconeAltoContraste } from '../common/IconeAltoContraste.jsx';
@@ -15,9 +16,34 @@ const NAV_ITEMS = [
   { key: 'configuracoes', label: 'Configurações', icon: 'https://img.icons8.com/ios/50/settings.png' },
 ];
 
-export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario }) {
+export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario, celular = false, aberto = false, onFechar }) {
   const { ativo: altoContraste, alternar: alternarAltoContraste } = useAltoContraste();
+  const sidebarRef = useRef(null);
+  const fecharRef = useRef(null);
 
+  useEffect(() => {
+    if (celular && aberto) fecharRef.current?.focus();
+  }, [celular, aberto]);
+
+  function handleKeyDown(event) {
+    if (!celular || !aberto) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onFechar?.();
+    }
+    if (event.key === 'Tab') {
+      const elementos = sidebarRef.current.querySelectorAll('a[href], button:not([disabled])');
+      const primeiro = elementos[0];
+      const ultimo = elementos[elementos.length - 1];
+      if (event.shiftKey && document.activeElement === primeiro) {
+        event.preventDefault();
+        ultimo.focus();
+      } else if (!event.shiftKey && document.activeElement === ultimo) {
+        event.preventDefault();
+        primeiro.focus();
+      }
+    }
+  }
 
   function increaseFontSize() {
     const currentSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
@@ -37,7 +63,12 @@ export function Sidebar({ activePage = 'relatorios', onNavigate, onSair, usuario
   }
 
   return (
-    <aside className={styles.sidebar}>
+    <aside id="menu-navegacao" aria-label="Menu de navegação" ref={sidebarRef}
+      className={`${styles.sidebar} ${aberto ? styles.aberta : ''}`}
+      inert={celular && !aberto} onKeyDown={handleKeyDown}>
+      <button ref={fecharRef} type="button" className={styles.fecharMenu} onClick={onFechar}>
+        Fechar menu ×
+      </button>
       <div className={styles.sidebarBrand}>
         <div className={styles.brandLogo}>
           <img id="sidebar-logo" className={styles.sidebarLogo} src={logo} alt="Logo ONG PCA" />

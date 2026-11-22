@@ -71,6 +71,7 @@
 }
 
 .campoBusca input {
+  min-width: 0;
   flex: 1;
   border: none;
   outline: none;
@@ -246,4 +247,12 @@
 .quantidadePerigo {
   color: var(--red) !important;
   font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .conteudo { padding: 20px 14px; }
+  .cabecalhoPagina h1 { font-size: 1.25rem; }
+  .cabecalhoTabela { flex-wrap: wrap; gap: 12px; }
+  .selectTipo, .botaoFiltrar { min-height: 44px; }
+  .cartaoTabela { padding: 16px; }
 }
