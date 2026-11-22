@@ -36,7 +36,7 @@ function validadeNoPassado(dataValidade) {
   return Boolean(dataValidade) && dataValidade < dataLocalHojeIso();
 }
 
-export function GerenciarEntrada({ onNavigate }) {
+export function GerenciarEntrada({ onNavigate, pageParams }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -58,6 +58,12 @@ export function GerenciarEntrada({ onNavigate }) {
   useEffect(() => {
     carregarDados();
   }, []);
+
+  useEffect(() => {
+    if (pageParams?.editItem) {
+      abrirEdicao(pageParams.editItem);
+    }
+  }, [pageParams]);
 
   async function carregarDados() {
     setCarregando(true);

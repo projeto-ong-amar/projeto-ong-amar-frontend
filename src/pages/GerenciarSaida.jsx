@@ -138,7 +138,7 @@ async function buscarSaidaMaisRecente() {
     .slice(0, 1);
 }
 
-export function GerenciarSaida({ onNavigate }) {
+export function GerenciarSaida({ onNavigate, pageParams }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -158,6 +158,12 @@ export function GerenciarSaida({ onNavigate }) {
   useEffect(() => {
     carregarDados();
   }, []);
+
+  useEffect(() => {
+    if (pageParams?.editItem) {
+      abrirEdicao(pageParams.editItem);
+    }
+  }, [pageParams]);
 
   async function carregarDados() {
     setCarregando(true);
@@ -530,9 +536,17 @@ export function GerenciarSaida({ onNavigate }) {
                   />
                 </div>
 
+                <CampoMotivoSaida
+                  idPrefixo="edit-"
+                  formulario={formularioEdicao}
+                  setFormulario={setFormularioEdicao}
+                  className={styles.campoInteiro}
+                  numero={3}
+                />
+
                 <div className={`${styles.campo} ${styles.campoMetade}`}>
                   <label htmlFor="edit-data-saida">
-                    3. Data de Saída <span className={styles.obrigatorio}>*</span>
+                    4. Data de Saída <span className={styles.obrigatorio}>*</span>
                   </label>
                   <div className={styles.envoltorioData}>
                     <input
@@ -553,13 +567,6 @@ export function GerenciarSaida({ onNavigate }) {
                     </button>
                   </div>
                 </div>
-
-                <CampoMotivoSaida
-                  idPrefixo="edit-"
-                  formulario={formularioEdicao}
-                  setFormulario={setFormularioEdicao}
-                  className={styles.campoInteiro}
-                />
               </div>
 
               <div className={styles.linhaAcoes}>
