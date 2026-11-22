@@ -29,8 +29,10 @@ function extrairMensagemDeErro(corpo, status) {
   // Apenas mensagens conhecidas são convertidas; nunca repassar texto arbitrário da API.
   for (const mensagem of candidatos) {
     if (typeof mensagem !== 'string') continue;
-    if (/^Estoque insuficiente(?:\. Disponível: \d+)?\.?$/i.test(mensagem)) {
-      return 'Estoque insuficiente para esta movimentação.';
+    const estoqueInsuficiente = mensagem.match(/^Estoque insuficiente(?:\. Disponível: (\d+))?\.?$/i);
+    if (estoqueInsuficiente) {
+      const saldo = estoqueInsuficiente[1];
+      return `Estoque insuficiente para esta movimentação.${saldo !== undefined ? ` Disponível: ${saldo}.` : ''}`;
     }
     if (/^Senha atual incorreta\.?$/i.test(mensagem)) return 'A senha atual está incorreta.';
     if (/^Token de recuperação inválido ou expirado\.?$/i.test(mensagem)) {

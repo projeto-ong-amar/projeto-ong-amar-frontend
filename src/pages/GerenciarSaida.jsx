@@ -158,6 +158,7 @@ export function GerenciarSaida({ onNavigate }) {
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroEdicao, setErroEdicao] = useState('');
   const [sucesso, setSucesso] = useState('');
 
   const [formulario, setFormulario] = useState(formularioVazio);
@@ -253,6 +254,7 @@ export function GerenciarSaida({ onNavigate }) {
     setLinhaEdicao(item);
     setMenuAberto(null);
     setErro('');
+    setErroEdicao('');
   }
 
   function lidarComMudancaEdicao(campo) {
@@ -261,11 +263,11 @@ export function GerenciarSaida({ onNavigate }) {
 
   async function lidarComAlterar(evento) {
     evento.preventDefault();
-    setErro('');
+    setErroEdicao('');
     setSucesso('');
 
     if (dataNoFuturo(formularioEdicao.dataSaida)) {
-      setErro('A data de saída não pode ser futura.');
+      setErroEdicao('A data de saída não pode ser futura.');
       return;
     }
 
@@ -282,7 +284,7 @@ export function GerenciarSaida({ onNavigate }) {
       setLinhaEdicao(null);
       await carregarDados();
     } catch (e) {
-      setErro(e.message || 'Não foi possível atualizar a saída.');
+      setErroEdicao(e.message || 'Não foi possível atualizar a saída.');
     } finally {
       setEnviando(false);
     }
@@ -511,13 +513,13 @@ export function GerenciarSaida({ onNavigate }) {
 
       {linhaEdicao && (
         <div className={styles.fundoModal} onClick={() => setLinhaEdicao(null)}>
-          <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
+          <div className={styles.cartaoModal} role="dialog" aria-modal="true" aria-labelledby="titulo-editar-saida" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
                 <img src="https://img.icons8.com/ios-filled/50/CA8A04/edit--v1.png" alt="" />
               </div>
               <div className={styles.textoCabecalhoModal}>
-                <h2>Editar Saída</h2>
+                <h2 id="titulo-editar-saida">Editar Saída</h2>
                 <p>Altere as informações da saída abaixo.</p>
               </div>
               <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaEdicao(null)}>
@@ -528,6 +530,7 @@ export function GerenciarSaida({ onNavigate }) {
             <div className={styles.divisorModal} />
 
             <Formulario onSubmit={lidarComAlterar}>
+              {erroEdicao && <div className={styles.mensagemErro} role="alert">{erroEdicao}</div>}
               <div className={styles.gradeFormulario}>
                 <div className={`${styles.campo} ${styles.campoGrande}`}>
                   <label htmlFor="edit-produto">
