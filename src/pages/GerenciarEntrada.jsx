@@ -611,14 +611,13 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               </button>
             </div>
           </div>
-          <div className={styles.dica}>
-                  <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
-                  <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique no ChatBot</span>
-          </div>
         </div>
-
-        
       )}
+
+      <div className={styles.dica}>
+        <img src="https://img.icons8.com/ios/50/2563EB/idea.png" alt="" />
+        <span><strong>Dica:</strong> Revise os dados antes de salvar. Em caso de dúvida, clique no ChatBot</span>
+      </div>
     </main>
   );
 }
