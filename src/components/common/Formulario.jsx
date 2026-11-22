@@ -5,6 +5,9 @@ function validarCampo(campo) {
   let mensagem = '';
   if (campo.validity.badInput) mensagem = 'Informe um valor válido.';
   else if (campo.required && !valor) mensagem = 'Preencha este campo.';
+  // Datas têm validações de negócio na página (inclusive entre dois campos).
+  // Não antecipar rangeUnderflow/rangeOverflow e ocultar essas orientações.
+  else if (campo.type === 'date') return;
   else if (campo.validity.typeMismatch) mensagem = 'Informe um e-mail válido.';
   else if (valor && campo.minLength > 0 && valor.length < campo.minLength) {
     mensagem = `Informe pelo menos ${campo.minLength} caracteres.`;
@@ -15,6 +18,7 @@ function validarCampo(campo) {
   else if (campo.validity.stepMismatch) mensagem = 'Informe uma quantidade inteira.';
   else if (!campo.validity.valid) mensagem = 'Confira o valor informado.';
   campo.setCustomValidity(mensagem);
+  return mensagem ? campo : null;
 }
 
 // A validação explícita permite traduzir também os avisos nativos do navegador.
@@ -22,8 +26,9 @@ export function Formulario({ onSubmit, children, ...props }) {
   function enviar(evento) {
     evento.preventDefault();
     const formulario = evento.currentTarget;
-    Array.from(formulario.elements).forEach(validarCampo);
-    if (formulario.reportValidity()) onSubmit?.(evento);
+    const invalidos = Array.from(formulario.elements).map(validarCampo).filter(Boolean);
+    if (invalidos.length) invalidos[0].reportValidity();
+    else onSubmit?.(evento);
   }
 
   return (

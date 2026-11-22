@@ -3,6 +3,8 @@
 Os cadastros e edições de produtos e usuários e os registros e edições de
 entradas/saídas usam avisos de validação em português, independentemente do
 idioma do navegador. A edição de usuários pelo Histórico segue a mesma regra.
+As regras de intervalo e relação entre datas continuam sendo validadas pelas
+páginas, preservando suas mensagens específicas em português.
 
 - Nome do produto: 3–45 caracteres; unidade de medida: 1–45 caracteres.
   Os limites seguem o `ProdutoRequestDTO` da API.

@@ -38,4 +38,20 @@ describe('avisos nativos em português', () => {
     expect(campo.validationMessage).toBe('');
     expect(salvar).toHaveBeenCalledOnce();
   });
+
+  it('preserva a validação de datas da página sem permitir data obrigatória vazia', () => {
+    const validarDatas = vi.fn((evento) => evento.preventDefault());
+    render(
+      <Formulario onSubmit={validarDatas}>
+        <input aria-label="Data" type="date" max="2026-11-22" required />
+      </Formulario>,
+    );
+    const campo = screen.getByLabelText('Data');
+    fireEvent.submit(campo.form);
+    expect(campo.validationMessage).toBe('Preencha este campo.');
+    expect(validarDatas).not.toHaveBeenCalled();
+    fireEvent.input(campo, { target: { value: '2099-12-01' } });
+    fireEvent.submit(campo.form);
+    expect(validarDatas).toHaveBeenCalledOnce();
+  });
 });
