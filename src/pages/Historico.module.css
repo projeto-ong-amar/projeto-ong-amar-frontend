@@ -53,6 +53,7 @@
 
 .envoltorioTabela {
     overflow-x: auto;
+    overflow-y: visible;
     background: #fff;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
@@ -170,7 +171,7 @@
 .menuAcoes {
     position: absolute;
     right: 0;
-    top: calc(100% + 6px);
+    bottom: calc(100% - 18px);
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -240,6 +241,7 @@
     .cartaoModal { padding: 20px 16px; }
     .linhaAcoes { flex-direction: column; }
     .cabecalhoPagina h1 { font-size: 1.25rem; }
+    .gradeFormulario { grid-template-columns: 1fr; }
 }
 
 .cartaoModalPequeno {
@@ -342,8 +344,49 @@
     gap: 16px;
 }
 
+.gradeFormulario {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 16px;
+    margin-bottom: 18px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campoInteiro {
+    grid-column: 1 / -1;
+}
+
+.campo label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    color: var(--text-mid);
+    background: #fff;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 2px solid #BFDBFE;
+    border-color: #93C5FD;
+}
+
 .botaoModalCancelar,
-.botaoModalExcluir {
+.botaoModalExcluir,
+.botaoModalSalvar {
     flex: 1;
     display: flex;
     align-items: center;
@@ -374,12 +417,23 @@
     color: #fff;
 }
 
+.botaoModalSalvar {
+    background: #16A34A;
+    border: 1.5px solid #16A34A;
+    color: #fff;
+}
+
 .botaoModalExcluir:hover:not(:disabled) {
     background: #B91C1C;
 }
 
+.botaoModalSalvar:hover:not(:disabled) {
+    background: #15803D;
+}
+
 .botaoModalCancelar:disabled,
-.botaoModalExcluir:disabled {
+.botaoModalExcluir:disabled,
+.botaoModalSalvar:disabled {
     opacity: 0.7;
     cursor: not-allowed;
 }
@@ -399,6 +453,10 @@
 }
 
 .botaoModalExcluir .iconeAcao {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.botaoModalSalvar .iconeAcao {
     background: rgba(255, 255, 255, 0.25);
 }
 

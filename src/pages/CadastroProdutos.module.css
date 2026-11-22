@@ -292,6 +292,7 @@
 
 .envoltorioTabela {
     overflow-x: auto;
+    overflow-y: visible;
     background: #fff;
     border: 1.5px solid var(--border);
     border-radius: var(--radius);
@@ -363,7 +364,7 @@
 .menuAcoes {
     position: absolute;
     right: 0;
-    top: calc(100% + 6px);
+    bottom: calc(100% - 18px);
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 10px;
