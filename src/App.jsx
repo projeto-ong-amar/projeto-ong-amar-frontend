@@ -160,7 +160,7 @@ function App({ usuario, onSair }) {
         <Topbar etapas={etapas} onNavigate={handleNavigate} onVoltar={handleVoltar}
           menuAberto={menuAberto} onMenu={() => setMenuAberto(true)} menuButtonRef={menuButtonRef} />
         {PageComponent ? (
-          <main className={styles.pageScroll}>
+          <div className={styles.pageScroll}>
             <PageComponent 
               usuario={usuario}
               onNavigate={handleNavigate}
@@ -168,15 +168,15 @@ function App({ usuario, onSair }) {
               aoVoltar={handleVoltar}
               pageParams={pageParams}
             />
-          </main>
+          </div>
         ) : (
-          <main className={styles.content}>
+          <div className={styles.content} role="main">
             {paginaPermitida ? (
               <p>Página "{sectionLabel}" ainda não implementada.</p>
             ) : (
               <p role="alert">Você não tem permissão para acessar a página "{sectionLabel}".</p>
             )}
-          </main>
+          </div>
         )}
       </div>
     </div>

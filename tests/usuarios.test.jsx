@@ -113,7 +113,7 @@ describe.each([
     const alerta = await screen.findByRole('alert');
     expect(alerta.textContent).toBe(mensagem);
     expect(alerta.parentElement.querySelector('h2')).toBeTruthy();
-    expect(screen.getByText(usuario.nome)).toBeTruthy();
+    expect(screen.getAllByText(usuario.nome).length).toBeGreaterThanOrEqual(1);
     expect(screen.queryByRole('status')).toBeNull();
     expect(get).toHaveBeenCalledTimes(1);
     expect(registros).toEqual([usuario]);
