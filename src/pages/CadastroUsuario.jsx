@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { cadastrarUsuario } from '../services/authService.js';
-import { listarUsuarios } from '../services/usuarioService.js';
+import { listarUsuarios, atualizarUsuario, removerUsuario } from '../services/usuarioService.js';
 import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import styles from './CadastroUsuario.module.css';
 
@@ -58,6 +58,8 @@ export function CadastroUsuario({ onNavigate }) {
   const [edicaoAberta, setEdicaoAberta] = useState(false);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioInicial);
   const [exclusaoAberta, setExclusaoAberta] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [erroModal, setErroModal] = useState('');
 
   async function carregarUltimoUsuario() {
     try {
@@ -122,6 +124,8 @@ export function CadastroUsuario({ onNavigate }) {
 
   function abrirEdicao() {
     if (!ultimoUsuario) return;
+    setErroModal('');
+    setSucesso('');
     setFormularioEdicao({
       nome: ultimoUsuario.nome,
       email: ultimoUsuario.email,
@@ -136,20 +140,48 @@ export function CadastroUsuario({ onNavigate }) {
     return (evento) => setFormularioEdicao((anterior) => ({ ...anterior, [campo]: evento.target.value }));
   }
 
-  function salvarEdicao(evento) {
+  async function salvarEdicao(evento) {
     evento.preventDefault();
-    setUltimoUsuario((anterior) => ({ ...anterior, ...formularioEdicao }));
-    setEdicaoAberta(false);
+    setSalvando(true);
+    setErroModal('');
+    try {
+      await atualizarUsuario(ultimoUsuario.id, formularioEdicao);
+      setUltimoUsuario((anterior) => ({ ...anterior, ...formularioEdicao }));
+      setEdicaoAberta(false);
+      setSucesso('Usuário alterado com sucesso!');
+      if (!await carregarUltimoUsuario()) {
+        setErro('Usuário alterado, mas não foi possível atualizar a lista. Atualize a página.');
+      }
+    } catch (error) {
+      setErroModal(error.message || 'Não foi possível alterar o usuário.');
+    } finally {
+      setSalvando(false);
+    }
   }
 
   function abrirExclusao() {
+    setErroModal('');
+    setSucesso('');
     setExclusaoAberta(true);
     setMenuAberto(false);
   }
 
-  function confirmarExclusao() {
-    setUltimoUsuario(null);
-    setExclusaoAberta(false);
+  async function confirmarExclusao() {
+    setSalvando(true);
+    setErroModal('');
+    try {
+      await removerUsuario(ultimoUsuario.id);
+      setUltimoUsuario(null);
+      setExclusaoAberta(false);
+      setSucesso('Usuário excluído com sucesso!');
+      if (!await carregarUltimoUsuario()) {
+        setErro('Usuário excluído, mas não foi possível atualizar a lista. Atualize a página.');
+      }
+    } catch (error) {
+      setErroModal(error.message || 'Não foi possível excluir o usuário.');
+    } finally {
+      setSalvando(false);
+    }
   }
 
   return (
@@ -301,7 +333,7 @@ export function CadastroUsuario({ onNavigate }) {
       </div>
 
       {edicaoAberta && (
-        <div className={styles.fundoModal} onClick={() => setEdicaoAberta(false)}>
+        <div className={styles.fundoModal} onClick={() => !salvando && setEdicaoAberta(false)}>
           <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
@@ -311,12 +343,14 @@ export function CadastroUsuario({ onNavigate }) {
                 <h2>Editar Usuário</h2>
                 <p>Altere as informações do usuário abaixo.</p>
               </div>
-              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setEdicaoAberta(false)}>
+              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setEdicaoAberta(false)} disabled={salvando}>
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
               </button>
             </div>
 
             <div className={styles.divisorModal} />
+
+            {erroModal && <div className={styles.mensagemErro} role="alert">{erroModal}</div>}
 
             <form onSubmit={salvarEdicao}>
               <div className={styles.gradeFormulario}>
@@ -349,13 +383,13 @@ export function CadastroUsuario({ onNavigate }) {
               </div>
 
               <div className={styles.linhaAcoes}>
-                <button type="button" className={styles.botaoCancelar} onClick={() => setEdicaoAberta(false)}>
+                <button type="button" className={styles.botaoCancelar} onClick={() => setEdicaoAberta(false)} disabled={salvando}>
                   <span className={styles.iconeAcao}><img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" /></span>
                   <span className={styles.textoAcao}><strong>Cancelar</strong><small>Limpar os campos</small></span>
                 </button>
-                <button type="submit" className={styles.botaoSalvar}>
+                <button type="submit" className={styles.botaoSalvar} disabled={salvando}>
                   <span className={styles.iconeAcao}><img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" /></span>
-                  <span className={styles.textoAcao}><strong>Alterar Usuário</strong><small>Alterar no sistema</small></span>
+                  <span className={styles.textoAcao}><strong>{salvando ? 'Alterando...' : 'Alterar Usuário'}</strong><small>Alterar no sistema</small></span>
                 </button>
               </div>
             </form>
@@ -364,7 +398,7 @@ export function CadastroUsuario({ onNavigate }) {
       )}
 
       {exclusaoAberta && (
-        <div className={styles.fundoModal} onClick={() => setExclusaoAberta(false)}>
+        <div className={styles.fundoModal} onClick={() => !salvando && setExclusaoAberta(false)}>
           <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
@@ -373,7 +407,7 @@ export function CadastroUsuario({ onNavigate }) {
               <div className={styles.textoCabecalhoModal}>
                 <h2>Excluir Usuário</h2>
               </div>
-              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setExclusaoAberta(false)}>
+              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setExclusaoAberta(false)} disabled={salvando}>
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
               </button>
             </div>
@@ -385,14 +419,16 @@ export function CadastroUsuario({ onNavigate }) {
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 
+            {erroModal && <div className={styles.mensagemErro} role="alert">{erroModal}</div>}
+
             <div className={styles.linhaAcoes}>
-              <button type="button" className={styles.botaoModalCancelar} onClick={() => setExclusaoAberta(false)}>
+              <button type="button" className={styles.botaoModalCancelar} onClick={() => setExclusaoAberta(false)} disabled={salvando}>
                 <span className={styles.iconeAcao}><img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" /></span>
                 Cancelar
               </button>
-              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao}>
+              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao} disabled={salvando}>
                 <span className={styles.iconeAcao}><img src="https://img.icons8.com/ios-filled/50/FFFFFF/trash--v1.png" alt="" /></span>
-                Excluir Usuário
+                {salvando ? 'Excluindo...' : 'Excluir Usuário'}
               </button>
             </div>
           </div>
