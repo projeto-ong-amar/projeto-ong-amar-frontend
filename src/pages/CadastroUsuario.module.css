@@ -437,7 +437,7 @@
 .menuAcoes {
   position: absolute;
   right: 0;
-  bottom: calc(100% + 0.375rem);
+  top: calc(100% + 0.375rem);
   background: #fff;
   border: 0.0625rem solid var(--border);
   border-radius: 0.625rem;
