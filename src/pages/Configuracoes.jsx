@@ -14,9 +14,11 @@ import {
   ALERTAS_PADRAO,
 } from '../services/configuracoesService';
 import { podeConfigurarMetricas, podeVerNotificacoes } from '../utils/permissoes.js';
+import { EVENTO_SESSAO_ENCERRADA, limparSessaoLocal } from '../services/authService.js';
 
-const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo', senhaAtual: '' };
+const perfilVazio = { id: null, nome: '', email: '', nivelAcesso: '', status: 'Ativo' };
 const senhaVazia = { senhaAtual: '', novaSenha: '', confirmarNovaSenha: '' };
+const REGEX_SENHA = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,25}$/;
 const notificacoesVazias = {
   estoqueBaixo: true,
   riscoVencimento: true,
@@ -107,6 +109,7 @@ export function Configuracoes({ usuario }) {
   const emailAdministrador = perfil.email || usuario?.email || '';
 
   const [enviandoSenha, setEnviandoSenha] = useState(false);
+  const [senhaAlterada, setSenhaAlterada] = useState(false);
   const [enviandoNotificacoes, setEnviandoNotificacoes] = useState(false);
   const [enviandoAlertas, setEnviandoAlertas] = useState(false);
   const [enviandoMetricas, setEnviandoMetricas] = useState(false);
@@ -134,7 +137,6 @@ export function Configuracoes({ usuario }) {
           email: dadosPerfil.email ?? '',
           nivelAcesso: dadosPerfil.nivelAcesso ?? '',
           status: dadosPerfil.status ?? 'Ativo',
-          senhaAtual: '',
         });
       }
     } catch (error) {
@@ -227,16 +229,27 @@ export function Configuracoes({ usuario }) {
       return;
     }
 
+    if (!REGEX_SENHA.test(senha.novaSenha)) {
+      setErroSenha('A nova senha deve ter de 8 a 25 caracteres, com letra maiúscula, minúscula, número e caractere especial (@$!%*?&).');
+      return;
+    }
+
     setEnviandoSenha(true);
     try {
-      await alterarSenha({ ...perfil, novaSenha: senha.novaSenha });
-      setSucessoSenha('Senha alterada com sucesso!');
+      await alterarSenha({ senhaAtual: senha.senhaAtual, novaSenha: senha.novaSenha });
       setSenha(senhaVazia);
+      setSenhaAlterada(true);
+      setSucessoSenha('Senha alterada com sucesso! Por segurança, entre novamente com a nova senha.');
     } catch (error) {
       setErroSenha(error.message || 'Não foi possível alterar a senha.');
     } finally {
       setEnviandoSenha(false);
     }
+  }
+
+  function entrarNovamente() {
+    limparSessaoLocal();
+    window.dispatchEvent(new Event(EVENTO_SESSAO_ENCERRADA));
   }
 
   async function salvarAlertas(evento) {
@@ -492,6 +505,11 @@ export function Configuracoes({ usuario }) {
           {erroSenha && <div className={styles.mensagemErro} role="alert">{erroSenha}</div>}
           {sucessoSenha && <div className={styles.mensagemSucesso} role="status">{sucessoSenha}</div>}
 
+          {senhaAlterada ? (
+            <button type="button" className={`${styles.botaoSalvar} ${styles.botaoAuto}`} onClick={entrarNovamente}>
+              Entrar novamente
+            </button>
+          ) : (
           <form onSubmit={salvarSenha}>
             <div className={styles.gradeSenha}>
             <InputPasswordToggle
@@ -532,13 +550,14 @@ export function Configuracoes({ usuario }) {
             />
 
             </div>
-            <p className={styles.dicaSenha}>A nova senha deve ter entre 8 e 25 caracteres.</p>
+            <p className={styles.dicaSenha}>A nova senha deve ter de 8 a 25 caracteres, com letra maiúscula, minúscula, número e caractere especial (@$!%*?&).</p>
 
             <button type="submit" className={`${styles.botaoSalvar} ${styles.botaoAuto}`} disabled={enviandoSenha}>
               <img src="https://img.icons8.com/ios-filled/50/FFFFFF/lock--v1.png" alt="" />
               {enviandoSenha ? 'Alterando...' : 'Alterar Senha'}
             </button>
           </form>
+          )}
         </section>
         </div>
       )}

@@ -232,6 +232,9 @@ O arquivo `.env` está no `.gitignore`. Versione apenas o `.env.example`.
 Os testes em `tests/usuarios.test.jsx` cobrem edição e exclusão no histórico
 e na tabela do último usuário: chamadas à API, recarga, feedback, erros,
 identificadores inválidos e bloqueio enquanto a requisição está pendente.
+Os testes em `tests/configuracoes-senha.test.jsx` cobrem a troca de senha
+(administrador e voluntário): envio da senha atual, erro do backend, validações
+locais e novo login após o sucesso.
 O transporte HTTP é simulado; esses testes não substituem validações de
 permissão, CSRF e persistência no backend.
 
@@ -248,13 +251,14 @@ Todos os endpoints são consumidos pela camada `src/services`.
 | `POST` | `/usuarios/login` | Login |
 | `GET` | `/usuarios/me` | Valida a sessão e obtém o usuário logado |
 | `POST` | `/usuarios/logout` | Encerra a sessão |
+| `PATCH` | `/usuarios/me/senha` | Altera a própria senha (`senhaAtual`, `novaSenha`); o sucesso encerra todas as sessões |
 | `GET` / `PUT` | `/configuracoes/preferencias-notificacao` | Lê e salva as preferências individuais de e-mail |
 | `GET` / `PUT` | `/configuracoes/metricas` | Lê e salva limites e períodos configuráveis do sistema |
 | `POST` | `/usuarios/recuperacao-senha` | Solicita recuperação de senha |
 | `POST` | `/usuarios/redefinir-senha` | Redefine a senha com token |
 | `POST` | `/usuarios/cadastrar` | Cadastra usuário |
 | `GET` | `/usuarios?tipoUsuario=` | Lista usuários (exige perfil ADMINISTRADOR) |
-| `PUT` / `DELETE` | `/usuarios/{id}` | Atualiza / remove usuário |
+| `PUT` / `DELETE` | `/usuarios/{id}` | Atualiza / remove usuário (o `PUT` não aceita `senha`) |
 | `GET` | `/csrf` | Inicializa o cookie `XSRF-TOKEN` |
 
 ### Produtos
@@ -441,9 +445,9 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 - **Notificações por e-mail:** as preferências individuais são persistidas no backend. O SMTP Gmail para alertas é configurado exclusivamente no servidor; o envio ocorre em segundo plano após o backend confirmar a movimentação, e a senha de app nunca deve ser incluída no frontend.
 
 Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/projeto-ong-amar/projeto-ong-amar-backend/blob/main/docs/README_NOTIFICACOES_GMAIL.md), mantido no repositório do backend.
-- **Troca de senha do voluntário:** a troca de senha usa `PUT /usuarios/{id}`, que exige perfil administrador, então o voluntário recebe `403`. A correção prevista é um endpoint próprio (`PUT /usuarios/me/senha`).
+- **Troca de senha:** usa `PATCH /usuarios/me/senha` (backend PR #35), disponível para administradores e voluntários. A senha atual é validada no backend; após o sucesso, todas as sessões da conta são encerradas e o usuário precisa entrar novamente.
 - **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`).
-- **Cobertura de testes inicial:** há regressões automatizadas de edição e exclusão de usuários; os demais fluxos ainda precisam de cobertura.
+- **Cobertura de testes inicial:** há regressões automatizadas de edição e exclusão de usuários e de troca de senha; os demais fluxos ainda precisam de cobertura.
 - **Ícones remotos:** os ícones vêm do Icons8 e exigem internet.
 
 ---
@@ -459,7 +463,7 @@ Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/proje
 - [x] Pipeline de CI com lint e build
 - [x] Entrega contínua com ambientes de desenvolvimento, homologação e produção
 - [x] Níveis de acesso (administrador e voluntário)
-- [ ] Endpoint para o próprio usuário trocar a senha
+- [x] Endpoint para o próprio usuário trocar a senha
 
 ---
 
