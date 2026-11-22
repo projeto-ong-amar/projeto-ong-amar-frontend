@@ -46,6 +46,7 @@ export function HistoricoSaida({ onNavigate }) {
       titulo="Histórico de Saída"
       subtitulo="Todas as saídas registradas no estoque."
       entidadeNome="saída"
+      mensagemExclusao="Saída removida com sucesso!"
       mensagemVazio="Nenhuma saída registrada."
       carregarPagina={carregarPagina}
       aoEditar={() => onNavigate?.('gerenciar-saida')}

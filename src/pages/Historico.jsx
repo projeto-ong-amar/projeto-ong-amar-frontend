@@ -16,6 +16,7 @@ export function Historico({
   aoExcluir,
   mensagemVazio = 'Nenhum registro encontrado.',
   entidadeNome = 'registro',
+  mensagemExclusao = '',
 }) {
   const [pagina, setPagina] = useState(0);
   const [itens, setItens] = useState([]);
@@ -26,6 +27,7 @@ export function Historico({
   const [itemExclusao, setItemExclusao] = useState(null);
   const [excluindo, setExcluindo] = useState(false);
   const [erroExclusao, setErroExclusao] = useState('');
+  const [sucesso, setSucesso] = useState('');
 
   const buscar = useCallback(
     async (paginaAlvo) => {
@@ -57,12 +59,14 @@ export function Historico({
   }
 
   async function confirmarExclusao() {
-    if (!itemExclusao || !aoExcluir) return;
+    if (!itemExclusao || !aoExcluir || excluindo) return;
     setExcluindo(true);
     setErroExclusao('');
+    setSucesso('');
     try {
       await aoExcluir(itemExclusao);
       setItemExclusao(null);
+      setSucesso(mensagemExclusao);
       await buscar(pagina);
     } catch (e) {
       setErroExclusao(e.message || 'Não foi possível excluir o registro.');
@@ -87,6 +91,7 @@ export function Historico({
       </div>
 
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
+      {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
 
       <div className={styles.envoltorioTabela}>
         <table className={styles.tabela}>
@@ -149,6 +154,7 @@ export function Historico({
                                 onClick={() => {
                                   setItemExclusao(item);
                                   setErroExclusao('');
+                                  setSucesso('');
                                   setMenuAberto(null);
                                 }}
                               >
@@ -171,7 +177,7 @@ export function Historico({
 
       {itemExclusao && (
         <div className={styles.fundoModal} onClick={() => !excluindo && setItemExclusao(null)}>
-          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
+          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} role="dialog" aria-modal="true" aria-label={`Excluir ${entidadeNome}`} onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
                 <img src="https://img.icons8.com/ios-filled/50/DC2626/trash--v1.png" alt="" />
