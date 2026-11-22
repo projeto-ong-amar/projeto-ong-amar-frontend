@@ -1,4 +1,5 @@
 import { apiClient } from './apiClient.js';
+import { validarTexto } from '../utils/validacao.js';
 
 
 export async function obterPerfil() {
@@ -24,8 +25,8 @@ export async function obterPerfil() {
 // A senha não é alterada por aqui: o backend rejeita o campo `senha` neste PUT.
 export function atualizarPerfil({ id, nome, email, nivelAcesso, status }) {
   return apiClient.put(`/usuarios/${id}`, {
-    nome,
-    email,
+    nome: validarTexto(nome, 'O nome do usuário', 3, 255),
+    email: email?.trim(),
     tipoUsuario: nivelAcesso || 'VOLUNTARIO',
     status: status || 'Ativo',
   });

@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
+import { TAMANHO_TEXTO_PRODUTO } from '../utils/validacao.js';
 import styles from './CadastroProdutos.module.css';
 import { listarProdutos, cadastrarProduto, atualizarProduto, removerProduto } from '../services/produtoService';
 
@@ -137,7 +139,7 @@ export function CadastroProdutos({ onNavigate }) {
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
       {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
 
-      <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
+      <Formulario className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={styles.campo}>
             <label htmlFor="nome-produto">
@@ -150,7 +152,7 @@ export function CadastroProdutos({ onNavigate }) {
               value={formulario.nome}
               onChange={lidarComMudanca('nome')}
               minLength={3}
-              maxLength={255}
+              maxLength={TAMANHO_TEXTO_PRODUTO}
               required
             />
           </div>
@@ -182,7 +184,7 @@ export function CadastroProdutos({ onNavigate }) {
               placeholder="Ex: kg, l, un, cx"
               value={formulario.unidadeMedida}
               onChange={lidarComMudanca('unidadeMedida')}
-              maxLength={255}
+              maxLength={TAMANHO_TEXTO_PRODUTO}
               required
             />
           </div>
@@ -210,7 +212,7 @@ export function CadastroProdutos({ onNavigate }) {
             </span>
           </button>
         </div>
-      </form>
+      </Formulario>
 
       <div className={styles.cabecalhoHistorico}>
         <div className={styles.tituloHistorico}>
@@ -317,7 +319,7 @@ export function CadastroProdutos({ onNavigate }) {
 
             <div className={styles.divisorModal} />
 
-            <form onSubmit={lidarComAlterar}>
+            <Formulario onSubmit={lidarComAlterar}>
               <div className={styles.gradeFormulario}>
                 <div className={styles.campo}>
                   <label htmlFor="edit-nome-produto">
@@ -330,7 +332,7 @@ export function CadastroProdutos({ onNavigate }) {
                     value={formularioEdicao.nome}
                     onChange={lidarComMudancaEdicao('nome')}
                     minLength={3}
-                    maxLength={255}
+                    maxLength={TAMANHO_TEXTO_PRODUTO}
                     required
                   />
                 </div>
@@ -362,7 +364,7 @@ export function CadastroProdutos({ onNavigate }) {
                     placeholder="Ex: kg, l, un, cx"
                     value={formularioEdicao.unidadeMedida}
                     onChange={lidarComMudancaEdicao('unidadeMedida')}
-                    maxLength={255}
+                    maxLength={TAMANHO_TEXTO_PRODUTO}
                     required
                   />
                 </div>
@@ -390,7 +392,7 @@ export function CadastroProdutos({ onNavigate }) {
                   </span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 import { cadastrarUsuario } from '../services/authService.js';
 import { listarUsuarios, atualizarUsuario, removerUsuario } from '../services/usuarioService.js';
 import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
@@ -199,7 +200,7 @@ export function CadastroUsuario({ onNavigate }) {
       {erro && <div className={styles.mensagemErro} role="alert">{erro}</div>}
       {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
 
-      <form className={styles.cartaoFormulario} onSubmit={cadastrar}>
+      <Formulario className={styles.cartaoFormulario} onSubmit={cadastrar}>
         <div className={styles.gradeFormulario}>
           <div className={styles.campo}>
             <label htmlFor="nome-usuario">1. Nome Completo <span className={styles.obrigatorio}>*</span></label>
@@ -266,7 +267,7 @@ export function CadastroUsuario({ onNavigate }) {
             <span className={styles.textoAcao}><strong>{enviando ? 'Cadastrando...' : 'Salvar Usuário'}</strong><small>Registrar no sistema</small></span>
           </button>
         </div>
-      </form>
+      </Formulario>
 
       <div className={styles.cabecalhoHistorico}>
         <div className={styles.tituloHistorico}>
@@ -352,7 +353,7 @@ export function CadastroUsuario({ onNavigate }) {
 
             {erroModal && <div className={styles.mensagemErro} role="alert">{erroModal}</div>}
 
-            <form onSubmit={salvarEdicao}>
+            <Formulario onSubmit={salvarEdicao}>
               <div className={styles.gradeFormulario}>
                 <div className={styles.campo}>
                   <label htmlFor="edit-nome">1. Nome Completo <span className={styles.obrigatorio}>*</span></label>
@@ -392,7 +393,7 @@ export function CadastroUsuario({ onNavigate }) {
                   <span className={styles.textoAcao}><strong>{salvando ? 'Alterando...' : 'Alterar Usuário'}</strong><small>Alterar no sistema</small></span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}
