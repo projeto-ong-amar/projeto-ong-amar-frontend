@@ -227,6 +227,13 @@ O arquivo `.env` está no `.gitignore`. Versione apenas o `.env.example`.
 | `npm run build` | Gera o build otimizado em `dist/` |
 | `npm run preview` | Serve o build de produção localmente |
 | `npm run lint` | Executa o Oxlint |
+| `npm test` | Executa os testes de regressão com Vitest, Testing Library e jsdom |
+
+Os testes em `tests/usuarios.test.jsx` cobrem edição e exclusão no histórico
+e na tabela do último usuário: chamadas à API, recarga, feedback, erros,
+identificadores inválidos e bloqueio enquanto a requisição está pendente.
+O transporte HTTP é simulado; esses testes não substituem validações de
+permissão, CSRF e persistência no backend.
 
 ---
 
@@ -428,7 +435,7 @@ As cores e espaçamentos ficam em variáveis CSS (`--blue`, `--yellow`, `--radiu
 
 Pontos que dependem de evolução no backend ou de acabamento no front:
 
-- **Listagem de usuários sem `id`:** `GET /usuarios` não retorna o `id`, então editar e excluir a partir do histórico de usuários ainda não é possível. As funções `atualizarUsuario` e `removerUsuario` já estão prontas em `usuarioService.js`.
+- **Contrato da listagem de usuários:** edição e exclusão exigem `id` inteiro positivo em `GET /usuarios` (backend PR #34). Respostas legadas sem identificador são rejeitadas com erro no modal, sem enviar PUT/DELETE inválidos.
 - **"Perda" na saída:** o backend não tem um campo próprio para isso. A marcação é guardada como prefixo no texto do motivo (`Perda: ...`), conforme `utils/motivoSaida.js`. O motivo é escolhido em uma **lista fixa** (definida nesse arquivo) com a opção **"Outros"** para texto livre; ao selecionar "Produto vencido" ou "Produto danificado", a chave **Perda** é ativada automaticamente (e pode ser alterada manualmente).
 - **Filtro de período em Relatórios:** o componente `PeriodFilter` existe, mas o período ainda não altera os relatórios gerados.
 - **Notificações por e-mail:** as preferências individuais são persistidas no backend. O SMTP Gmail para alertas é configurado exclusivamente no servidor; o envio ocorre em segundo plano após o backend confirmar a movimentação, e a senha de app nunca deve ser incluída no frontend.
@@ -436,7 +443,7 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/projeto-ong-amar/projeto-ong-amar-backend/blob/main/docs/README_NOTIFICACOES_GMAIL.md), mantido no repositório do backend.
 - **Troca de senha do voluntário:** a troca de senha usa `PUT /usuarios/{id}`, que exige perfil administrador, então o voluntário recebe `403`. A correção prevista é um endpoint próprio (`PUT /usuarios/me/senha`).
 - **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`).
-- **Sem testes automatizados** no momento.
+- **Cobertura de testes inicial:** há regressões automatizadas de edição e exclusão de usuários; os demais fluxos ainda precisam de cobertura.
 - **Ícones remotos:** os ícones vêm do Icons8 e exigem internet.
 
 ---
@@ -447,7 +454,7 @@ Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/proje
 - [ ] Migrar a navegação para React Router
 - [ ] Aplicar o filtro de período aos relatórios
 - [x] Persistir preferências individuais de notificação no backend
-- [ ] Testes unitários e de integração (Vitest + Testing Library)
+- [ ] Ampliar testes unitários e de integração (Vitest + Testing Library)
 - [ ] Trocar ícones remotos por SVGs locais
 - [x] Pipeline de CI com lint e build
 - [x] Entrega contínua com ambientes de desenvolvimento, homologação e produção
