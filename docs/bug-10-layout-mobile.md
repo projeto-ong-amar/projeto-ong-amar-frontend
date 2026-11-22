@@ -25,7 +25,8 @@ Sem alterações em API, permissões ou regras de negócio.
 - `npm test -- tests/layout-mobile.test.jsx`: 6 testes aprovados, cobrindo
   administrador e voluntário, navegação, fechamento, foco, `inert`,
   permissões e mudança de viewport.
-- `npm test`: 125 aprovados e 4 falhas preexistentes de sessão.
+- `npm test`: 129 aprovados e 4 falhas preexistentes de sessão, após integrar
+  a base atualizada `9798129` sem reescrever histórico.
 - `npm run lint`: sem erros; os mesmos 5 avisos da base.
 - `npm run build` e `git diff --check`: aprovados.
 
@@ -58,11 +59,13 @@ equivale a um teste de integração com backend real nem de dispositivos físico
 
 ## Limitações comprovadas na base
 
-Comparação em worktree isolado de `origin/main`, SHA `ec8a8b4`, com
+Comparação em worktree isolado de `origin/main`, SHA `9798129`, com
 `npm ci` e `npm test`:
 
-- Base: 119 aprovados e 4 falhas em `tests/sessao.test.jsx`.
-- Correção: 125 aprovados e as mesmas 4 falhas.
+- Base: 123 aprovados e 4 falhas em `tests/sessao.test.jsx`.
+- Correção: 129 aprovados e as mesmas 4 falhas.
+- A comparação inicial em `ec8a8b4` também reproduziu as quatro falhas
+  (119 aprovados na base e 125 na correção).
 - Casos: manter sessão válida, reidratar sem localStorage, usar dados do
   servidor e aguardar verificação de sessão.
 - Causa: o teste intercepta `apiClient.get`, mas `inicializarCsrf()` usa a
@@ -75,5 +78,8 @@ Comparação em worktree isolado de `origin/main`, SHA `ec8a8b4`, com
 - `npm ci` reporta 3 vulnerabilidades de severidade alta no lockfile
   inalterado. Atualização de dependências fica fora do escopo.
 
-Os demais problemas de UI/acessibilidade listados na BUG-15 não são
-declarados resolvidos por esta alteração.
+A base recebeu o PR #57 (BUG-15) durante esta execução. Ele foi integrado
+por merge normal e a suíte, lint, build e navegação Playwright foram repetidos.
+A última rodada no navegador cobriu os dois perfis em 375×667, 768×800
+e 1280×800, preservando os resultados acima. Os ajustes da BUG-15 pertencem
+ao PR #57, não a esta correção.
