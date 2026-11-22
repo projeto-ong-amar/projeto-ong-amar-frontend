@@ -50,7 +50,6 @@ export function Desempenho({ onNavigate }) {
 
   function getDadosKPIs(dataProximaDoacao) {
     getDadosKPIEstoque(dataProximaDoacao)
-    getDadosKPIRiscoVencimento(dataProximaDoacao)
     getDadosKPIDoacoesRecebidas(dataProximaDoacao)
     getDadosKpiItensDistribuidos(dataProximaDoacao)
   }
@@ -68,6 +67,8 @@ export function Desempenho({ onNavigate }) {
 
   useEffect(() => {
     todaysDate('dateInput')
+    // Risco usa a data de hoje no servidor, não a data da próxima doação.
+    getDadosKPIRiscoVencimento()
 
     if (dataProximaDoacao) {
       getDadosKPIs(dataProximaDoacao)
@@ -113,14 +114,14 @@ export function Desempenho({ onNavigate }) {
           data={ kpiEstoque }
           dataLabel="itens"
           descricao="Saldo de itens no período de 30 dias até a data da próxima doação."
-          titulo="Estoque Atual"
+          titulo="Saldo no período"
           onClick={ () => onNavigate?.('estoque-atual') }
         />
         <CardsDesempenho 
           cor="var(--red)" 
           icone="alert"
           data={ kpiRiscoVencimento }
-          dataLabel="produtos"
+          dataLabel="lotes"
           descricao="Número de lotes que vencem dentro do período de risco configurado."
           titulo="Risco de Vencimento"
           onClick={ () => onNavigate?.('risco-vencimento') }

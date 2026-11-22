@@ -1,14 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getAlertasDashboard } from '../../services/desempenhoService'
 import { Modal } from './Modal'
 import style from './ModalAlertas.module.css'
-
-// trocar por dados reais do backend quando o endpoint de alertas existir.
-const ALERTAS = [
-  { tipo: 'perigo', texto: '5 produtos vencem em 7 dias' },
-  { tipo: 'aviso', texto: '3 produtos com estoque baixo' },
-  { tipo: 'info', texto: 'Nenhuma doação registrada esta semana' },
-  { tipo: 'neutro', texto: '2 produtos sem movimentação', detalhe: '(há 60 dias)' },
-]
 
 const ALERTAS_POR_PAGINA = 4
 
@@ -45,13 +38,33 @@ const ICONES = {
 
 export function ModalAlertas({ aberto, aoFechar }) {
   const [pagina, setPagina] = useState(0)
+  const [alertas, setAlertas] = useState([])
+  const [carregando, setCarregando] = useState(true)
+  const [erro, setErro] = useState('')
 
-  const totalPaginas = Math.ceil(ALERTAS.length / ALERTAS_POR_PAGINA)
+  useEffect(() => {
+    if (!aberto) return
+    let ativo = true
+    setPagina(0)
+    setAlertas([])
+    setErro('')
+    setCarregando(true)
+    getAlertasDashboard()
+      .then(dados => { if (ativo) setAlertas(dados) })
+      .catch(() => { if (ativo) setErro('Não foi possível carregar os alertas. Feche e abra novamente para tentar de novo.') })
+      .finally(() => { if (ativo) setCarregando(false) })
+    return () => { ativo = false }
+  }, [aberto])
+
+  const totalPaginas = Math.ceil(alertas.length / ALERTAS_POR_PAGINA)
   const inicio = pagina * ALERTAS_POR_PAGINA
-  const visiveis = ALERTAS.slice(inicio, inicio + ALERTAS_POR_PAGINA)
+  const visiveis = alertas.slice(inicio, inicio + ALERTAS_POR_PAGINA)
 
   return (
     <Modal aberto={ aberto } aoFechar={ aoFechar } larguraMax={ 300 } rotulo="Alertas importantes">
+      { carregando && <p role="status">Carregando alertas...</p> }
+      { erro && <p role="alert">{ erro }</p> }
+      { !carregando && !erro && alertas.length === 0 && <p role="status">Nenhum alerta ativo no momento.</p> }
       <ul className={ style.lista }>
         { visiveis.map(alerta => (
           <li key={ alerta.texto } className={ `${style.alerta} ${style[alerta.tipo]}` }>
@@ -67,10 +80,10 @@ export function ModalAlertas({ aberto, aoFechar }) {
       </ul>
 
       <div className={ style.navegacao }>
-        <button type="button" aria-label="Alertas anteriores" disabled={ pagina === 0 } onClick={ () => setPagina(pagina - 1) }>
+        <button type="button" aria-label="Alertas anteriores" disabled={ carregando || !!erro || pagina === 0 } onClick={ () => setPagina(pagina - 1) }>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6" /></svg>
         </button>
-        <button type="button" aria-label="Próximos alertas" disabled={ pagina >= totalPaginas - 1 } onClick={ () => setPagina(pagina + 1) }>
+        <button type="button" aria-label="Próximos alertas" disabled={ carregando || !!erro || pagina >= totalPaginas - 1 } onClick={ () => setPagina(pagina + 1) }>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
       </div>
