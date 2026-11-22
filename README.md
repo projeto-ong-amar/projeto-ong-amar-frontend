@@ -111,7 +111,7 @@ Não há React Router nem biblioteca de estado global: a navegação e o estado 
 
 ```mermaid
 flowchart LR
-    U[Usuário] --> M[main.jsx<br/>Root]
+    U[Usuário] --> M[Root.jsx]
     M -->|sem sessão| L[Login / Recuperar / Redefinir senha]
     M -->|com sessão| A[App.jsx<br/>Sidebar + Topbar + Páginas]
     A --> P[pages/*]
@@ -122,7 +122,7 @@ flowchart LR
 
 **Fluxo em resumo**
 
-1. `main.jsx` decide entre as telas públicas (login, recuperação, redefinição) e o app autenticado.
+1. `Root.jsx` (montado por `main.jsx`) restaura a sessão com `GET /usuarios/me` ao carregar a página e decide entre as telas públicas (login, recuperação, redefinição) e o app autenticado.
 2. `App.jsx` monta o layout (barra lateral, barra superior e a página ativa) e controla a navegação.
 3. As **páginas** cuidam da interface e do estado local; toda comunicação com o backend passa pelos **serviços**.
 4. Os **serviços** usam o `apiClient`, que centraliza a URL base, cookies de sessão, token CSRF e o tratamento de erros.
@@ -159,6 +159,7 @@ projeto-ong-amar-frontend/
 │   ├── styles/                # variables.css e global.css
 │   ├── utils/                 # permissoes.js (níveis de acesso), formatDate.js, motivoSaida.js
 │   ├── App.jsx                # Layout e roteamento por estado
+│   ├── Root.jsx               # Sessão e escolha entre telas públicas e app
 │   └── main.jsx               # Ponto de entrada
 ├── .env.example
 ├── .github/workflows/     # CI e CD (ci.yml, cd.yml, deploy.yml)
@@ -234,7 +235,8 @@ e na tabela do último usuário: chamadas à API, recarga, feedback, erros,
 identificadores inválidos e bloqueio enquanto a requisição está pendente.
 Os testes em `tests/configuracoes-senha.test.jsx` cobrem a troca de senha
 (administrador e voluntário): envio da senha atual, erro do backend, validações
-locais e novo login após o sucesso.
+locais e novo login após o sucesso. `tests/sessao.test.jsx` cobre a restauração
+da sessão ao recarregar a página (F5).
 O transporte HTTP é simulado; esses testes não substituem validações de
 permissão, CSRF e persistência no backend.
 
@@ -338,6 +340,7 @@ O sistema tem dois perfis, definidos no cadastro do usuário e devolvidos pelo b
 
 - **Sessão por cookie HttpOnly:** o token de sessão (`authToken`) fica em cookie e não é acessível por JavaScript. O Axios usa `withCredentials: true`.
 - **Proteção CSRF:** após o login, o app chama `GET /csrf`. O Axios lê o cookie `XSRF-TOKEN` e envia o header `X-XSRF-TOKEN` em toda requisição mutável (POST, PUT, PATCH, DELETE).
+- **Sessão mantida ao recarregar (F5):** ao abrir ou recarregar a página, o app chama `GET /usuarios/me` (e `GET /csrf`) para restaurar a sessão a partir do cookie. Se a resposta falhar, os dados locais são limpos e o login é exibido.
 - **Logout automático:** qualquer resposta `401` limpa os dados locais e dispara o evento `sessao-encerrada`, devolvendo o usuário ao login.
 - **Sincronização entre abas:** o evento `storage` encerra a sessão em todas as abas ao sair de uma.
 - **Dados locais mínimos:** apenas `id`, `nome`, `email` e `tipoUsuario` ficam no `localStorage`, para exibição e para ajustar o menu ao perfil.
@@ -446,7 +449,7 @@ Pontos que dependem de evolução no backend ou de acabamento no front:
 
 Consulte o [guia de configuração e uso do SMTP Gmail](https://github.com/projeto-ong-amar/projeto-ong-amar-backend/blob/main/docs/README_NOTIFICACOES_GMAIL.md), mantido no repositório do backend.
 - **Troca de senha:** usa `PATCH /usuarios/me/senha` (backend PR #35), disponível para administradores e voluntários. A senha atual é validada no backend; após o sucesso, todas as sessões da conta são encerradas e o usuário precisa entrar novamente.
-- **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`).
+- **Sem roteamento por URL:** por não usar React Router, não é possível favoritar ou compartilhar o link de uma tela específica (exceto `/redefinir-senha`). Ao recarregar (F5), a sessão é mantida, mas o app volta para a tela Início, e o botão "voltar" do navegador sai da aplicação.
 - **Cobertura de testes inicial:** há regressões automatizadas de edição e exclusão de usuários e de troca de senha; os demais fluxos ainda precisam de cobertura.
 - **Ícones remotos:** os ícones vêm do Icons8 e exigem internet.
 
