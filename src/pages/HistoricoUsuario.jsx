@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 import Historico from './Historico.jsx';
 import styles from './CadastroUsuario.module.css';
 import { listarUsuarios, atualizarUsuario, removerUsuario } from '../services/usuarioService.js';
@@ -128,7 +129,7 @@ export function HistoricoUsuario() {
 
             {erroEdicao && <div className={styles.mensagemErro} role="alert">{erroEdicao}</div>}
 
-            <form onSubmit={salvarEdicao}>
+            <Formulario onSubmit={salvarEdicao}>
               <div className={styles.gradeFormulario}>
                 <div className={styles.campo}>
                   <label htmlFor="edit-nome">1. Nome Completo <span className={styles.obrigatorio}>*</span></label>
@@ -168,7 +169,7 @@ export function HistoricoUsuario() {
                   <span className={styles.textoAcao}><strong>{salvando ? 'Alterando...' : 'Alterar Usuário'}</strong><small>Alterar no sistema</small></span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}

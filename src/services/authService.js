@@ -1,4 +1,5 @@
 import { apiClient, inicializarCsrf } from './apiClient.js';
+import { validarTexto } from '../utils/validacao.js';
 
 const CHAVE_USUARIO = 'usuarioLogado';
 export const EVENTO_SESSAO_ENCERRADA = 'sessao-encerrada';
@@ -33,7 +34,10 @@ export async function redefinirSenha(token, novaSenha) {
 }
 
 export function cadastrarUsuario({ nome, email, senha, tipoUsuario, status }) {
-  return apiClient.post('/usuarios/cadastrar', { nome, email, senha, tipoUsuario, status });
+  return apiClient.post('/usuarios/cadastrar', {
+    nome: validarTexto(nome, 'O nome do usuário', 3, 255),
+    email: email?.trim(), senha, tipoUsuario, status,
+  });
 }
 
 export async function logout() {

@@ -1,4 +1,5 @@
 import { apiClient } from './apiClient.js';
+import { validarTexto } from '../utils/validacao.js';
 
 
 export function listarUsuarios(tipoUsuario) {
@@ -9,7 +10,10 @@ export function listarUsuarios(tipoUsuario) {
 
 export function atualizarUsuario(id, { nome, email, senha, tipoUsuario, status }) {
   validarIdUsuario(id);
-  return apiClient.put(`/usuarios/${id}`, { nome, email, senha, tipoUsuario, status });
+  return apiClient.put(`/usuarios/${id}`, {
+    nome: validarTexto(nome, 'O nome do usuário', 3, 255),
+    email: email?.trim(), senha, tipoUsuario, status,
+  });
 }
 
 export function removerUsuario(id) {

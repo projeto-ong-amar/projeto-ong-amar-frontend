@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
+import { QUANTIDADE_MAXIMA } from '../utils/validacao.js';
 import styles from './GerenciarSaida.module.css';
 import { listarProdutos } from '../services/produtoService';
 import { getUsuarioLogado } from '../services/authService.js';
@@ -315,7 +317,7 @@ export function GerenciarSaida({ onNavigate }) {
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
       {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
 
-      <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
+      <Formulario className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={`${styles.campo} ${styles.campoGrande}`}>
             <label htmlFor="produto">
@@ -339,6 +341,8 @@ export function GerenciarSaida({ onNavigate }) {
               id="quantidade"
               type="number"
               min="1"
+              max={QUANTIDADE_MAXIMA}
+              step="1"
               placeholder="Ex: 10"
               value={formulario.quantidade}
               onChange={lidarComMudanca('quantidade')}
@@ -402,7 +406,7 @@ export function GerenciarSaida({ onNavigate }) {
             </span>
           </button>
         </div>
-      </form>
+      </Formulario>
 
       <div className={styles.cabecalhoHistorico}>
         <div className={styles.tituloHistorico}>
@@ -523,7 +527,7 @@ export function GerenciarSaida({ onNavigate }) {
 
             <div className={styles.divisorModal} />
 
-            <form onSubmit={lidarComAlterar}>
+            <Formulario onSubmit={lidarComAlterar}>
               <div className={styles.gradeFormulario}>
                 <div className={`${styles.campo} ${styles.campoGrande}`}>
                   <label htmlFor="edit-produto">
@@ -547,6 +551,8 @@ export function GerenciarSaida({ onNavigate }) {
                     id="edit-quantidade"
                     type="number"
                     min="1"
+                    max={QUANTIDADE_MAXIMA}
+                    step="1"
                     placeholder="Ex: 10"
                     value={formularioEdicao.quantidade}
                     onChange={lidarComMudancaEdicao('quantidade')}
@@ -608,7 +614,7 @@ export function GerenciarSaida({ onNavigate }) {
                   </span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}
