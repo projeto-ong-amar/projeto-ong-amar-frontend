@@ -27,7 +27,16 @@ describe('mensagens da API', () => {
     expect(mensagem(data)).toBe('Confira os dados informados e tente novamente.');
   });
   it.each(['mensagem', 'message', 'error'])('mapeia erro de negócio em %s', (campo) => {
-    expect(mensagem({ [campo]: 'Estoque insuficiente. Disponível: 10' })).toBe('Estoque insuficiente para esta movimentação.');
+    expect(mensagem({ [campo]: 'Estoque insuficiente. Disponível: 10' })).toBe('Estoque insuficiente para esta movimentação. Disponível: 10.');
+  });
+  it.each(['Estoque insuficiente', 'Estoque insuficiente.'])('aceita erro sem saldo: %s', (data) => {
+    expect(mensagem(data)).toBe('Estoque insuficiente para esta movimentação.');
+  });
+  it('preserva saldo zero em resposta textual', () => {
+    expect(mensagem('Estoque insuficiente. Disponível: 0.')).toBe('Estoque insuficiente para esta movimentação. Disponível: 0.');
+  });
+  it('não repassa conteúdo arbitrário anexado ao saldo', () => {
+    expect(mensagem({ message: 'Estoque insuficiente. Disponível: 11 java.sql.Exception' })).toBe('Confira os dados informados e tente novamente.');
   });
   it('preserva orientação de senha sem expor detalhes internos', () => {
     expect(mensagem({ message: 'Senha atual incorreta' })).toBe('A senha atual está incorreta.');
