@@ -25,6 +25,7 @@ export function Historico({
   const [menuAberto, setMenuAberto] = useState(null);
   const [itemExclusao, setItemExclusao] = useState(null);
   const [excluindo, setExcluindo] = useState(false);
+  const [erroExclusao, setErroExclusao] = useState('');
 
   const buscar = useCallback(
     async (paginaAlvo) => {
@@ -58,12 +59,13 @@ export function Historico({
   async function confirmarExclusao() {
     if (!itemExclusao || !aoExcluir) return;
     setExcluindo(true);
+    setErroExclusao('');
     try {
       await aoExcluir(itemExclusao);
       setItemExclusao(null);
       await buscar(pagina);
     } catch (e) {
-      setErro(e.message || 'Não foi possível excluir o registro.');
+      setErroExclusao(e.message || 'Não foi possível excluir o registro.');
     } finally {
       setExcluindo(false);
     }
@@ -146,6 +148,7 @@ export function Historico({
                                 aria-label="Excluir"
                                 onClick={() => {
                                   setItemExclusao(item);
+                                  setErroExclusao('');
                                   setMenuAberto(null);
                                 }}
                               >
@@ -188,6 +191,8 @@ export function Historico({
             </div>
 
             <div className={styles.divisorModal} />
+
+            {erroExclusao && <div className={styles.mensagemErro} role="alert">{erroExclusao}</div>}
 
             <div className={styles.caixaPerigo}>
               <strong>Tem certeza que deseja excluir este {entidadeNome}?</strong>

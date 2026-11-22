@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import Historico from './Historico.jsx';
 import styles from './CadastroUsuario.module.css';
-import { listarUsuarios } from '../services/usuarioService.js';
+import { listarUsuarios, atualizarUsuario, removerUsuario } from '../services/usuarioService.js';
 
 function usuarioEstaAtivo(status) {
   if (typeof status === 'boolean') return status;
@@ -20,6 +20,7 @@ export function HistoricoUsuario() {
   const [formularioEdicao, setFormularioEdicao] = useState(null);
   const [salvando, setSalvando] = useState(false);
   const [erroEdicao, setErroEdicao] = useState('');
+  const [sucesso, setSucesso] = useState('');
 
   const carregarPagina = useCallback(async (pagina, tamanho) => {
     const todos = (await listarUsuarios()) || [];
@@ -29,6 +30,7 @@ export function HistoricoUsuario() {
   }, [versao]);
 
   function abrirEdicao(usuario) {
+    setSucesso('');
     setFormularioEdicao({
       nome: usuario.nome,
       email: usuario.email,
@@ -53,8 +55,9 @@ export function HistoricoUsuario() {
     setSalvando(true);
     setErroEdicao('');
     try {
-      
+      await atualizarUsuario(usuarioEditando.id, formularioEdicao);
       setUsuarioEditando(null);
+      setSucesso('Usuário alterado com sucesso!');
       setVersao((v) => v + 1);
     } catch (e) {
       setErroEdicao(e.message || 'Não foi possível alterar o usuário.');
@@ -64,11 +67,14 @@ export function HistoricoUsuario() {
   }
 
   async function excluir(usuario) {
-   
+    setSucesso('');
+    await removerUsuario(usuario.id);
+    setSucesso('Usuário excluído com sucesso!');
   }
 
   return (
     <>
+      {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
       <Historico
         icone="https://img.icons8.com/ios/50/2563EB/user-group-man-man.png"
         titulo="Histórico de Usuários"
