@@ -29,6 +29,9 @@ export function Historico({
   const [erroExclusao, setErroExclusao] = useState('');
   const [sucesso, setSucesso] = useState('');
 
+  const nomeItemExclusao = itemExclusao?.nome || itemExclusao?.produtoNome || itemExclusao?.email || itemExclusao?.id || '';
+  const artigoDemonstrativo = String(entidadeNome).trim().toLowerCase().endsWith('a') ? 'esta' : 'este';
+
   const buscar = useCallback(
     async (paginaAlvo) => {
       setCarregando(true);
@@ -52,6 +55,17 @@ export function Historico({
     buscar(pagina);
     
   }, [pagina, carregarPagina]);
+
+  useEffect(() => {
+    if (menuAberto === null) return;
+    function aoPressionarTecla(evento) {
+      if (evento.key === 'Escape') {
+        setMenuAberto(null);
+      }
+    }
+    window.addEventListener('keydown', aoPressionarTecla);
+    return () => window.removeEventListener('keydown', aoPressionarTecla);
+  }, [menuAberto]);
 
   function mudarPagina(novaPagina) {
     setMenuAberto(null);
@@ -201,7 +215,8 @@ export function Historico({
             {erroExclusao && <div className={styles.mensagemErro} role="alert">{erroExclusao}</div>}
 
             <div className={styles.caixaPerigo}>
-              <strong>Tem certeza que deseja excluir este {entidadeNome}?</strong>
+              <strong>Tem certeza que deseja excluir {artigoDemonstrativo} {entidadeNome}?</strong>
+              {nomeItemExclusao && <p><strong>{nomeItemExclusao}</strong></p>}
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 

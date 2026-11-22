@@ -76,6 +76,17 @@ export function CadastroUsuario({ onNavigate }) {
     carregarUltimoUsuario();
   }, []);
 
+  useEffect(() => {
+    if (!menuAberto) return;
+    function aoPressionarTecla(evento) {
+      if (evento.key === 'Escape') {
+        setMenuAberto(false);
+      }
+    }
+    window.addEventListener('keydown', aoPressionarTecla);
+    return () => window.removeEventListener('keydown', aoPressionarTecla);
+  }, [menuAberto]);
+
   function alterarCampo(campo) {
     return (evento) => {
       setFormulario((anterior) => ({ ...anterior, [campo]: evento.target.value }));
@@ -335,7 +346,7 @@ export function CadastroUsuario({ onNavigate }) {
 
       {edicaoAberta && (
         <div className={styles.fundoModal} onClick={() => !salvando && setEdicaoAberta(false)}>
-          <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
+          <div className={styles.cartaoModal} role="dialog" aria-modal="true" aria-label="Editar Usuário" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
                 <img src="https://img.icons8.com/ios-filled/50/CA8A04/edit--v1.png" alt="" />
@@ -400,7 +411,7 @@ export function CadastroUsuario({ onNavigate }) {
 
       {exclusaoAberta && (
         <div className={styles.fundoModal} onClick={() => !salvando && setExclusaoAberta(false)}>
-          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
+          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} role="dialog" aria-modal="true" aria-label="Excluir Usuário" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
                 <img src="https://img.icons8.com/ios-filled/50/DC2626/trash--v1.png" alt="" />

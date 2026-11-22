@@ -45,6 +45,13 @@ const SERVICOS = [
     descricao: 'Cadastre e gerencie os usuários do sistema.',
     icone: 'https://img.icons8.com/ios/50/2563EB/user-group-man-man.png',
   },
+  {
+    chave: 'configuracoes',
+    rotulo: 'Configurações',
+    titulo: 'Configurações do Sistema',
+    descricao: 'Ajuste métricas, alertas e segurança da conta.',
+    icone: 'https://img.icons8.com/ios/50/2563EB/settings.png',
+  },
 ];
 
 function IconeBusca(propriedades) {
@@ -59,13 +66,19 @@ function IconeBusca(propriedades) {
 export function Inicio({ onNavigate, usuario }) {
   const [busca, setBusca] = useState('');
 
-  const termo = busca.trim().toLowerCase();
+  const normalizar = (texto) =>
+    texto
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+
+  const termo = normalizar(busca.trim());
   const servicosPermitidos = SERVICOS.filter((servico) => podeAcessarPagina(usuario, servico.chave));
   const servicosFiltrados = termo
     ? servicosPermitidos.filter(
         (servico) =>
-          servico.rotulo.toLowerCase().includes(termo) ||
-          servico.titulo.toLowerCase().includes(termo)
+          normalizar(servico.rotulo).includes(termo) ||
+          normalizar(servico.titulo).includes(termo)
       )
     : servicosPermitidos;
 
