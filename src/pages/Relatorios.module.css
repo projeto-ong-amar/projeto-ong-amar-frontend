@@ -247,6 +247,14 @@
   cursor: not-allowed;
 }
 
+.periodErro {
+  width: 100%;
+  margin: 0;
+  font-size: 0.8125rem;
+  color: #B91C1C;
+  font-weight: 600;
+}
+
 .reportsList {
   display: flex;
   flex-direction: column;

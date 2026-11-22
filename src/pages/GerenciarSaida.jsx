@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
+import { QUANTIDADE_MAXIMA } from '../utils/validacao.js';
 import styles from './GerenciarSaida.module.css';
 import { listarProdutos } from '../services/produtoService';
 import { getUsuarioLogado } from '../services/authService.js';
@@ -115,6 +117,18 @@ function paraBr(dataIso) {
   return `${dia}/${mes}/${ano}`;
 }
 
+function dataLocalHojeIso() {
+  const hoje = new Date();
+  const ano = hoje.getFullYear();
+  const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+  const dia = String(hoje.getDate()).padStart(2, '0');
+  return `${ano}-${mes}-${dia}`;
+}
+
+function dataNoFuturo(dataIso) {
+  return Boolean(dataIso) && dataIso > dataLocalHojeIso();
+}
+
 function compararSaidasRecentes(saidaA, saidaB) {
   const dataA = Date.parse(saidaA.dataHora);
   const dataB = Date.parse(saidaB.dataHora);
@@ -144,6 +158,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState('');
+  const [erroEdicao, setErroEdicao] = useState('');
   const [sucesso, setSucesso] = useState('');
 
   const [formulario, setFormulario] = useState(formularioVazio);
@@ -151,6 +166,8 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
   const [linhaEdicao, setLinhaEdicao] = useState(null);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
   const [linhaExclusao, setLinhaExclusao] = useState(null);
+  const [erroExclusao, setErroExclusao] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
 
   const inputDataSaidaRef = useRef(null);
   const inputEditDataSaidaRef = useRef(null);
@@ -207,6 +224,11 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
       return;
     }
 
+    if (dataNoFuturo(formulario.dataSaida)) {
+      setErro('A data de saída não pode ser futura.');
+      return;
+    }
+
     setEnviando(true);
     try {
       await registrarSaida({
@@ -240,6 +262,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
     setLinhaEdicao(item);
     setMenuAberto(null);
     setErro('');
+    setErroEdicao('');
   }
 
   function lidarComMudancaEdicao(campo) {
@@ -248,8 +271,14 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
 
   async function lidarComAlterar(evento) {
     evento.preventDefault();
-    setErro('');
+    setErroEdicao('');
     setSucesso('');
+
+    if (dataNoFuturo(formularioEdicao.dataSaida)) {
+      setErroEdicao('A data de saída não pode ser futura.');
+      return;
+    }
+
     setEnviando(true);
     try {
       await atualizarSaida(linhaEdicao.id, {
@@ -263,23 +292,27 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
       setLinhaEdicao(null);
       await carregarDados();
     } catch (e) {
-      setErro(e.message || 'Não foi possível atualizar a saída.');
+      setErroEdicao(e.message || 'Não foi possível atualizar a saída.');
     } finally {
       setEnviando(false);
     }
   }
 
   async function confirmarExclusao() {
+    if (!linhaExclusao || excluindo) return;
     setErro('');
     setSucesso('');
+    setErroExclusao('');
+    setExcluindo(true);
     try {
       await removerSaida(linhaExclusao.id);
       setSucesso('Saída removida com sucesso!');
       setLinhaExclusao(null);
       await carregarDados();
     } catch (e) {
-      setErro(e.message || 'Não foi possível remover a saída.');
-      setLinhaExclusao(null);
+      setErroExclusao(e.message || 'Não foi possível remover a saída.');
+    } finally {
+      setExcluindo(false);
     }
   }
 
@@ -296,9 +329,9 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
       </div>
 
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
-      {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
+      {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
 
-      <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
+      <Formulario className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={`${styles.campo} ${styles.campoGrande}`}>
             <label htmlFor="produto">
@@ -322,6 +355,8 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
               id="quantidade"
               type="number"
               min="1"
+              max={QUANTIDADE_MAXIMA}
+              step="1"
               placeholder="Ex: 10"
               value={formulario.quantidade}
               onChange={lidarComMudanca('quantidade')}
@@ -346,6 +381,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                 ref={inputDataSaidaRef}
                 id="data-saida"
                 type="date"
+                max={dataLocalHojeIso()}
                 value={formulario.dataSaida}
                 onChange={lidarComMudanca('dataSaida')}
                 required
@@ -384,7 +420,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
             </span>
           </button>
         </div>
-      </form>
+      </Formulario>
 
       <div className={styles.cabecalhoHistorico}>
         <div className={styles.tituloHistorico}>
@@ -466,6 +502,8 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                             aria-label="Excluir"
                             onClick={() => {
                               setLinhaExclusao(item);
+                              setErroExclusao('');
+                              setSucesso('');
                               setMenuAberto(null);
                             }}
                           >
@@ -489,13 +527,13 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
 
       {linhaEdicao && (
         <div className={styles.fundoModal} onClick={() => setLinhaEdicao(null)}>
-          <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
+          <div className={styles.cartaoModal} role="dialog" aria-modal="true" aria-labelledby="titulo-editar-saida" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
                 <img src="https://img.icons8.com/ios-filled/50/CA8A04/edit--v1.png" alt="" />
               </div>
               <div className={styles.textoCabecalhoModal}>
-                <h2>Editar Saída</h2>
+                <h2 id="titulo-editar-saida">Editar Saída</h2>
                 <p>Altere as informações da saída abaixo.</p>
               </div>
               <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaEdicao(null)}>
@@ -505,7 +543,8 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
 
             <div className={styles.divisorModal} />
 
-            <form onSubmit={lidarComAlterar}>
+            <Formulario onSubmit={lidarComAlterar}>
+              {erroEdicao && <div className={styles.mensagemErro} role="alert">{erroEdicao}</div>}
               <div className={styles.gradeFormulario}>
                 <div className={`${styles.campo} ${styles.campoGrande}`}>
                   <label htmlFor="edit-produto">
@@ -529,6 +568,8 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                     id="edit-quantidade"
                     type="number"
                     min="1"
+                    max={QUANTIDADE_MAXIMA}
+                    step="1"
                     placeholder="Ex: 10"
                     value={formularioEdicao.quantidade}
                     onChange={lidarComMudancaEdicao('quantidade')}
@@ -553,6 +594,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                       ref={inputEditDataSaidaRef}
                       id="edit-data-saida"
                       type="date"
+                      max={dataLocalHojeIso()}
                       value={formularioEdicao.dataSaida}
                       onChange={lidarComMudancaEdicao('dataSaida')}
                       required
@@ -590,14 +632,14 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                   </span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}
 
       {linhaExclusao && (
-        <div className={styles.fundoModal} onClick={() => setLinhaExclusao(null)}>
-          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
+        <div className={styles.fundoModal} onClick={() => !excluindo && setLinhaExclusao(null)}>
+          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} role="dialog" aria-modal="true" aria-label="Excluir Saída" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
                 <img src="https://img.icons8.com/ios-filled/50/DC2626/trash--v1.png" alt="" />
@@ -605,7 +647,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
               <div className={styles.textoCabecalhoModal}>
                 <h2>Excluir Saída</h2>
               </div>
-              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
               </button>
             </div>
@@ -617,19 +659,21 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 
+            {erroExclusao && <div className={styles.mensagemErro} role="alert">{erroExclusao}</div>}
+
             <div className={styles.linhaAcoes}>
-              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
                 </span>
                 Cancelar
               </button>
 
-              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao}>
+              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/trash--v1.png" alt="" />
                 </span>
-                Excluir Saída
+                {excluindo ? 'Excluindo...' : 'Excluir Saída'}
               </button>
             </div>
           </div>

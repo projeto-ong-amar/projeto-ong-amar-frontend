@@ -1,4 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
+import { QUANTIDADE_MAXIMA } from '../utils/validacao.js';
 import styles from './GerenciarEntrada.module.css';
 import { listarProdutos } from '../services/produtoService';
 import { getUsuarioLogado } from '../services/authService.js';
@@ -36,6 +38,10 @@ function validadeNoPassado(dataValidade) {
   return Boolean(dataValidade) && dataValidade < dataLocalHojeIso();
 }
 
+function dataNoFuturo(dataIso) {
+  return Boolean(dataIso) && dataIso > dataLocalHojeIso();
+}
+
 export function GerenciarEntrada({ onNavigate, pageParams }) {
   const [produtos, setProdutos] = useState([]);
   const [historico, setHistorico] = useState([]);
@@ -49,6 +55,8 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
   const [linhaEdicao, setLinhaEdicao] = useState(null);
   const [formularioEdicao, setFormularioEdicao] = useState(formularioVazio);
   const [linhaExclusao, setLinhaExclusao] = useState(null);
+  const [erroExclusao, setErroExclusao] = useState('');
+  const [excluindo, setExcluindo] = useState(false);
 
   const inputDataEntradaRef = useRef(null);
   const inputDataValidadeRef = useRef(null);
@@ -108,8 +116,18 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
       return;
     }
 
+    if (formulario.dataValidade && formulario.dataEntrada && formulario.dataValidade < formulario.dataEntrada) {
+      setErro('A data de validade não pode ser anterior à data de entrada.');
+      return;
+    }
+
     if (validadeNoPassado(formulario.dataValidade)) {
       setErro('A data de validade não pode ser anterior a hoje.');
+      return;
+    }
+
+    if (dataNoFuturo(formulario.dataEntrada)) {
+      setErro('A data de entrada não pode ser futura.');
       return;
     }
 
@@ -154,8 +172,18 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
     setErro('');
     setSucesso('');
 
+    if (formularioEdicao.dataValidade && formularioEdicao.dataEntrada && formularioEdicao.dataValidade < formularioEdicao.dataEntrada) {
+      setErro('A data de validade não pode ser anterior à data de entrada.');
+      return;
+    }
+
     if (validadeNoPassado(formularioEdicao.dataValidade)) {
       setErro('A data de validade não pode ser anterior a hoje.');
+      return;
+    }
+
+    if (dataNoFuturo(formularioEdicao.dataEntrada)) {
+      setErro('A data de entrada não pode ser futura.');
       return;
     }
 
@@ -180,16 +208,20 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
   }
 
   async function confirmarExclusao() {
+    if (!linhaExclusao || excluindo) return;
     setErro('');
     setSucesso('');
+    setErroExclusao('');
+    setExcluindo(true);
     try {
       await removerEntrada(linhaExclusao.id);
       setSucesso('Entrada removida com sucesso!');
       setLinhaExclusao(null);
       await carregarDados();
     } catch (e) {
-      setErro(e.message || 'Não foi possível remover a entrada.');
-      setLinhaExclusao(null);
+      setErroExclusao(e.message || 'Não foi possível remover a entrada.');
+    } finally {
+      setExcluindo(false);
     }
   }
 
@@ -206,9 +238,9 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
       </div>
 
       {erro && <div className={styles.mensagemErro}>{erro}</div>}
-      {sucesso && <div className={styles.mensagemSucesso}>{sucesso}</div>}
+      {sucesso && <div className={styles.mensagemSucesso} role="status">{sucesso}</div>}
 
-      <form className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
+      <Formulario className={styles.cartaoFormulario} onSubmit={lidarComSalvar}>
         <div className={styles.gradeFormulario}>
           <div className={`${styles.campo} ${styles.campoInteiro}`}>
             <label htmlFor="produto">
@@ -232,6 +264,8 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               id="quantidade"
               type="number"
               min="1"
+              max={QUANTIDADE_MAXIMA}
+              step="1"
               placeholder="Ex: 10"
               value={formulario.quantidade}
               onChange={lidarComMudanca('quantidade')}
@@ -248,6 +282,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                 ref={inputDataEntradaRef}
                 id="data-entrada"
                 type="date"
+                max={dataLocalHojeIso()}
                 value={formulario.dataEntrada}
                 onChange={lidarComMudanca('dataEntrada')}
                 required
@@ -310,7 +345,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
             </span>
           </button>
         </div>
-      </form>
+      </Formulario>
 
       <div className={styles.cabecalhoHistorico}>
         <div className={styles.tituloHistorico}>
@@ -390,6 +425,8 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                             aria-label="Excluir"
                             onClick={() => {
                               setLinhaExclusao(item);
+                              setErroExclusao('');
+                              setSucesso('');
                               setMenuAberto(null);
                             }}
                           >
@@ -424,7 +461,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
 
             <div className={styles.divisorModal} />
 
-            <form onSubmit={lidarComAlterar}>
+            <Formulario onSubmit={lidarComAlterar}>
               <div className={`${styles.gradeFormulario} ${styles.gradeModal}`}>
                 <div className={`${styles.campo} ${styles.campoInteiro}`}>
                   <label htmlFor="edit-produto">
@@ -448,6 +485,8 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                     id="edit-quantidade"
                     type="number"
                     min="1"
+                    max={QUANTIDADE_MAXIMA}
+                    step="1"
                     placeholder="Ex: 10"
                     value={formularioEdicao.quantidade}
                     onChange={lidarComMudancaEdicao('quantidade')}
@@ -464,6 +503,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                       ref={inputEditDataEntradaRef}
                       id="edit-data-entrada"
                       type="date"
+                      max={dataLocalHojeIso()}
                       value={formularioEdicao.dataEntrada}
                       onChange={lidarComMudancaEdicao('dataEntrada')}
                       required
@@ -526,14 +566,14 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                   </span>
                 </button>
               </div>
-            </form>
+            </Formulario>
           </div>
         </div>
       )}
 
       {linhaExclusao && (
-        <div className={styles.fundoModal} onClick={() => setLinhaExclusao(null)}>
-          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} onClick={(evento) => evento.stopPropagation()}>
+        <div className={styles.fundoModal} onClick={() => !excluindo && setLinhaExclusao(null)}>
+          <div className={`${styles.cartaoModal} ${styles.cartaoModalPequeno}`} role="dialog" aria-modal="true" aria-label="Excluir Entrada" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={`${styles.iconeCabecalhoModal} ${styles.iconeCabecalhoModalPerigo}`}>
                 <img src="https://img.icons8.com/ios-filled/50/DC2626/trash--v1.png" alt="" />
@@ -541,7 +581,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               <div className={styles.textoCabecalhoModal}>
                 <h2>Excluir Entrada</h2>
               </div>
-              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoFecharModal} aria-label="Fechar" onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
               </button>
             </div>
@@ -553,19 +593,21 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 
+            {erroExclusao && <div className={styles.mensagemErro} role="alert">{erroExclusao}</div>}
+
             <div className={styles.linhaAcoes}>
-              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)}>
+              <button type="button" className={styles.botaoModalCancelar} onClick={() => setLinhaExclusao(null)} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/multiply.png" alt="" />
                 </span>
                 Cancelar
               </button>
 
-              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao}>
+              <button type="button" className={styles.botaoModalExcluir} onClick={confirmarExclusao} disabled={excluindo}>
                 <span className={styles.iconeAcao}>
                   <img src="https://img.icons8.com/ios-filled/50/FFFFFF/trash--v1.png" alt="" />
                 </span>
-                Excluir Entrada
+                {excluindo ? 'Excluindo...' : 'Excluir Entrada'}
               </button>
             </div>
           </div>

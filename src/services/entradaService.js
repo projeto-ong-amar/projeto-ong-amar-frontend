@@ -1,4 +1,5 @@
 import { apiClient } from './apiClient.js';
+import { validarQuantidade } from '../utils/validacao.js';
 
 export function listarHistoricoEntrada(page = 0, size = 10, ordenacoes = []) {
   const parametros = new URLSearchParams({ page: String(page), size: String(size) });
@@ -8,7 +9,7 @@ export function listarHistoricoEntrada(page = 0, size = 10, ordenacoes = []) {
 
 export function registrarEntrada({ quantidade, dataEntrada, dataValidade, motivo, fkProduto, fkUsuario }) {
   return apiClient.post('/movimentacao/entrada', {
-    quantidade,
+    quantidade: validarQuantidade(quantidade),
     dataEntrada,
     dataValidade,
     motivo,
@@ -19,7 +20,7 @@ export function registrarEntrada({ quantidade, dataEntrada, dataValidade, motivo
 
 export function atualizarEntrada(id, { quantidade, dataEntrada, dataValidade, motivo, fkProduto, fkUsuario }) {
   return apiClient.put(`/movimentacao/entrada/${id}`, {
-    quantidade,
+    quantidade: validarQuantidade(quantidade),
     dataEntrada,
     dataValidade,
     motivo,

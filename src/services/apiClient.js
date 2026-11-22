@@ -21,13 +21,28 @@ function encerrarSessaoPorNaoAutorizado() {
 }
 
 function extrairMensagemDeErro(corpo, status) {
-  if (corpo && typeof corpo === 'object') {
-    if (corpo.mensagem) return corpo.mensagem;
-    if (corpo.message) return corpo.message;
-    if (corpo.error) return corpo.error;
+  if (status === 401) return 'Sua sessão expirou. Entre novamente.';
+  if (status === 403) return 'Você não tem permissão para realizar esta ação.';
+  if (status >= 500) return 'Não foi possível concluir a operação. Tente novamente mais tarde.';
+
+  const candidatos = typeof corpo === 'string' ? [corpo] : [corpo?.mensagem, corpo?.message, corpo?.error];
+  // Apenas mensagens conhecidas são convertidas; nunca repassar texto arbitrário da API.
+  for (const mensagem of candidatos) {
+    if (typeof mensagem !== 'string') continue;
+    const estoqueInsuficiente = mensagem.match(/^Estoque insuficiente(?:\. Disponível: (\d+))?\.?$/i);
+    if (estoqueInsuficiente) {
+      const saldo = estoqueInsuficiente[1];
+      return `Estoque insuficiente para esta movimentação.${saldo !== undefined ? ` Disponível: ${saldo}.` : ''}`;
+    }
+    if (/^Senha atual incorreta\.?$/i.test(mensagem)) return 'A senha atual está incorreta.';
+    if (/^Token de recuperação inválido ou expirado\.?$/i.test(mensagem)) {
+      return 'O link de recuperação é inválido ou expirou. Solicite um novo link.';
+    }
   }
-  if (typeof corpo === 'string' && corpo.trim()) return corpo;
-  return `Erro na requisição (status ${status})`;
+  if (status === 404) return 'O registro solicitado não foi encontrado.';
+  if (status === 409) return 'Não foi possível salvar. Verifique se o registro já existe ou está em uso.';
+  if (status === 429) return 'Muitas tentativas. Aguarde um pouco antes de tentar novamente.';
+  return 'Confira os dados informados e tente novamente.';
 }
 
 http.interceptors.response.use(
