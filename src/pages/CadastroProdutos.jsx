@@ -33,6 +33,17 @@ export function CadastroProdutos({ onNavigate }) {
     carregarDados();
   }, []);
 
+  useEffect(() => {
+    if (menuAberto === null) return;
+    function aoPressionarTecla(evento) {
+      if (evento.key === 'Escape') {
+        setMenuAberto(null);
+      }
+    }
+    window.addEventListener('keydown', aoPressionarTecla);
+    return () => window.removeEventListener('keydown', aoPressionarTecla);
+  }, [menuAberto]);
+
   async function carregarDados() {
     setCarregando(true);
     setErro('');
@@ -311,7 +322,7 @@ export function CadastroProdutos({ onNavigate }) {
 
       {linhaEdicao && (
         <div className={styles.fundoModal} onClick={() => setLinhaEdicao(null)}>
-          <div className={styles.cartaoModal} onClick={(evento) => evento.stopPropagation()}>
+          <div className={styles.cartaoModal} role="dialog" aria-modal="true" aria-label="Editar Produto" onClick={(evento) => evento.stopPropagation()}>
             <div className={styles.cabecalhoModal}>
               <div className={styles.iconeCabecalhoModal}>
                 <img src="https://img.icons8.com/ios-filled/50/CA8A04/edit--v1.png" alt="" />
@@ -424,6 +435,7 @@ export function CadastroProdutos({ onNavigate }) {
 
             <div className={styles.caixaPerigo}>
               <strong>Tem Certeza que Deseja Excluir este Produto?</strong>
+              {linhaExclusao?.nome && <p><strong>{linhaExclusao.nome}</strong></p>}
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 

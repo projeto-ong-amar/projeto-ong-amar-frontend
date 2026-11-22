@@ -182,6 +182,17 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
     }
   }, [pageParams]);
 
+  useEffect(() => {
+    if (menuAberto === null) return;
+    function aoPressionarTecla(evento) {
+      if (evento.key === 'Escape') {
+        setMenuAberto(null);
+      }
+    }
+    window.addEventListener('keydown', aoPressionarTecla);
+    return () => window.removeEventListener('keydown', aoPressionarTecla);
+  }, [menuAberto]);
+
   async function carregarDados() {
     setCarregando(true);
     setErro('');
@@ -656,6 +667,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
 
             <div className={styles.caixaPerigo}>
               <strong>Tem Certeza que Deseja Excluir esta Saída?</strong>
+              <p><strong>{linhaExclusao?.produtoNome || produtos.find((p) => p.id === linhaExclusao?.produtoId)?.nome || `ID ${linhaExclusao?.id}`}</strong></p>
               <p>Esta ação não poderá ser desfeita.</p>
             </div>
 
