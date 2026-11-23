@@ -41,6 +41,9 @@ describe('BUG-09 validações de data', () => {
     fireEvent.submit(container.querySelector('form'));
 
     expect(await screen.findByText('A data de entrada não pode ser futura.')).toBeTruthy();
+    const campo = document.getElementById('data-entrada');
+    expect(document.activeElement).toBe(campo);
+    expect(document.getElementById(campo.getAttribute('aria-describedby')).textContent).toBe('A data de entrada não pode ser futura.');
     expect(apiClient.post).not.toHaveBeenCalledWith('/movimentacao/entrada', expect.anything());
   });
 
@@ -73,6 +76,7 @@ describe('BUG-09 validações de data', () => {
     fireEvent.submit(container.querySelector('form'));
 
     expect(await screen.findByText('A data de saída não pode ser futura.')).toBeTruthy();
+    expect(document.activeElement).toBe(document.getElementById('data-saida'));
     expect(apiClient.post).not.toHaveBeenCalledWith('/movimentacao/saida', expect.anything());
   });
 

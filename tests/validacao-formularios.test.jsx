@@ -3,6 +3,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { CadastroProdutos } from '../src/pages/CadastroProdutos.jsx';
 import { GerenciarEntrada } from '../src/pages/GerenciarEntrada.jsx';
 import { GerenciarSaida } from '../src/pages/GerenciarSaida.jsx';
+import { HistoricoEntrada } from '../src/pages/HistoricoEntrada.jsx';
+import { HistoricoSaida } from '../src/pages/HistoricoSaida.jsx';
 import { CadastroUsuario } from '../src/pages/CadastroUsuario.jsx';
 import { apiClient } from '../src/services/apiClient.js';
 import { cadastrarProduto, atualizarProduto } from '../src/services/produtoService.js';
@@ -96,6 +98,10 @@ describe('restrições e mensagens em português nos formulários', () => {
     [CadastroUsuario, 'edit-nome', '   ', 'Preencha este campo.'],
     [GerenciarEntrada, 'edit-quantidade', '99999999999', 'Informe um valor menor ou igual a 2147483647.'],
     [GerenciarSaida, 'edit-quantidade', '99999999999', 'Informe um valor menor ou igual a 2147483647.'],
+    [GerenciarEntrada, 'edit-data-entrada', '2099-12-01', 'A data de entrada não pode ser futura.'],
+    [GerenciarSaida, 'edit-data-saida', '2099-12-01', 'A data de saída não pode ser futura.'],
+    [HistoricoEntrada, 'hist-edit-data-entrada', '2099-12-01', 'A data de entrada não pode ser futura.'],
+    [HistoricoSaida, 'hist-edit-saida-data', '2099-12-01', 'A data de saída não pode ser futura.'],
   ])('também bloqueia dados inválidos no modal de edição', async (Pagina, id, valor, mensagem) => {
     const registro = {
       id: 1, produtoId: 1, nome: 'Arroz', categoria: 'ALIMENTOS', unidadeMedida: 'kg',
@@ -112,6 +118,7 @@ describe('restrições e mensagens em português nos formulários', () => {
     fireEvent.input(campo, { target: { value: valor } });
     fireEvent.submit(campo.form);
     expect(campo.validationMessage).toBe(mensagem);
+    expect(document.getElementById(campo.getAttribute('aria-describedby')).textContent).toBe(mensagem);
     expect(apiClient.put).not.toHaveBeenCalled();
     if (Pagina === CadastroProdutos) expect(campo.maxLength).toBe(45);
   });
