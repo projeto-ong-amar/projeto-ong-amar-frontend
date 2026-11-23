@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 import logo from '../assets/img/pca-1.png';
 import { solicitarRecuperacaoSenha } from '../services/authService.js';
 import { useAltoContraste } from '../hooks/useAltoContraste.js';
@@ -84,7 +85,7 @@ export function RecuperarSenha({ onNavigate, onVoltar }) {
           link com as instruções
         </p>
 
-        <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
+        <Formulario className={styles.formularioLogin} onSubmit={lidarComEnvio}>
           <label className={styles.rotuloCampo} htmlFor="recuperar-email">
             Digite seu E-mail
           </label>
@@ -93,6 +94,7 @@ export function RecuperarSenha({ onNavigate, onVoltar }) {
             id="recuperar-email"
             placeholder="exemplo@gmail.com"
             autoComplete="email"
+            required
             value={email}
             onChange={(evento) => {
               setEmail(evento.target.value);
@@ -110,7 +112,7 @@ export function RecuperarSenha({ onNavigate, onVoltar }) {
           <button className={styles.botaoEntrar} type="submit" disabled={enviando}>
             {enviando ? 'Enviando...' : enviado ? 'E-mail enviado' : 'Enviar'}
           </button>
-        </form>
+        </Formulario>
       </div>
 
       <div className={styles.caixaAcessibilidade}>

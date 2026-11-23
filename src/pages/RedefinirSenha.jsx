@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 import logo from '../assets/img/pca-1.png';
 import { redefinirSenha } from '../services/authService.js';
 import { useAltoContraste } from '../hooks/useAltoContraste.js';
@@ -91,7 +92,7 @@ export function RedefinirSenha({ aoVoltar }) {
             </button>
           </div>
         ) : (
-          <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
+          <Formulario className={styles.formularioLogin} onSubmit={lidarComEnvio}>
             <InputPasswordToggle
               id="nova-senha"
               className={styles.campoSenha}
@@ -127,7 +128,7 @@ export function RedefinirSenha({ aoVoltar }) {
             <button className={styles.botaoEntrar} type="submit" disabled={enviando || !token}>
               {enviando ? 'Redefinindo...' : 'Redefinir senha'}
             </button>
-          </form>
+          </Formulario>
         )}
       </div>
 

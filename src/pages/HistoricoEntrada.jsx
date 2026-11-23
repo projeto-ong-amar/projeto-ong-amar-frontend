@@ -193,6 +193,7 @@ export function HistoricoEntrada() {
                     <input
                       ref={inputEditDataEntradaRef}
                       id="hist-edit-data-entrada"
+                      data-erro-max="A data de entrada não pode ser futura."
                       type="date"
                       max={dataLocalHojeIso()}
                       value={formularioEdicao.dataEntrada}
@@ -218,6 +219,9 @@ export function HistoricoEntrada() {
                     <input
                       ref={inputEditDataValidadeRef}
                       id="hist-edit-data-validade"
+                      data-min-campo="hist-edit-data-entrada"
+                      data-erro-relacao="A data de validade não pode ser anterior à data de entrada."
+                      data-erro-min="A data de validade não pode ser anterior a hoje."
                       type="date"
                       min={dataLocalHojeIso()}
                       value={formularioEdicao.dataValidade}

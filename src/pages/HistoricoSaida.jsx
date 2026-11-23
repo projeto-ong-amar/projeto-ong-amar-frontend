@@ -272,6 +272,7 @@ export function HistoricoSaida() {
                     <input
                       ref={inputEditDataSaidaRef}
                       id="hist-edit-saida-data"
+                      data-erro-max="A data de saída não pode ser futura."
                       type="date"
                       max={dataLocalHojeIso()}
                       value={formularioEdicao.dataSaida}
