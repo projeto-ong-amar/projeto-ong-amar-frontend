@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 import styles from './Configuracoes.module.css';
 import { InputPasswordToggle } from '../components/common/InputPasswordToggle.jsx';
 import {
@@ -329,7 +330,7 @@ export function Configuracoes({ usuario }) {
             {erroMetricas && <div className={styles.mensagemErro} role="alert">{erroMetricas}</div>}
             {sucessoMetricas && <div className={styles.mensagemSucesso} role="status">{sucessoMetricas}</div>}
 
-            <form onSubmit={salvarMetricas}>
+            <Formulario onSubmit={salvarMetricas}>
               <div className={styles.gradeMetricas}>
                 <CampoMetrica
                   id="metrica-estoque-baixo" icone="box" tom="tomVerde" titulo="Estoque Baixo"
@@ -362,7 +363,7 @@ export function Configuracoes({ usuario }) {
                 <img src="https://img.icons8.com/ios-filled/50/FFFFFF/save.png" alt="" />
                 {enviandoMetricas ? 'Salvando...' : 'Salvar Métricas'}
               </button>
-            </form>
+            </Formulario>
           </section>
         </div>
       )}
@@ -512,7 +513,7 @@ export function Configuracoes({ usuario }) {
               Entrar novamente
             </button>
           ) : (
-          <form onSubmit={salvarSenha}>
+          <Formulario onSubmit={salvarSenha}>
             <div className={styles.gradeSenha}>
             <InputPasswordToggle
               id="senha-atual"
@@ -558,7 +559,7 @@ export function Configuracoes({ usuario }) {
               <img src="https://img.icons8.com/ios-filled/50/FFFFFF/lock--v1.png" alt="" />
               {enviandoSenha ? 'Alterando...' : 'Alterar Senha'}
             </button>
-          </form>
+          </Formulario>
           )}
         </section>
         </div>

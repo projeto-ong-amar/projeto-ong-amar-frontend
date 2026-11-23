@@ -391,6 +391,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
               <input
                 ref={inputDataSaidaRef}
                 id="data-saida"
+                data-erro-max="A data de saída não pode ser futura."
                 type="date"
                 max={dataLocalHojeIso()}
                 value={formulario.dataSaida}
@@ -604,6 +605,7 @@ export function GerenciarSaida({ onNavigate, pageParams }) {
                     <input
                       ref={inputEditDataSaidaRef}
                       id="edit-data-saida"
+                      data-erro-max="A data de saída não pode ser futura."
                       type="date"
                       max={dataLocalHojeIso()}
                       value={formularioEdicao.dataSaida}

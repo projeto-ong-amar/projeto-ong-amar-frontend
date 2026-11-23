@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Formulario } from '../components/common/Formulario.jsx';
 
 import logo from '../assets/img/pca-1.png';
 import { login } from '../services/authService.js';
@@ -62,7 +63,7 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
           </div>
         </div>
 
-        <form className={styles.formularioLogin} onSubmit={lidarComEnvio}>
+        <Formulario className={styles.formularioLogin} onSubmit={lidarComEnvio}>
           <label className={styles.rotuloCampo} htmlFor="email">
             Digite seu E-mail
           </label>
@@ -111,7 +112,7 @@ export function Login({ aoLoginComSucesso, aoEsquecerSenha }) {
           <button className={styles.botaoEntrar} type="submit" disabled={enviando}>
             {enviando ? 'Entrando...' : 'Entrar'}
           </button>
-        </form>
+        </Formulario>
       </div>
 
       <div className={styles.caixaAcessibilidade}>

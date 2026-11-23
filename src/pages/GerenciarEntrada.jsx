@@ -292,6 +292,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               <input
                 ref={inputDataEntradaRef}
                 id="data-entrada"
+                data-erro-max="A data de entrada não pode ser futura."
                 type="date"
                 max={dataLocalHojeIso()}
                 value={formulario.dataEntrada}
@@ -317,6 +318,9 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
               <input
                 ref={inputDataValidadeRef}
                 id="data-validade"
+                data-min-campo="data-entrada"
+                data-erro-relacao="A data de validade não pode ser anterior à data de entrada."
+                data-erro-min="A data de validade não pode ser anterior a hoje."
                 type="date"
                 min={dataLocalHojeIso()}
                 value={formulario.dataValidade}
@@ -513,6 +517,7 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                     <input
                       ref={inputEditDataEntradaRef}
                       id="edit-data-entrada"
+                      data-erro-max="A data de entrada não pode ser futura."
                       type="date"
                       max={dataLocalHojeIso()}
                       value={formularioEdicao.dataEntrada}
@@ -538,6 +543,9 @@ export function GerenciarEntrada({ onNavigate, pageParams }) {
                     <input
                       ref={inputEditDataValidadeRef}
                       id="edit-data-validade"
+                      data-min-campo="edit-data-entrada"
+                      data-erro-relacao="A data de validade não pode ser anterior à data de entrada."
+                      data-erro-min="A data de validade não pode ser anterior a hoje."
                       type="date"
                       min={dataLocalHojeIso()}
                       value={formularioEdicao.dataValidade}
