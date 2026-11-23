@@ -3,8 +3,18 @@
 Os cadastros e edições de produtos e usuários e os registros e edições de
 entradas/saídas usam avisos de validação em português, independentemente do
 idioma do navegador. A edição de usuários pelo Histórico segue a mesma regra.
-As regras de intervalo e relação entre datas continuam sendo validadas pelas
-páginas, preservando suas mensagens específicas em português.
+Login, recuperação/redefinição de senha e as métricas e a alteração de senha em
+Configurações também usam o componente compartilhado (QA-ATUAL-02, #67).
+Os erros aparecem em texto, associados via `aria-describedby` e `aria-invalid`;
+o envio foca o primeiro campo inválido, sem depender de balões nativos.
+Ao corrigir o campo, a mensagem customizada e a associação do erro são limpas,
+preservando descrições de ajuda existentes.
+
+Os intervalos de datas são traduzidos pelo componente. As páginas informam suas
+mensagens específicas via `data-erro-min`/`data-erro-max`, e a validade referencia
+a entrada por `data-min-campo` e `data-erro-relacao`. A alteração da entrada
+revalida a validade relacionada. As verificações defensivas das páginas continuam
+existindo; nenhuma regra de data foi relaxada.
 
 - Nome do produto: 3–45 caracteres; unidade de medida: 1–45 caracteres.
   Os limites seguem o `ProdutoRequestDTO` da API.
