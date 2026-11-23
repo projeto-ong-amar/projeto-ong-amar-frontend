@@ -1,4 +1,5 @@
 .divProximaDoacao {
+  position: relative;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -43,7 +44,6 @@
 }
 
 .tooltipWrapper {
-  position: relative;
   display: inline-flex;
   align-items: center;
 }
@@ -52,14 +52,15 @@
 .tooltipWrapper::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(360px, 100%);
+  box-sizing: border-box;
   background-color: var(--text-dark);
   color: var(--white);
   font-weight: normal;
   font-size: 0.7rem;
-  white-space: nowrap;
+  white-space: normal;
   padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow);
@@ -155,11 +156,4 @@
   .divProximaDoacao { flex-direction: column; height: auto; padding: 16px; }
   .dateInputSpan { flex-wrap: wrap; gap: 8px; }
   .divGraficosBarraEPizza { grid-template-columns: minmax(0, 1fr); }
-  .tooltipWrapper::after {
-    left: auto;
-    right: 0;
-    transform: none;
-    width: min(260px, 75vw);
-    white-space: normal;
-  }
 }
