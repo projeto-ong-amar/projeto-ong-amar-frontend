@@ -45,8 +45,11 @@ for (const viewport of [
 
     const data = page.getByLabel('Data da próxima doação');
     await expect(data).toBeVisible();
-    const conteudo = data.locator('xpath=../..');
-    const pagina = conteudo.locator('..');
+    const principal = page.getByRole('main', { name: 'Desempenho' });
+    await expect(page.locator('main, [role="main"]')).toHaveCount(1);
+    await expect(principal.locator('main, [role="main"]')).toHaveCount(0);
+    await expect(principal.getByLabel('Data da próxima doação')).toBeVisible();
+    const pagina = principal.locator('..');
     // Esperar o SVG, e não apenas o wrapper, garante gráficos carregados.
     const graficos = pagina.locator('[class*="divGraficosBarraEPizza"] > div, [class*="divGraficoLinhaEAcoes"] > div:first-child');
     await expect(graficos).toHaveCount(3);

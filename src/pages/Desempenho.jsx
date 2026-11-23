@@ -76,7 +76,7 @@ export function Desempenho({ onNavigate }) {
   }, [])
 
   return (
-    <>
+    <main aria-label="Desempenho">
       <div className={ style.divProximaDoacao }>
         <svg className={ style.icone } viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -174,6 +174,6 @@ export function Desempenho({ onNavigate }) {
         aoFechar={ () => setModalAberto(null) }
         onNavigate={ onNavigate }
       />
-    </>
+    </main>
   )
 }
